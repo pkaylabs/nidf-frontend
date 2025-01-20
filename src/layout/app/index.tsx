@@ -18,7 +18,6 @@ import {
 import {
   Bars3Icon,
   BellIcon,
-  ChevronDownIcon,
   Cog6ToothIcon,
   XMarkIcon,
 } from "@heroicons/react/24/outline";
@@ -32,6 +31,7 @@ import {
 } from "@/constants/page-path";
 import logo from "@/assets/images/logo.png";
 import { ArrowDown2 } from "iconsax-react";
+import { TbLogout2 } from "react-icons/tb";
 
 const navigation = [
   {
@@ -282,13 +282,13 @@ export default function AppLayout() {
                 <li className="mt-auto">
                   <Link
                     to={"/"}
-                    className="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold text-gray-700 hover:bg-gray-50 hover:text-indigo-600"
+                    className="font-poppins group -mx-2 flex gap-x-3 rounded-md p-2 font-medium text-gray-700 hover:bg-gray-50 hover:text-primary-600"
                   >
-                    <Cog6ToothIcon
+                    <TbLogout2
                       aria-hidden="true"
-                      className="size-6 shrink-0 text-gray-400 group-hover:text-primary-600"
+                      className="size-6 shrink-0 text-gray-500 group-hover:text-primary-600"
                     />
-                    Settings
+                    Logout
                   </Link>
                 </li>
               </ul>
@@ -365,7 +365,7 @@ export default function AppLayout() {
                   >
                     <span
                       aria-hidden="true"
-                      className="ml-4 text-sm leading-none text-left font-semibold text-gray-900"
+                      className="px-3 text-sm leading-none text-left font-semibold text-gray-900"
                     >
                       Tom Cook <br />
                     </span>
@@ -386,7 +386,7 @@ export default function AppLayout() {
           </div>
 
           <main className="font-poppins flex-1">
-            <div className="h-full p-4 sm:p-6 bg-[#EBEBEB] rounded-md">
+            <div className="h-full pb-4 sm:pb-6 bg-[#EBEBEB] rounded-md">
               <Outlet />
             </div>
           </main>
