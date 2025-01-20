@@ -8,6 +8,7 @@ import {
   DASHBOARD,
   LOGIN,
   ONBOARDING,
+  OTP_VERIFICATION,
   PROGRESS,
   REPAYMENT,
   RESET,
@@ -20,6 +21,7 @@ import ProgressReport from "@/pages/progress";
 import Repayment from "@/pages/repayment";
 import Onboarding from "@/pages/auth/onboarding";
 import ResetPassword from "@/pages/auth/reset-password";
+import OtpVerification from "@/pages/auth/otp-verification";
 
 export type RouteProps = Omit<Route, "children"> & {
   navigation?: boolean;
@@ -86,7 +88,14 @@ const routes: RouteProps[] = [
     path: ONBOARDING,
     element: <Onboarding />,
     meta: {
-      layout: "App",
+      layout: "Auth",
+    },
+  },
+  {
+    path: OTP_VERIFICATION,
+    element: <OtpVerification />,
+    meta: {
+      layout: "Auth",
     },
   },
   {
