@@ -13,5 +13,4 @@ function App() {
     </NotificationProvider>
   );
 }
-
 export default App;
