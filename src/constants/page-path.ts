@@ -3,6 +3,9 @@ export const SIGNUP = "/sign-up";
 export const RESET = "/reset-password";
 export const ONBOARDING = "/onboarding";
 export const USER_PROFILE = "/user-profile";
-export const HOME = "/";
+export const DASHBOARD = "/";
+export const APPLICATIONS = "/my-applications";
+export const PROGRESS = "/progress-report";
+export const REPAYMENT = "/repayment";
 
-export const BACKEND_BASE_URL = "h";
+export const BACKEND_BASE_URL = "";
