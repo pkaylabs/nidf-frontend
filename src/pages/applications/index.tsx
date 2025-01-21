@@ -1,48 +1,42 @@
 import Table from "@/components/table";
 import React, { ReactNode, useEffect, useState } from "react";
 import { motion } from "framer-motion";
+import { Edit2, Trash } from "iconsax-react";
 
 const Applications = () => {
   const headers = [
-    { name: "Name", value: "name" },
-    { name: "Age", value: "age" },
-    { name: "Country", value: "country" },
+    { name: "Application ID", value: "application id" },
+    { name: "Category", value: "category" },
+    { name: "Submitted Date", value: "submitted date" },
+    { name: "Status", value: "status" },
+    { name: "Action", value: "action" },
   ];
 
   const rows = [
-    { name: "John Doe", age: 25, country: "USA" },
-    { name: "Jane Smith", age: 30, country: "Canada" },
-    { name: "Mike Johnson", age: 22, country: "UK" },
-    { name: "Mike Johnson", age: 22, country: "UK" },
-    { name: "Mike Johnson", age: 22, country: "UK" },
-    { name: "Mike Johnson", age: 22, country: "UK" },
-    { name: "Mike Johnson", age: 22, country: "UK" },
-    { name: "Mike Johnson", age: 22, country: "UK" },
-    { name: "Mike Johnson", age: 22, country: "UK" },
-    { name: "Mike Johnson", age: 22, country: "UK" },
-    { name: "Mike Johnson", age: 22, country: "UK" },
-    { name: "Mike Johnson", age: 22, country: "UK" },
-    { name: "Mike Johnson", age: 22, country: "UK" },
-    { name: "Mike Johnson", age: 22, country: "UK" },
-    { name: "Mike Johnson", age: 22, country: "UK" },
-    { name: "Mike Johnson", age: 22, country: "UK" },
-    { name: "Mike Johnson", age: 22, country: "UK" },
-    { name: "Mike Johnson", age: 22, country: "UK" },
-    { name: "Mike Johnson", age: 22, country: "UK" },
-    { name: "Mike Johnson", age: 22, country: "UK" },
-    { name: "Mike Johnson", age: 22, country: "UK" },
-    { name: "Mike Johnson", age: 22, country: "UK" },
-    { name: "Mike Johnson", age: 22, country: "UK" },
-    { name: "Mike Johnson", age: 22, country: "UK" },
-    { name: "Mike Johnson", age: 22, country: "UK" },
-    { name: "Mike Johnson", age: 22, country: "UK" },
-    { name: "Mike Johnson", age: 22, country: "UK" },
-    { name: "Mike Johnson", age: 22, country: "UK" },
-    { name: "Mike Johnson", age: 22, country: "UK" },
-    { name: "Mike Johnson", age: 22, country: "UK" },
-    { name: "Mike Johnson", age: 22, country: "UK" },
-    { name: "Mike Johnson", age: 22, country: "UK" },
-    { name: "Mike Johnson", age: 22, country: "UK" },
+    {
+      "application id": "APP-12345",
+      category: "Emergency Support",
+      "submitted date": "Jan 15, 2025",
+      status: "Reviewing",
+    },
+    {
+      "application id": "APP-12345",
+      category: "Aid",
+      "submitted date": "Jan 15, 2025",
+      status: "Approved",
+    },
+    {
+      "application id": "APP-12345",
+      category: "Revolving Fund",
+      "submitted date": "Jan 15, 2025",
+      status: "Pending",
+    },
+    {
+      "application id": "APP-12345",
+      category: "Emergency Support",
+      "submitted date": "Jan 15, 2025",
+      status: "Reviewing",
+    },
   ];
 
   const customRowRenderer = (
@@ -54,10 +48,32 @@ const Applications = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ delay: index * 0.05 }}
+      className="font-poppins border-b text-lg text-black  border-gray-200 hover:bg-gray-100 transition-all duration-150 ease-in-out"
     >
-      <td className="px-4 py-2 text-blue-600 font-bold">{row.name}</td>
-      <td className="px-4 py-2 text-green-600">{row.age}</td>
-      <td className="px-4 py-2 text-red-600">{row.country}</td>
+      <td className="px-4 py-3 ">{row["application id"]}</td>
+      <td className="px-4 py-3">{row.category}</td>
+      <td className="px-4 py-3 ">{row["submitted date"]}</td>
+      <td className="px-4 py-3 ">
+        <p
+          className={`text-[#F5F5F5] text-base py-1 rounded-md text-center ${
+            row.status === "Approved" ? "bg-[#2D9632]" : ""
+          } ${row.status === "Pending" ? "bg-[#BAB21D]" : ""} ${
+            row.status === "Reviewing" ? "bg-[#71839B]" : ""
+          } `}
+        >
+          {row.status}
+        </p>
+      </td>
+      <td className="px-4 py-4 ">
+        <div className="flex items-center space-x-3">
+          <div className="cursor-pointer hover:bg-gray-50 p-1 rounded-full">
+            <Edit2 size="22" color="#545454" />
+          </div>
+          <div className="cursor-pointer hover:bg-gray-50 p-1 rounded-full">
+            <Trash size="22" color="#FF8A65" />
+          </div>
+        </div>
+      </td>
     </motion.tr>
   );
 
@@ -77,8 +93,14 @@ const Applications = () => {
         footer={<div>Pagination goes here</div>}
         maxRows={5}
         loading={loading}
-        searchableFields={["name", "country"]}
-        filters={[{ name: "country", fields: ["USA", "Canada", "UK"] }, { name: "country", fields: ["USA", "Canada", "UK"] }]}
+        searchableFields={["application id"]}
+        filters={[
+          { name: "status", fields: ["Reviewing", "Approved", "Pending"] },
+          {
+            name: "category",
+            fields: ["Emergency Support", "Aid", "Revolving Fund"],
+          },
+        ]}
       />
     </div>
   );

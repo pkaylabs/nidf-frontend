@@ -110,12 +110,13 @@ const Table: React.FC<TableProps> = ({
       ) : (
         <div className="font-poppins bg-white py-10 px-6 mt-5 rounded-md">
           <table className="table-auto w-full text-left ">
+            {/* header */}
             <thead>
               <tr>
                 {headers.map((header) => (
                   <th
                     key={header.value}
-                    className="font-semibold px-4 py-2 bg-primary text-lg text-white"
+                    className="font-semibold px-4 py-2.5 bg-primary text-lg text-white"
                   >
                     {header.name}
                   </th>
@@ -158,7 +159,7 @@ const Table: React.FC<TableProps> = ({
                   currentPage === index + 1
                     ? "bg-primary-500 text-white"
                     : "bg-gray-200 hover:bg-gray-300"
-                }`}
+                } transition-all duration-150 ease-in-out`}
                 onClick={() => handlePageChange(index + 1)}
               >
                 {index + 1}
