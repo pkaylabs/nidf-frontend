@@ -1,6 +1,5 @@
 import React, { FC } from "react";
 import { Outlet } from "react-location";
-import { Link } from "react-location";
 import logo from "@/assets/images/logo1.png";
 
 const AuthLayout: FC = () => {
@@ -9,7 +8,7 @@ const AuthLayout: FC = () => {
       <div className="absolute left-8 top-5 ">
         <img src={logo} alt="logo" className="h-36 w-auto " />
       </div>
-      <div className="flex-1 max-w-[44rem] bg-white ">
+      <div className="flex-1 max-w-[44rem] bg-white py-10 px-20 rounded-xl">
         <Outlet />
       </div>
     </main>
