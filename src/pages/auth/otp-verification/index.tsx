@@ -58,15 +58,22 @@ const OtpVerification = () => {
   }, []);
 
   return (
-    <form onSubmit={handleOtpSubmit} className="w-full flex flex-col gap-y-10">
+    <form
+      onSubmit={handleOtpSubmit}
+      className="w-full flex flex-col gap-y-10 mobile:gap-y-5 mobile:mt-8 "
+    >
       <div className="">
-        <h1 className="font-semibold text-3xl">OTP Verification</h1>
-        <p className="text-lg text-[#808080] font-normal">
+        <h1 className="font-semibold text-3xl mobile:text-lg">
+          OTP Verification
+        </h1>
+        <p className="text-lg text-[#808080] font-normal mobile:text-sm">
           We’ve sent an otp code to your phone number{" "}
-          <span className="text-[#1024A3]">+233 xx xxx xxxx</span>
+          <span className="text-[#1024A3] mobile:text-sm">
+            +233 xx xxx xxxx
+          </span>
         </p>
       </div>
-      <div className="w-full">
+      <div className="flex flex-wrap items-center justify-center  mobile:overflow-x-auto ">
         {otp.map((data, index) => {
           return (
             <input
@@ -75,14 +82,14 @@ const OtpVerification = () => {
               type="text"
               value={data}
               onChange={(e) => handleChange(e, index)}
-              className="w-20 h-20 shadow-sm border border-[#808080] text-center m-5 rounded-md font-normal text-4xl"
+              className="w-20 h-20 shadow-sm border border-[#808080] text-center m-5 rounded-md font-normal text-4xl mobile:w-12 mobile:h-12 mobile:text-lg mobile:ml-1"
             />
           );
         })}
       </div>
       <button
         type="submit"
-        className="bg-[#17567E] rounded-md text-white px-20 py-3 mx-auto mt-8"
+        className="bg-[#17567E] rounded-md text-white px-20 py-3 mx-auto mt-8 mobile:px-10 mobile:py-2 mobile:text-sm"
       >
         Verify
       </button>

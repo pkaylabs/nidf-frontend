@@ -83,10 +83,12 @@ const Onboarding = () => {
   };
 
   return (
-    <div className="w-full flex flex-col gap-y-10 p-5">
+    <div className="w-full flex flex-col gap-y-10 p-5 mobile:p-3 mobile:mt-5 mobile:gap-y-5">
       <div className="">
-        <h1 className="font-bold text-3xl">Set Up Your Church Profile</h1>
-        <p className="text-[#A3A3A3] font-normal">
+        <h1 className="font-bold text-3xl mobile:text-lg">
+          Set Up Your Church Profile
+        </h1>
+        <p className="text-[#A3A3A3] font-normal mobile:text-sm">
           Complete the following form to create your church profile
         </p>
       </div>
@@ -339,14 +341,14 @@ const Onboarding = () => {
             <div className="flex h-full justify-center items-center transition-all duration-200 ease-in-out">
               <div className="flex flex-col items-center">
                 <FaFileUpload className="w-7 h-7 text-[#71839B] mb-3" />
-                <p className="font-light text-center text-[#71839B]">
+                <p className="font-light text-center text-[#71839B] mobile:text-sm">
                   Drag and drop files here, or click to browse
                 </p>
                 <label
                   htmlFor="file"
                   className="w-full flex justify-center items-center cursor-pointer"
                 >
-                  <div className="w-40 h-10 flex justify-center items-center border border-[#324054] rounded-md mt-5">
+                  <div className="w-40 h-10 flex justify-center items-center border border-[#324054] rounded-md mt-5 mobile:text-sm">
                     Browse Files
                   </div>
                   <input
@@ -372,7 +374,7 @@ const Onboarding = () => {
           disabled={isSubmitting}
           className={`bg-[#17567E] py-3 px-20 mt-2 rounded-md text-center text-white mx-auto ${
             isSubmitting ? "opacity-35" : ""
-          }`}
+          } mobile:px-10 mobile:py-2 text-sm`}
         >
           Confirm
         </button>
