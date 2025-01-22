@@ -1,19 +1,18 @@
 import { ONBOARDING } from "@/constants/page-path";
 import React, { useEffect, useRef, useState } from "react";
-import {  useNavigate } from "react-location";
+import { useNavigate } from "react-location";
 
 const OtpVerification = () => {
   const navigate = useNavigate();
   const [otp, setOtp] = useState<string[]>(new Array(4).fill(""));
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
-
   const handleChange = (
     element: React.ChangeEvent<HTMLInputElement>,
     index: number
   ) => {
     const value = element.target.value.slice(-1);
-    if (isNaN(value)) return;
+    if (isNaN(Number(value))) return;
 
     const newOtp = [...otp];
     if (value) {
@@ -37,7 +36,6 @@ const OtpVerification = () => {
       }
     }
   };
-
 
   const handleOtpSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -77,14 +75,14 @@ const OtpVerification = () => {
               type="text"
               value={data}
               onChange={(e) => handleChange(e, index)}
-              className="w-24 h-24 border border-[#808080] text-center m-5 rounded-md font-normal text-4xl"
+              className="w-20 h-20 shadow-sm border border-[#808080] text-center m-5 rounded-md font-normal text-4xl"
             />
           );
         })}
       </div>
       <button
         type="submit"
-        className="bg-[#17567E] w-full rounded-md text-white px-20 py-3 mx-auto mt-10"
+        className="bg-[#17567E] rounded-md text-white px-20 py-3 mx-auto mt-8"
       >
         Verify
       </button>
