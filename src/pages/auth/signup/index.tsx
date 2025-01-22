@@ -4,6 +4,7 @@ import * as Yup from "yup";
 import { Link, useNavigate } from "react-location";
 import { LOGIN } from "@/constants/page-path";
 
+
 const SignUp = () => {
   const navigate = useNavigate();
   const {
@@ -51,8 +52,8 @@ const SignUp = () => {
   return (
     <div className="w-full flex flex-col gap-y-10">
       <div>
-        <h1 className="font-bold text-3xl">Create an Account</h1>
-        <p className="text-[#A3A3A3] font-normal">
+        <h1 className="font-bold text-3xl mobile:text-xl mobile:">Create an Account</h1>
+        <p className="text-[#A3A3A3] font-normal mobile:text-sm">
           Create an NIDF Portal account
         </p>
       </div>
@@ -145,9 +146,9 @@ const SignUp = () => {
         ) : (
           ""
         )}
-        <p className="mx-auto font-normal text-base">
+        <p className="mx-auto font-normal text-base mobile:text-sm">
           Already have an account?
-          <Link to={LOGIN} className="text-[#1024A3] cursor-pointer">
+          <Link to={LOGIN} className="text-[#1024A3] cursor-pointer mobile:text-sm">
             Login
           </Link>
         </p>

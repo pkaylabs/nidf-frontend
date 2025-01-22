@@ -35,8 +35,8 @@ const Login = () => {
   return (
     <div className="w-full flex flex-col gap-y-10">
       <div>
-        <h1 className="font-bold text-3xl">Welcome Back</h1>
-        <p className="text-[#A3A3A3] font-normal">
+        <h1 className="font-bold text-3xl mobile:text-xl">Welcome Back</h1>
+        <p className="text-[#A3A3A3] font-normal mobile:text-sm">
           Log in to access your NIDF Portal account
         </p>
       </div>
@@ -87,21 +87,21 @@ const Login = () => {
         ) : (
           ""
         )}
-        <p className="text-base text-[#1024A3] font-normal cursor-pointer">
+        <p className="text-base text-[#1024A3] font-normal cursor-pointer mobile:text-sm">
           Forgotten Password?
         </p>
         <button
           disabled={isSubmitting}
           type="submit"
-          className={`bg-[#17567E] rounded-md text-white px-20 py-3 mx-auto my-3 ${
+          className={`bg-[#17567E] rounded-md text-white mobile:text-sm px-20 py-3 mx-auto my-3 mobile:py-2 mobile:px-10 ${
             isSubmitting ? "opacity-35" : ""
           }`}
         >
           Log In
         </button>
-        <p className="mx-auto font-normal text-base" onClick={()=>{}}>
+        <p className="mx-auto font-normal text-base mobile:text-sm mobile:text-center" onClick={()=>{}}>
           Don’t have an account?{" "}
-          <Link to={SIGNUP} className="text-[#1024A3] cursor-pointer">Register</Link>
+          <Link to={SIGNUP} className="text-[#1024A3] cursor-pointer mobile:text-sm">Register</Link>
         </p>
       </form>
     </div>

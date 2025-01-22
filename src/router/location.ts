@@ -14,6 +14,7 @@ export type LocationGenerics = MakeGenerics<{
   Params: {
     id?: string;
   };
+
   RouteMeta: {
     layout?: "App" | "Auth";
   };
