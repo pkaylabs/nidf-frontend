@@ -1,7 +1,7 @@
 import Table from "@/components/table";
 import React, { ReactNode, useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { Edit2, Trash } from "iconsax-react";
+import { Edit2, Eye, Trash } from "iconsax-react";
 
 const Applications = () => {
   const headers = [
@@ -20,16 +20,22 @@ const Applications = () => {
       status: "Reviewing",
     },
     {
-      "application id": "APP-12345",
+      "application id": "BPP-12345",
       category: "Aid",
       "submitted date": "Jan 15, 2025",
       status: "Approved",
     },
     {
-      "application id": "APP-12345",
+      "application id": "CPP-12345",
       category: "Revolving Fund",
       "submitted date": "Jan 15, 2025",
       status: "Pending",
+    },
+    {
+      "application id": "DPP-12345",
+      category: "Emergency Support",
+      "submitted date": "Jan 15, 2025",
+      status: "Reviewing",
     },
     {
       "application id": "APP-12345",
@@ -37,6 +43,25 @@ const Applications = () => {
       "submitted date": "Jan 15, 2025",
       status: "Reviewing",
     },
+    {
+      "application id": "BPP-12345",
+      category: "Aid",
+      "submitted date": "Jan 15, 2025",
+      status: "Approved",
+    },
+    {
+      "application id": "CPP-12345",
+      category: "Revolving Fund",
+      "submitted date": "Jan 15, 2025",
+      status: "Pending",
+    },
+    {
+      "application id": "DPP-12345",
+      category: "Emergency Support",
+      "submitted date": "Jan 15, 2025",
+      status: "Reviewing",
+    },
+   
   ];
 
   const customRowRenderer = (
@@ -48,7 +73,7 @@ const Applications = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ delay: index * 0.05 }}
-      className="font-poppins border-b text-lg text-black  border-gray-200 hover:bg-gray-100 transition-all duration-150 ease-in-out"
+      className="font-poppins border-b text-lg  text-black  border-gray-200 hover:bg-gray-100 transition-all duration-150 ease-in-out"
     >
       <td className="px-4 py-3 ">{row["application id"]}</td>
       <td className="px-4 py-3">{row.category}</td>
@@ -68,6 +93,9 @@ const Applications = () => {
         <div className="flex items-center space-x-3">
           <div className="cursor-pointer hover:bg-gray-50 p-1 rounded-full">
             <Edit2 size="22" color="#545454" />
+          </div>
+          <div className="cursor-pointer hover:bg-gray-50 p-1 rounded-full">
+            <Eye size="22" color="#545454" />
           </div>
           <div className="cursor-pointer hover:bg-gray-50 p-1 rounded-full">
             <Trash size="22" color="#FF8A65" />

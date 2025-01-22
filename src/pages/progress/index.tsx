@@ -48,6 +48,8 @@ const ProgressReport = () => {
           ></textarea>
         </div>
 
+        {/* image input */}
+
         <div className="flex flex-col mt-5">
           <p className="font-medium text-lg text-black mb-2">
             Upload Supporting Documents or Photos
@@ -62,7 +64,7 @@ const ProgressReport = () => {
                   file)
                 </p>
                 <label
-                  htmlFor="file" // Associate the label with the input field
+                  htmlFor="file" 
                   className="w-full flex justify-center items-center cursor-pointer"
                 >
                   <div className="w-40 h-10 flex justify-center items-center border border-[#324054] rounded-md mt-5">
@@ -71,7 +73,7 @@ const ProgressReport = () => {
                   <input
                     type="file"
                     name="file"
-                    id="file" // Use the same id as in the label's htmlFor
+                    id="file" 
                     accept="image/*"
                     className="hidden"
                     onChange={handleImageChange}
@@ -89,7 +91,7 @@ const ProgressReport = () => {
 
         <div className="flex flex-col mt-5">
           <label className="font-medium text-lg text-black ">
-            Previously Uploaded Files
+          Previously Uploaded Files
           </label>
           <div className="mt-2">
             {[1, 2, 3].map((_, i) => (
