@@ -4,6 +4,7 @@ import * as Yup from "yup";
 import { Link, useNavigate } from "react-location";
 import { LOGIN } from "@/constants/page-path";
 
+
 const SignUp = () => {
   const navigate = useNavigate();
   const {
