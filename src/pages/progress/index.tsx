@@ -64,7 +64,7 @@ const ProgressReport = () => {
                   file)
                 </p>
                 <label
-                  htmlFor="file" 
+                  htmlFor="file"
                   className="w-full flex justify-center items-center cursor-pointer"
                 >
                   <div className="w-40 h-10 flex justify-center items-center border border-[#324054] rounded-md mt-5">
@@ -73,7 +73,7 @@ const ProgressReport = () => {
                   <input
                     type="file"
                     name="file"
-                    id="file" 
+                    id="file"
                     accept="image/*"
                     className="hidden"
                     onChange={handleImageChange}
@@ -91,7 +91,7 @@ const ProgressReport = () => {
 
         <div className="flex flex-col mt-5">
           <label className="font-medium text-lg text-black ">
-          Previously Uploaded Files
+            Previously Uploaded Files
           </label>
           <div className="mt-2">
             {[1, 2, 3].map((_, i) => (
@@ -108,9 +108,14 @@ const ProgressReport = () => {
                     </p>
                   </div>
                 </div>
-                <button className="font-poppins font-light w-40 h-10 flex justify-center items-center border border-[#324054] rounded-md text-[#324054]  ">
-                  View
-                </button>
+                <div className="flex items-center space-x-3">
+                  <button className="font-poppins font-light w-40 h-10 flex justify-center items-center border border-[#324054] rounded-md text-[#324054]  ">
+                    View
+                  </button>
+                  <button className="font-poppins font-light w-40 h-10 flex justify-center items-center border border-[#CE5347] rounded-md text-[#CE5347] ">
+                    Delete
+                  </button>
+                </div>
               </div>
             ))}
           </div>
