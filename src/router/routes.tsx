@@ -22,6 +22,8 @@ import Repayment from "@/pages/repayment";
 import Onboarding from "@/pages/auth/onboarding";
 import ResetPassword from "@/pages/auth/reset-password";
 import OtpVerification from "@/pages/auth/otp-verification";
+import AddProgressReport from "@/pages/progress/add";
+import AddRepayment from "@/pages/repayment/add";
 
 export type RouteProps = Omit<Route, "children"> & {
   navigation?: boolean;
@@ -46,43 +48,51 @@ const routes: RouteProps[] = [
     },
   },
 
-  // {
-  //   path: "/services",
-  //   element: <Outlet />,
-  //   meta: {
-  //     layout: "App",
-  //   },
-  //   children: [
-  //     {
-  //       path: "/",
-  //       element: <ServiceList />,
-  //       meta: {
-  //         layout: "App",
-  //       },
-  //     },
-  //     {
-  //       path: "/:id",
-  //       element: <ServiceDetails />,
-  //       meta: {
-  //         layout: "App",
-  //       },
-  //     },
-  //   ],
-  // },
-
   {
     path: PROGRESS,
-    element: <ProgressReport />,
+    element: <Outlet />,
     meta: {
       layout: "App",
     },
+    children: [
+      {
+        path: "/",
+        element: <ProgressReport />,
+        meta: {
+          layout: "App",
+        },
+      },
+      {
+        path: "/add",
+        element: <AddProgressReport />,
+        meta: {
+          layout: "App",
+        },
+      },
+    ],
   },
   {
     path: REPAYMENT,
-    element: <Repayment />,
+    element: <Outlet />,
     meta: {
       layout: "App",
     },
+    children: [
+      {
+        path: "/",
+        element: <Repayment />,
+        meta: {
+          layout: "App",
+        },
+      },
+      {
+        path: "/add",
+        element: <AddRepayment />,
+        meta: {
+          layout: "App",
+        },
+      },
+    ],
   },
   {
     path: ONBOARDING,

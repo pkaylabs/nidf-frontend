@@ -317,11 +317,11 @@ export default function AppLayout() {
               <div className="font-semibold text-[1.75rem] text-gray-900 flex-1 flex items-center">
                 {currentPath === DASHBOARD
                   ? "Welcome Prince!"
-                  : currentPath === APPLICATIONS
+                  : currentPath.includes(APPLICATIONS)
                   ? "My Applications"
-                  : currentPath === PROGRESS
+                  : currentPath.includes(PROGRESS)
                   ? "Progress Report"
-                  : currentPath === REPAYMENT
+                  : currentPath.includes(REPAYMENT)
                   ? "Repayment Reconciliation"
                   : "Welcome Prince"}
               </div>
