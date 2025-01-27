@@ -16,10 +16,15 @@ interface FilterOption {
 }
 
 interface TableProps {
-  headers: Header[];
+  displayHeader?: boolean;
+  showAddButton?: boolean;
+  addButtonText?: string;
+  onAddButtonClick?: () => void;
+  headers?: Header[];
   rows: Array<{ [key: string]: ReactNode }>;
   footer?: ReactNode;
   maxRows?: number;
+  searchable?: boolean;
   searchableFields?: string[];
   filters?: FilterOption[];
   loading?: boolean;
@@ -27,10 +32,15 @@ interface TableProps {
 }
 
 const Table: React.FC<TableProps> = ({
+  displayHeader = true,
+  showAddButton = false,
+  addButtonText,
+  onAddButtonClick,
   headers,
   rows,
   footer,
   maxRows = 10,
+  searchable = true,
   searchableFields = [],
   filters = [],
   loading = false,
@@ -91,7 +101,9 @@ const Table: React.FC<TableProps> = ({
       transition={{ duration: 0.5 }}
     >
       <div className="p-4 flex flex-col md:flex-row justify-between space-x-5 items-center rounded-md bg-white py-5 lg:px-14 ">
-        <SearchBar query={searchQuery} onChange={setSearchQuery} />
+        {searchable && (
+          <SearchBar query={searchQuery} onChange={setSearchQuery} />
+        )}
         <div className="flex items-center justify-between flex-1 space-x-5">
           {filters.map((filter) => (
             <FilterDropdown
@@ -104,25 +116,36 @@ const Table: React.FC<TableProps> = ({
             />
           ))}
         </div>
+        {showAddButton && (
+          <button
+            onClick={onAddButtonClick}
+            className="font-medium flex-[0.3] flex items-center justify-center space-x-3 bg-primary-500 text-lg text-white py-2.5 px-4 rounded-md hover:bg-primary-600 transition-all duration-150 ease-in-out "
+          >
+            <span>+</span> <span> {addButtonText} </span>{" "}
+          </button>
+        )}
       </div>
       {loading ? (
-        <TableLoader headers={headers} rows={maxRows} />
+        <TableLoader headers={headers || []} rows={maxRows} />
       ) : (
         <div className="font-poppins bg-white py-10 px-6 mt-5 rounded-md">
           <table className="table-auto w-full text-left ">
             {/* header */}
-            <thead>
-              <tr>
-                {headers.map((header) => (
-                  <th
-                    key={header.value}
-                    className="font-semibold px-4 py-2.5 bg-primary text-lg text-white"
-                  >
-                    {header.name}
-                  </th>
-                ))}
-              </tr>
-            </thead>
+            {displayHeader && (
+              <thead>
+                <tr>
+                  {headers?.map((header) => (
+                    <th
+                      key={header.value}
+                      className="font-semibold px-4 py-2.5 bg-primary text-lg text-white"
+                    >
+                      {header.name}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+            )}
+
             <motion.tbody layout>
               {paginatedRows.map((row, index) =>
                 renderRow ? (
@@ -134,7 +157,7 @@ const Table: React.FC<TableProps> = ({
                     animate={{ opacity: 1 }}
                     transition={{ delay: index * 0.05 }}
                   >
-                    {headers.map((header) => (
+                    {headers?.map((header) => (
                       <td key={header.value} className="px-4 py-2">
                         {row[header.value]}
                       </td>

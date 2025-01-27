@@ -113,7 +113,7 @@ const Applications = () => {
   }, []);
 
   return (
-    <div className="p-4">
+    <div className="p-5">
       <Table
         headers={headers}
         rows={rows}
