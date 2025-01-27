@@ -6,8 +6,47 @@ import { useNavigate } from "react-location";
 import { DASHBOARD } from "@/constants/page-path";
 import ButtonLoader from "@/components/loaders/button";
 
+import {
+  Combobox,
+  ComboboxButton,
+  ComboboxInput,
+  ComboboxOption,
+  ComboboxOptions,
+} from "@headlessui/react";
+import { CheckIcon, ChevronDownIcon } from "@heroicons/react/20/solid";
+import clsx from "clsx";
+import { set } from "lodash";
+
+const regions = [
+  { id: 1, name: "Greater Accra" },
+  { id: 2, name: "Ashanti" },
+  { id: 3, name: "Western" },
+  { id: 4, name: "Eastern" },
+  { id: 5, name: "Northern" },
+  { id: 6, name: "Central" },
+  { id: 7, name: "Upper East" },
+  { id: 8, name: "Upper West" },
+  { id: 9, name: "Volta" },
+  { id: 10, name: "Oti" },
+  { id: 11, name: "Bono" },
+  { id: 12, name: "Bono East" },
+  { id: 13, name: "Ahafo" },
+  { id: 14, name: "Savannah" },
+  { id: 15, name: "Western North" },
+];
+
 const Onboarding = () => {
   const [loading, setLoading] = useState(false);
+  const [query, setQuery] = useState<any>("");
+  const [selected, setSelected] = useState(null);
+
+  const filteredRegions =
+    query === ""
+      ? regions
+      : regions.filter((region) =>
+          region.name.toLowerCase().includes(query.toLowerCase())
+        );
+
   const navigate = useNavigate();
   const {
     values,
@@ -29,47 +68,17 @@ const Onboarding = () => {
       pastor_phone: "",
       pastor_email: "",
     },
-
     validationSchema: Yup.object().shape({
-      name: Yup.string()
-        .min(2, "Too Short!")
-        .max(50, "Too Long!")
-        .required("Name is required"),
-      location: Yup.string()
-        .min(2, "Too Short!")
-        .max(50, "Too Long!")
-        .required("Please provide your location"),
-      region: Yup.string()
-        .min(2, "Too Short!")
-        .max(50, "Too Long!")
-        .required("Please provide your region"),
-      district: Yup.string()
-        .matches(/^[A-Za-z\s'-]+$/, "Please enter a valid district")
-        .required("Please provide your region"),
-      phone: Yup.string()
-        .matches(
-          /^0(24|54|55|59|20|50|26|56|27|57|28|58|23)\d{7}$/,
-          "Please enter a valid phone number"
-        )
-        .required("Phone number is required"),
-      email: Yup.string()
-        .email("Please enter a valid email")
-        .required("Email is required"),
-      pastor_name: Yup.string()
-        .min(2, "Too Short!")
-        .max(50, "Too Long!")
-        .required("Name is required"),
-      pastor_phone: Yup.string()
-        .matches(
-          /^0(24|54|55|59|20|50|26|56|27|57|28|58|23)\d{7}$/,
-          "Please enter a valid phone number"
-        )
-        .required("Phone number is required"),
-      pastor_email: Yup.string()
-        .email("Please enter a valid email")
-        .required("Email is required"),
+      name: Yup.string().required("Name is required"),
+      location: Yup.string().required("Location is required"),
+      // region: Yup.string().required("Region is required"),
+      district: Yup.string().required("District is required"),
+      phone: Yup.string().required("Phone is required"),
+      email: Yup.string().required("Email is required"),
+      pastor_name: Yup.string().required("Pastor name is required"),
+      pastor_phone: Yup.string().required("Pastor phone is required"),
+      pastor_email: Yup.string().required("Pastor email is required"),
     }),
-
     onSubmit: (values, actions) => {
       actions.resetForm();
       setLoading(true);
@@ -152,32 +161,77 @@ const Onboarding = () => {
             ""
           )}
           <div className="w-full flex gap-x-3">
-            <div className="">
+            <div className="flex-1 relative flex flex-col gap-y-2">
               <label htmlFor="region" className="font-normal text-xs">
                 Region
               </label>
-              <input
-                id="region"
-                name="region"
-                type="text"
-                value={values.region}
-                onBlur={handleBlur}
-                onChange={handleChange}
-                className={`w-full p-3 h-12 rounded-md  border border-[#EAE0E0] focus:outline-0 focus:outline-primary-300 
-           transition-all duration-300 ease-in-out placeholder:font-normal placeholder:text-xs placeholder:text-[#969696] 
-           text-base font-normal ${
-             errors.region && touched.region ? "border border-[#fc8181]" : ""
-           }`}
-              />
+              <Combobox
+                value={selected}
+                onChange={(value) => setSelected(value)}
+              >
+                <div className="relative">
+                  <Combobox.Input
+                    id="region"
+                    name="region"
+                    value={selected || ""}
+                    onChange={(e) => {
+                      setQuery(e.target.value);
+                      setSelected(e.target.value as any);
+                      handleChange;
+                    }}
+                    className={`w-full p-3 h-12 rounded-md border border-[#EAE0E0] focus:outline-0 focus:ring-2 focus:ring-primary-300 transition-all duration-300 ease-in-out placeholder:font-normal placeholder:text-xs placeholder:text-[#969696] text-base font-normal ${
+                      errors.region && touched.region ? "border-[#fc8181]" : ""
+                    }`}
+                    placeholder="Select your region"
+                    displayValue={(region: any) => region?.name || ""}
+                  />
+                  <Combobox.Button className="absolute inset-y-0 right-0 flex items-center pr-2">
+                    <ChevronDownIcon className="w-5 h-5 text-gray-400" />
+                  </Combobox.Button>
+                </div>
+                <Combobox.Options className="absolute w-60 z-10 mt-1 top-[4.5rem] bg-white shadow-lg max-h-60 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-hidden overflow-y-scroll focus:outline-none sm:text-sm">
+                  {filteredRegions.map((region) => (
+                    <Combobox.Option
+                      key={region.id}
+                      value={region.name}
+                      className={({ active }) =>
+                        `cursor-pointer select-none relative py-2 pl-10 pr-4 ${
+                          active ? "text-white bg-primary-600" : "text-gray-900"
+                        }`
+                      }
+                    >
+                      {({ selected, active }) => (
+                        <>
+                          <span
+                            className={`block truncate ${
+                              selected ? "font-medium" : "font-normal"
+                            }`}
+                          >
+                            {region.name}
+                          </span>
+                          {selected ? (
+                            <span
+                              className={`absolute inset-y-0 left-0 flex items-center pl-3 ${
+                                active ? "text-white" : "text-primary-600"
+                              }`}
+                            >
+                              <CheckIcon
+                                className="w-5 h-5"
+                                aria-hidden="true"
+                              />
+                            </span>
+                          ) : null}
+                        </>
+                      )}
+                    </Combobox.Option>
+                  ))}
+                </Combobox.Options>
+              </Combobox>
               {errors.region && touched.region ? (
-                <p className="font-normal text-xs text-[#fc8181]">
-                  {errors.region}
-                </p>
-              ) : (
-                ""
-              )}
+                <p className="text-xs text-[#fc8181] mt-1">{errors.region}</p>
+              ) : null}
             </div>
-            <div className="">
+            <div className="flex-1">
               <label htmlFor="district" className="font-normal text-xs">
                 District
               </label>

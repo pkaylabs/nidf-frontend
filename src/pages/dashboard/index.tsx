@@ -53,7 +53,7 @@ const Dashboard = () => {
           {applicationTypes.map((application, index) => (
             <div
               key={index}
-              className="flex-1 max-w-96 px-5 py-6 bg-white rounded-md"
+              className="flex-1 px-5 py-6 bg-white rounded-md"
             >
               <div className="flex items-center space-x-4">
                 <application.icon className="size-7 text-[#454545] " />
@@ -62,7 +62,7 @@ const Dashboard = () => {
                 </h2>
               </div>
 
-              <p className="text-[#6B7280] mt-6">{application.description}</p>
+              <p className="text-[#6B7280] mt-6 2xl:truncate">{application.description}</p>
               <button className="w-full mt-6 border border-[#979797]  text-black px-4 py-2 rounded-md hover:bg-gray-50 transition-all duration-150 ease-in-out">
                 View Details
               </button>
