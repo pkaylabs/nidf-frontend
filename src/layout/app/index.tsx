@@ -26,8 +26,10 @@ import { classNames } from "@/utils";
 import {
   APPLICATIONS,
   DASHBOARD,
+  LOGIN,
   PROGRESS,
   REPAYMENT,
+  SIGNUP,
 } from "@/constants/page-path";
 import logo from "@/assets/images/logo.png";
 import { ArrowDown2 } from "iconsax-react";
@@ -63,7 +65,7 @@ const navigation = [
 
 const userNavigation = [
   { name: "Your profile", href: "#" },
-  { name: "Sign out", href: "#" },
+  { name: "Logout", href: "#" },
 ];
 
 export default function AppLayout() {
@@ -281,7 +283,7 @@ export default function AppLayout() {
                 </li> */}
                 <li className="mt-auto">
                   <Link
-                    to={"/"}
+                    to={LOGIN}
                     className="font-poppins group -mx-2 flex gap-x-3 rounded-md p-2 font-medium text-gray-700 hover:bg-gray-50 hover:text-primary-600"
                   >
                     <TbLogout2
@@ -367,13 +369,13 @@ export default function AppLayout() {
                       aria-hidden="true"
                       className="px-3 text-sm leading-none text-left font-semibold text-gray-900"
                     >
-                      Tom Cook <br />
+                      Prince Kyeremateng <br />
                     </span>
-                    {userNavigation.map((item) => (
+                    {userNavigation.map((item, idx) => (
                       <MenuItem key={item.name}>
                         <Link
                           to={item.href}
-                          className="block px-3 py-1 text-sm/6 text-gray-900 data-[focus]:bg-gray-50 data-[focus]:outline-none"
+                          className={`block px-3 py-1 text-sm/6 ${idx === userNavigation.length - 1 ? "text-red" : "text-gray-900"}  data-[focus]:bg-gray-50 data-[focus]:outline-none`}
                         >
                           {item.name}
                         </Link>

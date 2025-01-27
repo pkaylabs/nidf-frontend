@@ -2,8 +2,12 @@ import Table from "@/components/table";
 import React, { ReactNode, useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Edit2, Eye, Trash } from "iconsax-react";
+import { useNavigate } from "react-location";
+import { APPLICATIONS } from "@/constants/page-path";
 
 const Applications = () => {
+  const navigate = useNavigate();
+
   const headers = [
     { name: "Application ID", value: "application id" },
     { name: "Category", value: "category" },
@@ -61,7 +65,6 @@ const Applications = () => {
       "submitted date": "Jan 15, 2025",
       status: "Reviewing",
     },
-   
   ];
 
   const customRowRenderer = (
@@ -94,7 +97,14 @@ const Applications = () => {
           <div className="cursor-pointer hover:bg-gray-50 p-1 rounded-full">
             <Edit2 size="22" color="#545454" />
           </div>
-          <div className="cursor-pointer hover:bg-gray-50 p-1 rounded-full">
+          <div
+            onClick={() =>
+              navigate({ to: `${APPLICATIONS}/${row["application id"]}`, search: {
+                status: row.status as string,
+              } })
+            }
+            className="cursor-pointer hover:bg-gray-50 p-1 rounded-full"
+          >
             <Eye size="22" color="#545454" />
           </div>
           <div className="cursor-pointer hover:bg-gray-50 p-1 rounded-full">

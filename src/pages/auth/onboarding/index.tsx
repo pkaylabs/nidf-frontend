@@ -1,9 +1,14 @@
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import React from "react";
+import React, { useState } from "react";
 import { FaFileUpload } from "react-icons/fa";
+import { useNavigate } from "react-location";
+import { DASHBOARD } from "@/constants/page-path";
+import ButtonLoader from "@/components/loaders/button";
 
 const Onboarding = () => {
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
   const {
     values,
     handleSubmit,
@@ -67,7 +72,12 @@ const Onboarding = () => {
 
     onSubmit: (values, actions) => {
       actions.resetForm();
-      console.log(values);
+      setLoading(true);
+      setTimeout(() => {
+        navigate({ to: DASHBOARD });
+        actions.resetForm();
+        setLoading(false);
+      }, 4000);
     },
   });
 
@@ -372,11 +382,11 @@ const Onboarding = () => {
         <button
           type="submit"
           disabled={isSubmitting}
-          className={`bg-[#17567E] py-3 px-20 mt-2 rounded-md text-center text-white mx-auto ${
+          className={`bg-[#17567E] w-40 h-12 flex justify-center items-center mt-2 rounded-md text-center text-white mx-auto ${
             isSubmitting ? "opacity-35" : ""
           } mobile:px-10 mobile:py-2 text-sm`}
         >
-          Confirm
+          {loading ? <ButtonLoader title="Confirming" /> : "Confirm"}
         </button>
       </form>
     </div>

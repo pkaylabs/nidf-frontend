@@ -2,6 +2,8 @@ import React from "react";
 import { VscTarget } from "react-icons/vsc";
 import { GrPowerCycle } from "react-icons/gr";
 import { BsExclamationDiamond } from "react-icons/bs";
+import { useNavigate } from "react-location";
+import { APPLICATIONS } from "@/constants/page-path";
 
 const applicationTypes = [
   {
@@ -25,6 +27,7 @@ const applicationTypes = [
 ];
 
 const Dashboard = () => {
+  const navigate = useNavigate();
   return (
     <main className="font-poppins">
       {true && (
@@ -32,7 +35,10 @@ const Dashboard = () => {
           <p className="text-[#324054] text-lg ">
             Your Aid Application <span>(APP-12345)</span> is pending review.
           </p>
-          <button className="px-4 py-3 bg-primary text-white text-lg rounded-md ">
+          <button
+            onClick={() => navigate({ to: APPLICATIONS })}
+            className="px-4 py-3 bg-primary text-white text-lg rounded-md "
+          >
             See Applications
           </button>
         </div>
@@ -45,7 +51,10 @@ const Dashboard = () => {
 
         <section className="flex space-x-5 mt-5">
           {applicationTypes.map((application, index) => (
-            <div key={index} className="flex-1 px-5 py-6 bg-white rounded-md">
+            <div
+              key={index}
+              className="flex-1 max-w-96 px-5 py-6 bg-white rounded-md"
+            >
               <div className="flex items-center space-x-4">
                 <application.icon className="size-7 text-[#454545] " />
                 <h2 className="font-medium text-xl text-[#454545]  ">
@@ -92,9 +101,7 @@ const Dashboard = () => {
 
           <div className="mt-5">
             <div className="flex justify-between items-center mb-4">
-              <p className="font-light text-[#545454] ">
-                Repayment Progress
-              </p>
+              <p className="font-light text-[#545454] ">Repayment Progress</p>
               <p className="font-light text-[#545454]">50%</p>
             </div>
             <div className="w-full h-4 rounded-full bg-[#EBEBEB] ">
@@ -103,7 +110,9 @@ const Dashboard = () => {
                 style={{ width: "50%" }}
               ></div>
             </div>
-            <p className="font-light text-[#545454] mt-4">Last payment: January 10, 2025</p>
+            <p className="font-light text-[#545454] mt-4">
+              Last payment: January 10, 2025
+            </p>
           </div>
         </section>
       </div>
