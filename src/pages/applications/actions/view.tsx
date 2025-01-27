@@ -45,8 +45,6 @@ const Tab = ({ label, active, onClick }: TabProps) => (
   </button>
 );
 
-
-
 const ViewApplicationDetail = () => {
   const [activeTab, setActiveTab] = useState(0);
   const [direction, setDirection] = useState(1);
@@ -112,22 +110,24 @@ const ViewApplicationDetail = () => {
           ))}
         </div>
 
-        <div className="flex space-x-4 flex-wrap items-center mt-5">
-          {["Download Acceptance Aggreement", "Download Award Letter"].map(
-            (item, index) => (
-              <div
-                key={index}
-                className="flex items-center space-x-2 cursor-pointer border-[0.8px] border-[#545454] bg-[#F7F7F7] text-black px-3 py-2 rounded-md text-center"
-              >
-                <RxDownload className="size-6" aria-hidden="true" />
-                <span>{item}</span>
-              </div>
-            )
-          )}
-        </div>
+        {status === "Approved" && (
+          <div className="flex space-x-4 flex-wrap items-center mt-5">
+            {["Download Acceptance Aggreement", "Download Award Letter"].map(
+              (item, index) => (
+                <div
+                  key={index}
+                  className="flex items-center space-x-2 cursor-pointer border-[0.8px] border-[#545454] bg-[#F7F7F7] text-black px-3 py-2 rounded-md text-center"
+                >
+                  <RxDownload className="size-6" aria-hidden="true" />
+                  <span>{item}</span>
+                </div>
+              )
+            )}
+          </div>
+        )}
       </section>
 
-      <div className="mt-10">
+      <div className="mt-8">
         <div className="flex  bg-white rounded-md px-6 py-3 space-x-6 mb-6 ">
           {tabs.map((tab, index) => (
             <Tab
