@@ -24,6 +24,7 @@ import ResetPassword from "@/pages/auth/reset-password";
 import OtpVerification from "@/pages/auth/otp-verification";
 import AddProgressReport from "@/pages/progress/add";
 import AddRepayment from "@/pages/repayment/add";
+import ViewApplicationDetail from "@/pages/applications/actions/view";
 
 export type RouteProps = Omit<Route, "children"> & {
   navigation?: boolean;
@@ -42,12 +43,27 @@ const routes: RouteProps[] = [
   },
   {
     path: APPLICATIONS,
-    element: <Applications />,
+    element: <Outlet />,
     meta: {
       layout: "App",
     },
+    children: [
+      {
+        path: "/",
+        element: <Applications />,
+        meta: {
+          layout: "App",
+        },
+      },
+      {
+        path: "/:id",
+        element: <ViewApplicationDetail />,
+        meta: {
+          layout: "App",
+        },
+      },
+    ],
   },
-
   {
     path: PROGRESS,
     element: <Outlet />,
