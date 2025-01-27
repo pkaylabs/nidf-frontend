@@ -1,8 +1,10 @@
+import ButtonLoader from "@/components/loaders/button";
 import { ONBOARDING } from "@/constants/page-path";
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-location";
 
 const OtpVerification = () => {
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const [otp, setOtp] = useState<string[]>(new Array(4).fill(""));
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
@@ -44,7 +46,12 @@ const OtpVerification = () => {
     try {
       // make some api call to the verify otp endpoint
       // if response is ok
-      if (otpCode) navigate({ to: ONBOARDING, replace: true });
+      setLoading(true);
+      setTimeout(() => {
+        navigate({ to: "/otp-verification", replace: true });
+        if (otpCode) navigate({ to: ONBOARDING, replace: true });
+        setLoading(false);
+      }, 4000);
     } catch (error) {
       // if there is error catch it here
       console.log(error);
@@ -89,9 +96,9 @@ const OtpVerification = () => {
       </div>
       <button
         type="submit"
-        className="bg-[#17567E] rounded-md text-white px-20 py-3 mx-auto mt-8 mobile:px-10 mobile:py-2 mobile:text-sm"
+        className="bg-[#17567E] w-36 h-12 flex justify-center items-center rounded-md text-white  mx-auto mt-8 mobile:px-10 mobile:py-2 mobile:text-sm"
       >
-        Verify
+        {loading ? <ButtonLoader title="Verifying" /> : "Verify"}
       </button>
     </form>
   );

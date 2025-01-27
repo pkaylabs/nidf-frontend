@@ -1,9 +1,14 @@
-import { SIGNUP } from "@/constants/page-path";
+import ButtonLoader from "@/components/loaders/button";
+import { DASHBOARD, SIGNUP } from "@/constants/page-path";
 import { useFormik } from "formik";
-import { Link } from "react-location";
+import { useState } from "react";
+import { Link, useNavigate } from "react-location";
 import * as Yup from "yup";
 
 const Login = () => {
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+
   const {
     values,
     handleSubmit,
@@ -28,7 +33,12 @@ const Login = () => {
     }),
 
     onSubmit: (values, actions) => {
-      actions.resetForm();
+      setLoading(true);
+      setTimeout(() => {
+        navigate({ to: DASHBOARD });
+        actions.resetForm();
+        setLoading(false);
+      }, 4000);
     },
   });
 
@@ -93,15 +103,23 @@ const Login = () => {
         <button
           disabled={isSubmitting}
           type="submit"
-          className={`bg-[#17567E] rounded-md text-white mobile:text-sm px-20 py-3 mx-auto my-3 mobile:py-2 mobile:px-10 ${
+          className={`bg-[#17567E] w-44 h-12 flex justify-center items-center rounded-md text-white mobile:text-sm mx-auto my-3 mobile:py-2 mobile:px-10 ${
             isSubmitting ? "opacity-35" : ""
           }`}
         >
-          Log In
+          {loading ? <ButtonLoader title="Logging In" /> : "Log In"}
         </button>
-        <p className="mx-auto font-normal text-base mobile:text-sm mobile:text-center" onClick={()=>{}}>
+        <p
+          className="mx-auto font-normal text-base mobile:text-sm mobile:text-center"
+          onClick={() => {}}
+        >
           Don’t have an account?{" "}
-          <Link to={SIGNUP} className="text-[#1024A3] cursor-pointer mobile:text-sm">Register</Link>
+          <Link
+            to={SIGNUP}
+            className="text-[#1024A3] cursor-pointer mobile:text-sm"
+          >
+            Register
+          </Link>
         </p>
       </form>
     </div>

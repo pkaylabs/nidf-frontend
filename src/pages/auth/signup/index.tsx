@@ -1,12 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { Link, useNavigate } from "react-location";
 import { LOGIN } from "@/constants/page-path";
-
+import ButtonLoader from "@/components/loaders/button";
 
 const SignUp = () => {
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
   const {
     values,
     handleSubmit,
@@ -43,16 +44,22 @@ const SignUp = () => {
     }),
 
     onSubmit: (values, actions) => {
-      actions.resetForm();
-
-      navigate({ to: "/otp-verification", replace: true });
+      setLoading(true);
+            setTimeout(() => {
+              navigate({ to: "/otp-verification", replace: true });
+              actions.resetForm();
+              setLoading(false);
+            }, 4000);
+      
     },
   });
 
   return (
     <div className="w-full flex flex-col gap-y-10">
       <div>
-        <h1 className="font-bold text-3xl mobile:text-xl mobile:">Create an Account</h1>
+        <h1 className="font-bold text-3xl mobile:text-xl mobile:">
+          Create an Account
+        </h1>
         <p className="text-[#A3A3A3] font-normal mobile:text-sm">
           Create an NIDF Portal account
         </p>
@@ -148,18 +155,21 @@ const SignUp = () => {
         )}
         <p className="mx-auto font-normal text-base mobile:text-sm">
           Already have an account?
-          <Link to={LOGIN} className="text-[#1024A3] cursor-pointer mobile:text-sm">
+          <Link
+            to={LOGIN}
+            className="text-[#1024A3] cursor-pointer mobile:text-sm ml-2"
+          >
             Login
           </Link>
         </p>
         <button
           disabled={isSubmitting}
           type="submit"
-          className={`bg-[#17567E] rounded-md text-white px-20 py-3 mx-auto mt-3 ${
+          className={`bg-[#17567E] w-36 h-12 flex justify-center items-center rounded-md text-white mx-auto mt-3 ${
             isSubmitting ? "opacity-30" : ""
           }`}
         >
-          Register
+          {loading ? <ButtonLoader title="Registering" /> : "Register"}
         </button>
       </form>
     </div>
