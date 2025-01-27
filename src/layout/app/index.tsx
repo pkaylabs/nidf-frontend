@@ -297,7 +297,7 @@ export default function AppLayout() {
         </div>
 
         <div className="lg:pl-80 h-screen flex flex-col">
-          <div className="sticky top-0 z-40 flex h-20 shrink-0 items-center gap-x-4 bg-white pr-4 sm:gap-x-6 sm:pr-6 lg:pr-8">
+          <div className="sticky top-0 z-40 flex h-20 border-b shrink-0 items-center gap-x-4 bg-white pr-4 sm:gap-x-6 sm:pr-6 lg:pr-8">
             <button
               type="button"
               onClick={() => setSidebarOpen(true)}
