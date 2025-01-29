@@ -3,32 +3,9 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@800&family=Manrope:wght@200;300;400;500;600;700;800&family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&family=MuseoModerno:wght@400;500;600;700;800;900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Raleway:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap");
 
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-
-
-/* For WebKit browsers (Chrome, Safari) */
-.chatScrollbar::-webkit-scrollbar {
-  width: 5px;
-}
-
-.chatScrollbar::-webkit-scrollbar-thumb {
-  background-color: #cbd5e1; /* Set the color of the thumb */
-  border-radius: 5px; /* Optional: Add rounded corners to the thumb */
-}
-
-.chatScrollbar::-webkit-scrollbar-track {
-  width: 5px;
-  background-color: #fff;
-}
-
-/* Optional: Style the scrollbar on hover */
-.chatScrollbar::-webkit-scrollbar-thumb:hover {
-  background-color: #b4c8e3;
-}
 
 .select-no-outline:focus {
   outline: none !important;
@@ -64,10 +41,6 @@ html {
   scroll-behavior: smooth;
 }
 
-body {
-  overflow: auto; /* or overflow: auto; */
-}
-
 .rce-input:focus {
   outline: none !important;
   border: none !important;
@@ -79,7 +52,6 @@ body {
 
 body,
 .app {
-  font-family: "montserrat", sans-serif;
   @apply no-scrollbar bg-white text-gray-700;
 }
 
@@ -170,16 +142,6 @@ body,
 .rce-container-input {
   display: flex;
   align-items: center;
-}
-
-/* .react-datepicker__month-container {
-  
-} */
-
-@media screen and (max-width: 768px) {
-  .react-tel-input .country-list {
-    left: 40px !important;
-  }
 }
 
 @layer components {

@@ -3,7 +3,7 @@ import React, { ReactNode, useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Edit2, Eye, Trash } from "iconsax-react";
 import { useNavigate } from "react-location";
-import { APPLICATIONS } from "@/constants/page-path";
+import { APPLICATIONS, APPLY_SUPPORT } from "@/constants/page-path";
 
 const Applications = () => {
   const navigate = useNavigate();
@@ -99,9 +99,12 @@ const Applications = () => {
           </div>
           <div
             onClick={() =>
-              navigate({ to: `${APPLICATIONS}/${row["application id"]}`, search: {
-                status: row.status as string,
-              } })
+              navigate({
+                to: `${APPLICATIONS}/${row["application id"]}`,
+                search: {
+                  status: row.status as string,
+                },
+              })
             }
             className="cursor-pointer hover:bg-gray-50 p-1 rounded-full"
           >
@@ -126,6 +129,9 @@ const Applications = () => {
     <div className="p-5">
       <Table
         headers={headers}
+        showAddButton={true}
+        addButtonText="Apply For Support"
+        onAddButtonClick={() => navigate({ to: APPLY_SUPPORT })}
         rows={rows}
         renderRow={customRowRenderer}
         footer={<div>Pagination goes here</div>}

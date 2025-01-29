@@ -228,7 +228,7 @@ export default function AppLayout() {
                               )
                               ? "bg-gray-50 text-primary font-semibold"
                               : "text-[#324054] hover:bg-gray-50 hover:text-primary-600 font-medium",
-                            "group flex gap-x-3 rounded-xl px-2 py-3 text-base  leading-6 capitalize font-poppins"
+                            "group flex gap-x-3 rounded-xl px-2 py-4 text-base  leading-6 capitalize font-poppins"
                           )}
                         >
                           <item.icon
@@ -345,7 +345,10 @@ export default function AppLayout() {
 
                 {/* Profile dropdown */}
                 <Menu as="div" className="relative">
-                  <MenuButton className="-m-1.5 flex items-center p-1.5">
+                  <MenuButton
+                    
+                    className="-m-1.5 flex items-center p-1.5"
+                  >
                     <span className="sr-only">Open user menu</span>
                     <img
                       alt=""
@@ -375,7 +378,11 @@ export default function AppLayout() {
                       <MenuItem key={item.name}>
                         <Link
                           to={item.href}
-                          className={`block px-3 py-1 text-sm/6 ${idx === userNavigation.length - 1 ? "text-red" : "text-gray-900"}  data-[focus]:bg-gray-50 data-[focus]:outline-none`}
+                          className={`block px-3 py-1 text-sm/6 ${
+                            idx === userNavigation.length - 1
+                              ? "text-red"
+                              : "text-gray-900"
+                          }  data-[focus]:bg-gray-50 data-[focus]:outline-none`}
                         >
                           {item.name}
                         </Link>

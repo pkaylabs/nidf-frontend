@@ -5,6 +5,7 @@ import { LocationGenerics } from "./location";
 import Dashboard from "@/pages/dashboard";
 import {
   APPLICATIONS,
+  APPLY_SUPPORT,
   DASHBOARD,
   LOGIN,
   ONBOARDING,
@@ -25,6 +26,7 @@ import OtpVerification from "@/pages/auth/otp-verification";
 import AddProgressReport from "@/pages/progress/add";
 import AddRepayment from "@/pages/repayment/add";
 import ViewApplicationDetail from "@/pages/applications/actions/view";
+import ApplyForSupport from "@/pages/applications/support";
 
 export type RouteProps = Omit<Route, "children"> & {
   navigation?: boolean;
@@ -51,6 +53,13 @@ const routes: RouteProps[] = [
       {
         path: "/",
         element: <Applications />,
+        meta: {
+          layout: "App",
+        },
+      },
+      {
+        path: "/support",
+        element: <ApplyForSupport />,
         meta: {
           layout: "App",
         },
