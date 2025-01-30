@@ -31,6 +31,11 @@ const ApplyForSupport = () => {
       purposeForAid: "",
       progressDescription: "",
       amountRequested: 0,
+      expectedCompletionDate: "",
+      currentStatePic: "",
+      costEstimateFIle: "",
+      ownershipDoc: "",
+      invoices: "",
     },
     validationSchema: Yup.object().shape({
       churchName: Yup.string().required("Church name is required"),
@@ -44,6 +49,15 @@ const ApplyForSupport = () => {
         "Progress description is required"
       ),
       amountRequested: Yup.number().required("Amount requested is required"),
+      expectedCompletionDate: Yup.string().required(
+        "Expected completion date is required"
+      ),
+      currentStatePic: Yup.string().required(
+        "Current state picture is required"
+      ),
+      costEstimateFIle: Yup.string().required("Cost estimate file is required"),
+      ownershipDoc: Yup.string().required("Ownership document is required"),
+      invoices: Yup.string().required("Invoices are required"),
     }),
     onSubmit: (values) => {
       console.log("Form Submitted: ", values);
