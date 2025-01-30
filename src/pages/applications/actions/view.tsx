@@ -63,7 +63,7 @@ const ViewApplicationDetail = () => {
     { label: "Progress Reporting", component: <ProgressReportingComponent /> },
     { label: "Documents", component: <Documents data={status} /> },
   ];
-
+// 
   return (
     <main className="font-poppins p-5">
       <div className="flex items-center gap-x-4">

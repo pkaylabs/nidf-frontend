@@ -9,7 +9,6 @@ const ProgressReport = () => {
     <section className="font-poppins p-5 ">
       <div className="bg-white rounded-md p-6">
         <div className="flex justify-end mb-6">
-         
           <button
             onClick={() => navigate({ to: ADD_PROGRESS })}
             className="font-medium flex items-center space-x-2 bg-primary-500 text-lg text-white py-2.5 px-4 rounded-md hover:bg-primary-600 transition-all duration-150 ease-in-out "
@@ -44,7 +43,10 @@ const ProgressReport = () => {
                 </div>
               </div>
               <div className="flex items-center space-x-3">
-                <button className="font-poppins font-light w-40 h-10 flex justify-center items-center border border-[#324054] rounded-md text-[#324054] hover:bg-[#324054] hover:text-white transition-all duration-200 ease-in-out ">
+                <button
+                  onClick={() => navigate({ to: `/progress-report/${i}` })}
+                  className="font-poppins font-light w-40 h-10 flex justify-center items-center border border-[#324054] rounded-md text-[#324054] hover:bg-[#324054] hover:text-white transition-all duration-200 ease-in-out "
+                >
                   View Details
                 </button>
                 <button className="font-poppins font-light w-40 h-10 flex justify-center items-center border border-[#CE5347] rounded-md text-[#CE5347] hover:bg-[#CE5347] hover:text-white transition-all duratioin-200 ease-in-out ">

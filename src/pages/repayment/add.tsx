@@ -47,7 +47,7 @@ const AddRepayment = () => {
         <IoIosArrowRoundBack className="size-5" aria-hidden="true" />{" "}
         <span>Back to Repayments</span>
       </button>
-      <div className=" mb-5 p-10 bg-white rounded-md ">
+      <div className=" mb-5 p-8 bg-white rounded-md ">
         <p className="font-medium  text-black mb-3">Outstanding Loan Details</p>
         <div className="flex space-x-2 justify-between items-center ">
           {loan.map((loans, index) => (
@@ -60,8 +60,8 @@ const AddRepayment = () => {
           ))}
         </div>
       </div>
-      <div className="p-10 bg-white rounded-md ">
-        <div className="mt-5">
+      <div className="p-8 bg-white rounded-md ">
+        <div className="">
           <p className="font-medium text-lg text-black ">Submit Repayment</p>
           <p className="flex justify-between items-center w-full cursor-default text-gray-400 mt-1">
             Enter the details of your latest repayment

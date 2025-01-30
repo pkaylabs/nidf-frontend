@@ -8,8 +8,7 @@ import { ADD_REPAYMENT } from "@/constants/page-path";
 import { useNavigate } from "react-location";
 
 const Repayment = () => {
-  
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const headers = [{ name: "Status", value: "status" }];
 
@@ -109,10 +108,15 @@ const Repayment = () => {
                 </div>
               ))}
             </div>
-            <p className="font-light text-[#545454] mt-3">Ref: REF-12345</p>
+            <p className="font-light text-[#545454] mt-3">Ref: REF-12345</p>
           </div>
           <div className="flex items-center space-x-3">
-            <button className="font-poppins font-light w-40 h-10 flex justify-center items-center border border-[#324054] rounded-md text-[#324054] hover:bg-[#324054] hover:text-white transition-all duration-200 ease-in-out ">
+            <button
+              onClick={() =>
+                navigate({ to: `/repayment/${row["application id"]}` })
+              }
+              className="font-poppins font-light w-40 h-10 flex justify-center items-center border border-[#324054] rounded-md text-[#324054] hover:bg-[#324054] hover:text-white transition-all duration-200 ease-in-out "
+            >
               View Details
             </button>
             <button className="font-poppins font-light w-40 h-10 flex justify-center items-center border border-[#CE5347] rounded-md text-[#CE5347] hover:bg-[#CE5347] hover:text-white transition-all duratioin-200 ease-in-out ">

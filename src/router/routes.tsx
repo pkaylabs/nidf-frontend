@@ -27,6 +27,8 @@ import AddProgressReport from "@/pages/progress/add";
 import AddRepayment from "@/pages/repayment/add";
 import ViewApplicationDetail from "@/pages/applications/actions/view";
 import ApplyForSupport from "@/pages/applications/support";
+import ProgressReportDetail from "@/pages/progress/details";
+import RepaymentDetails from "@/pages/repayment/detail";
 
 export type RouteProps = Omit<Route, "children"> & {
   navigation?: boolean;
@@ -94,6 +96,13 @@ const routes: RouteProps[] = [
           layout: "App",
         },
       },
+      {
+        path: "/:id",
+        element: <ProgressReportDetail />,
+        meta: {
+          layout: "App",
+        },
+      },
     ],
   },
   {
@@ -113,6 +122,13 @@ const routes: RouteProps[] = [
       {
         path: "/add",
         element: <AddRepayment />,
+        meta: {
+          layout: "App",
+        },
+      },
+      {
+        path: "/:id",
+        element: <RepaymentDetails />,
         meta: {
           layout: "App",
         },
