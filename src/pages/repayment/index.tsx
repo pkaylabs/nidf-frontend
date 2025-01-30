@@ -113,7 +113,12 @@ const Repayment = () => {
           <div className="flex items-center space-x-3">
             <button
               onClick={() =>
-                navigate({ to: `/repayment/${row["application id"]}` })
+                navigate({
+                  to: `/repayment/${row["application id"]}`,
+                  search: {
+                    status: row.status,
+                  },
+                })
               }
               className="font-poppins font-light w-40 h-10 flex justify-center items-center border border-[#324054] rounded-md text-[#324054] hover:bg-[#324054] hover:text-white transition-all duration-200 ease-in-out "
             >

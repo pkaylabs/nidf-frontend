@@ -51,7 +51,7 @@ const AddRepayment = () => {
         <p className="font-medium  text-black mb-3">Outstanding Loan Details</p>
         <div className="flex space-x-2 justify-between items-center ">
           {loan.map((loans, index) => (
-            <div className="max-w-[241px] w-full border px-3 py-3 border-gray-200 rounded-md">
+            <div className="max-w-[241px] w-full border px-3 py-5 border-[#71839B] rounded-md">
               <p className="font-light text-sm text-black ">{loans.name}</p>
               <p className="font-medium text-2xl text-black mt-3">
                 {loans.value}
