@@ -2,8 +2,10 @@
 //  eslint-disable @typescript-eslint/no-explicit-any
 import { Outlet, Route, SearchPredicate } from "react-location";
 import { LocationGenerics } from "./location";
-import Dashboard from "@/pages/dashboard";
+
 import {
+  ADMIN_DASHBOARD,
+  ADMIN_LOGIN,
   APPLICATIONS,
   APPLY_SUPPORT,
   DASHBOARD,
@@ -15,20 +17,23 @@ import {
   RESET,
   SIGNUP,
 } from "@/constants/page-path";
-import Applications from "@/pages/applications";
-import Login from "@/pages/auth/login";
-import SignUp from "@/pages/auth/signup";
-import ProgressReport from "@/pages/progress";
-import Repayment from "@/pages/repayment";
-import Onboarding from "@/pages/auth/onboarding";
-import ResetPassword from "@/pages/auth/reset-password";
-import OtpVerification from "@/pages/auth/otp-verification";
-import AddProgressReport from "@/pages/progress/add";
-import AddRepayment from "@/pages/repayment/add";
-import ViewApplicationDetail from "@/pages/applications/actions/view";
-import ApplyForSupport from "@/pages/applications/support";
-import ProgressReportDetail from "@/pages/progress/details";
-import RepaymentDetails from "@/pages/repayment/detail";
+import Dashboard from "@/pages/client/dashboard";
+import Applications from "@/pages/client/applications";
+import ApplyForSupport from "@/pages/client/applications/support";
+import ViewApplicationDetail from "@/pages/client/applications/actions/view";
+import ProgressReport from "@/pages/client/progress";
+import AddProgressReport from "@/pages/client/progress/add";
+import ProgressReportDetail from "@/pages/client/progress/details";
+import Repayment from "@/pages/client/repayment";
+import AddRepayment from "@/pages/client/repayment/add";
+import RepaymentDetails from "@/pages/client/repayment/detail";
+import Onboarding from "@/pages/client/auth/onboarding";
+import OtpVerification from "@/pages/client/auth/otp-verification";
+import SignUp from "@/pages/client/auth/signup";
+import Login from "@/pages/client/auth/login";
+import ResetPassword from "@/pages/client/auth/reset-password";
+import AdminAuth from "@/pages/admin/auth";
+import AdminDashboard from "@/pages/admin/dashboard";
 
 export type RouteProps = Omit<Route, "children"> & {
   navigation?: boolean;
@@ -135,6 +140,24 @@ const routes: RouteProps[] = [
       },
     ],
   },
+
+  // Admin routes
+  {
+    path: ADMIN_LOGIN,
+    element: <AdminAuth />,
+    meta: {
+      layout: "Admin",
+    },
+  },
+  {
+    path: ADMIN_DASHBOARD,
+    element: <AdminDashboard />,
+    meta: {
+      layout: "Admin",
+    },
+  },
+
+  // Auth routes
   {
     path: ONBOARDING,
     element: <Onboarding />,
