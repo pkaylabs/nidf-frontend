@@ -63,7 +63,7 @@ const ViewApplicationDetail = () => {
     { label: "Progress Reporting", component: <ProgressReportingComponent /> },
     { label: "Documents", component: <Documents data={status} /> },
   ];
-
+// 
   return (
     <main className="font-poppins p-5">
       <div className="flex items-center gap-x-4">
@@ -72,7 +72,7 @@ const ViewApplicationDetail = () => {
           className="font-light flex items-center space-x-2 border-[0.5px] border-[#545454] bg-white text-black py-2.5 px-4 rounded-md transition-all duration-150 ease-in-out "
         >
           <IoIosArrowRoundBack className="size-5" aria-hidden="true" />{" "}
-          <span>Back to Progress</span>
+          <span>Back</span>
         </button>
         <h4 className="font-medium text-2xl text-[#252525] ">
           Aid Application Details

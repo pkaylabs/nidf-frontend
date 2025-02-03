@@ -24,6 +24,15 @@ import {
 import { useState } from "react";
 import { classNames } from "@/utils";
 import {
+  ADMIN_APPLICATIONS,
+  ADMIN_DASHBOARD,
+  ADMIN_DIBURSEMENT,
+  ADMIN_DISTRICTS,
+  ADMIN_NOTIFICATIONS,
+  ADMIN_PROGRESS,
+  ADMIN_REGIONS,
+  ADMIN_REPAYMENT,
+  ADMIN_USERS,
   APPLICATIONS,
   DASHBOARD,
   LOGIN,
@@ -38,28 +47,57 @@ import { TbLogout2 } from "react-icons/tb";
 const navigation = [
   {
     name: "Dashboard",
-    href: DASHBOARD,
+    href: ADMIN_DASHBOARD,
     icon: MdOutlineDashboard,
     target: "dashboard",
   },
   {
-    name: "My Applications",
-    href: APPLICATIONS,
+    name: "Applications",
+    href: ADMIN_APPLICATIONS,
     icon: MdOutlineCalendarMonth,
     target: "applications",
   },
   {
     name: "Progress Report",
-    href: PROGRESS,
+    href: ADMIN_PROGRESS,
     icon: AiOutlineClockCircle,
     target: "progress-report",
   },
-
   {
-    name: "Repayment Reconciliation",
-    href: REPAYMENT,
-    icon: BiDollar,
+    name: "Disbursement",
+    href: ADMIN_DIBURSEMENT,
+    icon: AiOutlineClockCircle,
+    target: "disbursement",
+  },
+  {
+    name: "Region Management",
+    href: ADMIN_REGIONS,
+    icon: AiOutlineClockCircle,
+    target: "region",
+  },
+  {
+    name: "District Management",
+    href: ADMIN_DISTRICTS,
+    icon: AiOutlineClockCircle,
+    target: "districts",
+  },
+  {
+    name: "Repayment Management",
+    href: ADMIN_REPAYMENT,
+    icon: AiOutlineClockCircle,
     target: "repayment",
+  },
+  {
+    name: "User Management",
+    href: ADMIN_USERS,
+    icon: AiOutlineClockCircle,
+    target: "users",
+  },
+  {
+    name: "Notifications",
+    href: ADMIN_NOTIFICATIONS,
+    icon: AiOutlineClockCircle,
+    target: "notifications",
   },
 ];
 
@@ -68,7 +106,7 @@ const userNavigation = [
   { name: "Logout", href: "#" },
 ];
 
-export default function AppLayout() {
+export default function AdminLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const currentPath = useLocation().current.pathname;
@@ -214,9 +252,9 @@ export default function AppLayout() {
               />
             </div>
             <nav className="flex flex-1 flex-col pt-8">
-              <ul role="list" className="flex flex-1 flex-col gap-y-7">
+              <ul role="list" className="flex flex-1 flex-col gap-y-5">
                 <li>
-                  <ul role="list" className="-mx-2 space-y-2">
+                  <ul role="list" className="-mx-2 space-y-1">
                     {navigation.map((item, index) => (
                       <li key={index}>
                         <Link
@@ -228,7 +266,7 @@ export default function AppLayout() {
                               )
                               ? "bg-gray-50 text-primary font-semibold"
                               : "text-[#324054] hover:bg-gray-50 hover:text-primary-600 font-medium",
-                            "group flex gap-x-3 rounded-xl px-2 py-4 text-base  leading-6 capitalize font-poppins"
+                            "group flex gap-x-3 rounded-xl px-2 py-4 text-base leading-6 capitalize font-poppins"
                           )}
                         >
                           <item.icon
@@ -316,16 +354,9 @@ export default function AppLayout() {
             />
 
             <div className="font-poppins flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
-              <div className="font-semibold text-[1.75rem] text-gray-900 flex-1 flex items-center">
-                {currentPath === DASHBOARD
-                  ? "Welcome Prince!"
-                  : currentPath.includes(APPLICATIONS)
-                  ? "My Applications"
-                  : currentPath.includes(PROGRESS)
-                  ? "Progress Report"
-                  : currentPath.includes(REPAYMENT)
-                  ? "Repayment Reconciliation"
-                  : "Welcome Prince"}
+              <div className="flex-1  flex items-center">
+                <input type="text" placeholder="Search Application ID, Name or Type"
+                 className="w-1/2 h-14 border rounded-md px-2 " />
               </div>
               <div className="flex items-center gap-x-4 lg:gap-x-6">
                 <button
@@ -345,10 +376,7 @@ export default function AppLayout() {
 
                 {/* Profile dropdown */}
                 <Menu as="div" className="relative">
-                  <MenuButton
-                    
-                    className="-m-1.5 flex items-center p-1.5"
-                  >
+                  <MenuButton className="-m-1.5 flex items-center p-1.5">
                     <span className="sr-only">Open user menu</span>
                     <img
                       alt=""
@@ -395,7 +423,7 @@ export default function AppLayout() {
           </div>
 
           <main className="font-poppins flex-1">
-            <div className="h-full pb-4 sm:pb-6 bg-[#EBEBEB] rounded-md">
+            <div className="h-full pb-4 sm:pb-6 bg-[#E9EEFF] rounded-md">
               <Outlet />
             </div>
           </main>

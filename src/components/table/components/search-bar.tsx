@@ -8,7 +8,7 @@ interface SearchBarProps {
 
 const SearchBar: React.FC<SearchBarProps> = ({ query, onChange }) => {
   return (
-    <div className="flex-1 flex items-center space-x-2 px-4 py-2.5 border border-[#71839B] rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+    <div className="flex-[0.8] flex items-center space-x-2 px-4 py-2.5 border border-[#71839B] rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
         <SearchNormal1 size="20" color="#71839B"/>
       <input
         type="text"

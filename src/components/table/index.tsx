@@ -100,12 +100,12 @@ const Table: React.FC<TableProps> = ({
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
     >
-      <div className="p-4 flex flex-col md:flex-row justify-between space-x-5 items-center rounded-md bg-white py-5 lg:px-14 ">
+      <div className="p-4 flex flex-col md:flex-row justify-between space-x-5 items-center rounded-md bg-white py-5 lg:px-5 ">
         {searchable && (
           <SearchBar query={searchQuery} onChange={setSearchQuery} />
         )}
         <div className="flex items-center justify-between flex-1 space-x-5">
-          {filters.map((filter) => (
+          {filters?.map((filter) => (
             <FilterDropdown
               key={filter.name}
               name={filter.name}
@@ -121,7 +121,7 @@ const Table: React.FC<TableProps> = ({
             onClick={onAddButtonClick}
             className="font-medium flex-[0.3] flex items-center justify-center space-x-3 bg-primary-500 text-lg text-white py-2.5 px-4 rounded-md hover:bg-primary-600 transition-all duration-150 ease-in-out "
           >
-            <span>+</span> <span> {addButtonText} </span>{" "}
+            <span>+</span> <span className="truncate"> {addButtonText} </span>{" "}
           </button>
         )}
       </div>

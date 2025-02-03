@@ -31,6 +31,7 @@ const ProgressReportingComponent = () => {
             className="border border-[#71839B] w-full h-36  rounded-md p-4 mt-2 text-base resize-none"
           ></textarea>
         </div>
+        
         <div className="mt-5">
           <label className="font-medium text-lg text-black">
             Upload Supporting Documents or Photos
