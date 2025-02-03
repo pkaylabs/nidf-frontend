@@ -43,6 +43,14 @@ import {
 import logo from "@/assets/images/logo.png";
 import { ArrowDown2 } from "iconsax-react";
 import { TbLogout2 } from "react-icons/tb";
+import { IoLogoAppleAr } from "react-icons/io5";
+import { GiProgression } from "react-icons/gi";
+import { IoCardOutline } from "react-icons/io5";
+import { PiTrainRegionalDuotone } from "react-icons/pi";
+import { GiStarCycle } from "react-icons/gi";
+import { BiSolidIdCard } from "react-icons/bi";
+import { RiUserSettingsLine } from "react-icons/ri";
+import { HiBell } from "react-icons/hi2";
 
 const navigation = [
   {
@@ -54,49 +62,49 @@ const navigation = [
   {
     name: "Applications",
     href: ADMIN_APPLICATIONS,
-    icon: MdOutlineCalendarMonth,
+    icon: IoLogoAppleAr,
     target: "applications",
   },
   {
     name: "Progress Report",
     href: ADMIN_PROGRESS,
-    icon: AiOutlineClockCircle,
+    icon: GiProgression,
     target: "progress-report",
   },
   {
     name: "Disbursement",
     href: ADMIN_DIBURSEMENT,
-    icon: AiOutlineClockCircle,
+    icon: IoCardOutline,
     target: "disbursement",
   },
   {
     name: "Region Management",
     href: ADMIN_REGIONS,
-    icon: AiOutlineClockCircle,
+    icon: PiTrainRegionalDuotone,
     target: "region",
   },
   {
     name: "District Management",
     href: ADMIN_DISTRICTS,
-    icon: AiOutlineClockCircle,
+    icon: GiStarCycle,
     target: "districts",
   },
   {
     name: "Repayment Management",
     href: ADMIN_REPAYMENT,
-    icon: AiOutlineClockCircle,
+    icon: BiSolidIdCard,
     target: "repayment",
   },
   {
     name: "User Management",
     href: ADMIN_USERS,
-    icon: AiOutlineClockCircle,
+    icon: RiUserSettingsLine,
     target: "users",
   },
   {
     name: "Notifications",
     href: ADMIN_NOTIFICATIONS,
-    icon: AiOutlineClockCircle,
+    icon: BellIcon,
     target: "notifications",
   },
 ];
@@ -355,8 +363,11 @@ export default function AdminLayout() {
 
             <div className="font-poppins flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
               <div className="flex-1  flex items-center">
-                <input type="text" placeholder="Search Application ID, Name or Type"
-                 className="w-1/2 h-14 border rounded-md px-2 " />
+                <input
+                  type="text"
+                  placeholder="Search Application ID, Name or Type"
+                  className="w-1/2 h-14 border rounded-md px-2 "
+                />
               </div>
               <div className="flex items-center gap-x-4 lg:gap-x-6">
                 <button

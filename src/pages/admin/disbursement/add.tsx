@@ -43,7 +43,7 @@ const AddDisbursement = () => {
   const { handleSubmit, handleChange, values, errors, handleBlur, touched } =
     formik;
 
-  const input = (
+   const input = (
     label: string,
     name: string,
     type: string = "text",

@@ -9,9 +9,11 @@ import {
   ADMIN_DIBURSEMENT,
   ADMIN_DISTRICTS,
   ADMIN_LOGIN,
+  ADMIN_NOTIFICATIONS,
   ADMIN_PROGRESS,
   ADMIN_REGIONS,
   ADMIN_REPAYMENT,
+  ADMIN_USERS,
   APPLICATIONS,
   APPLY_SUPPORT,
   DASHBOARD,
@@ -57,6 +59,10 @@ import Districts from "@/pages/admin/district";
 import AddDistrict from "@/pages/admin/district/add";
 import RegionDetails from "@/pages/admin/region/details";
 import DistrictDetails from "@/pages/admin/district/details";
+import Notifications from "@/pages/admin/notifications";
+import AddNotification from "@/pages/admin/notifications/add";
+import NotificationDetails from "@/pages/admin/notifications/details";
+import Users from "@/pages/admin/users";
 
 export type RouteProps = Omit<Route, "children"> & {
   navigation?: boolean;
@@ -344,6 +350,53 @@ const routes: RouteProps[] = [
       {
         path: "/:id",
         element: <DistrictDetails />,
+        meta: {
+          layout: "Admin",
+        },
+      },
+    ],
+  },
+  {
+    path: ADMIN_NOTIFICATIONS,
+    element: <Outlet />,
+    meta: {
+      layout: "Admin",
+    },
+    children: [
+      {
+        path: "/",
+        element: <Notifications />,
+        meta: {
+          layout: "Admin",
+        },
+      },
+
+      {
+        path: "/add",
+        element: <AddNotification />,
+        meta: {
+          layout: "Admin",
+        },
+      },
+      {
+        path: "/:id",
+        element: <NotificationDetails />,
+        meta: {
+          layout: "Admin",
+        },
+      },
+    ],
+  },
+  {
+    path: ADMIN_USERS,
+    element: <Outlet />,
+    meta: {
+      layout: "Admin",
+    },
+    children: [
+      {
+        path: "/",
+        element: <Users />,
         meta: {
           layout: "Admin",
         },
