@@ -6,7 +6,9 @@ import { LocationGenerics } from "./location";
 import {
   ADMIN_APPLICATIONS,
   ADMIN_DASHBOARD,
+  ADMIN_DIBURSEMENT,
   ADMIN_LOGIN,
+  ADMIN_PROGRESS,
   APPLICATIONS,
   APPLY_SUPPORT,
   DASHBOARD,
@@ -36,8 +38,14 @@ import ResetPassword from "@/pages/client/auth/reset-password";
 import AdminAuth from "@/pages/admin/auth";
 import AdminDashboard from "@/pages/admin/dashboard";
 import AdminApplications from "@/pages/admin/applications";
-import CreateApplication from "@/pages/admin/applications/create";
+
 import AdminApplicationDetails from "@/pages/admin/applications/actions/application-detail";
+import CreateApplication from "@/pages/admin/applications/support";
+import Disbursement from "@/pages/admin/disbursement";
+import AddDisbursement from "@/pages/admin/disbursement/add";
+import DisbursementDetails from "@/pages/admin/disbursement/detail";
+import AdminProgressReport from "@/pages/admin/progress";
+import AdminProgressReportDetails from "@/pages/admin/progress/detail";
 
 export type RouteProps = Omit<Route, "children"> & {
   navigation?: boolean;
@@ -177,7 +185,7 @@ const routes: RouteProps[] = [
       },
       {
         path: "/create",
-        element: <CreateApplication/>,
+        element: <CreateApplication />,
         meta: {
           layout: "Admin",
         },
@@ -185,6 +193,60 @@ const routes: RouteProps[] = [
       {
         path: "/:id",
         element: <AdminApplicationDetails />,
+        meta: {
+          layout: "Admin",
+        },
+      },
+    ],
+  },
+  {
+    path: ADMIN_PROGRESS,
+    element: <Outlet />,
+    meta: {
+      layout: "Admin",
+    },
+    children: [
+      {
+        path: "/",
+        element: <AdminProgressReport />,
+        meta: {
+          layout: "Admin",
+        },
+      },
+
+      {
+        path: "/:id",
+        element: <AdminProgressReportDetails />,
+        meta: {
+          layout: "Admin",
+        },
+      },
+    ],
+  },
+  {
+    path: ADMIN_DIBURSEMENT,
+    element: <Outlet />,
+    meta: {
+      layout: "Admin",
+    },
+    children: [
+      {
+        path: "/",
+        element: <Disbursement />,
+        meta: {
+          layout: "Admin",
+        },
+      },
+      {
+        path: "/add",
+        element: <AddDisbursement />,
+        meta: {
+          layout: "Admin",
+        },
+      },
+      {
+        path: "/:id",
+        element: <DisbursementDetails />,
         meta: {
           layout: "Admin",
         },

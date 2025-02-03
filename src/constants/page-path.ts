@@ -20,6 +20,7 @@ export const CREATE_APPLICATIONS = "/admin/applications/create";
 export const ADMIN_APPLICATION_DETAIL = "/admin/applications/:id";
 export const ADMIN_PROGRESS = "/admin/progress-report";
 export const ADMIN_DIBURSEMENT = "/admin/disbursement";
+export const ADD_DIBURSEMENT = "/admin/disbursement/add";
 export const ADMIN_REGIONS = "/admin/regions";
 export const ADMIN_DISTRICTS = "/admin/districts";
 export const ADMIN_REPAYMENT = "/admin/repayment";

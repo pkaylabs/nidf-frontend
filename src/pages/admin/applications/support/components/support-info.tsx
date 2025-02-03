@@ -8,7 +8,7 @@ interface ChurchInfoProps {
   formik: FormikProps<any>;
 }
 
-export const supportTypes = [
+const supportTypes = [
   { label: "Financial Support", value: "financial" },
   { label: "Material Support", value: "material" },
   { label: "Prayer Support", value: "prayer" },
