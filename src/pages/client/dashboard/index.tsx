@@ -88,7 +88,7 @@ const Dashboard = () => {
                 Total Amount Paid
               </p>
               <h2 className="font-semibold text-[1.75rem] text-[#252525] ">
-                GHS 5,000
+                GHS 7,500
               </h2>
             </div>
             <div className="flex-1 ">

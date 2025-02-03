@@ -84,7 +84,7 @@ const AddDisbursement = () => {
           <span>Back</span>
         </button>
         <h4 className="font-medium text-2xl text-[#252525] ">
-          Aid Application Details
+          Add New Disbursement
         </h4>
       </div>
 
