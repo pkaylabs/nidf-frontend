@@ -14,8 +14,8 @@ const options = [
 
 const loan = [
   { name: "Total Loan Amount", value: "GHS 50,000" },
-  { name: " Amount Repaid", value: "GHS 50,000" },
-  { name: "Outstanding Balance", value: "GHS 50,000" },
+  { name: " Amount Repaid", value: "GHS 30,000" },
+  { name: "Outstanding Balance", value: "GHS 20,000" },
   { name: "Next Repayment Due", value: "1/31/2025" },
 ];
 

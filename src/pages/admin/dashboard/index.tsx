@@ -18,7 +18,7 @@ const applicationOverview = [
 const finacialSummary = [
   {
     title: "Total Disbursed",
-    value: "GHS 50,000",
+    value: "GHS 350,000",
   },
   {
     title: "Total Repayments",
@@ -26,13 +26,13 @@ const finacialSummary = [
   },
   {
     title: "Outstanding",
-    value: "GHS 10,000",
+    value: "GHS 100,000",
   },
 ];
 
 const quickActions = [
   {
-    title: "Create Applicantions",
+    title: "Create Applications",
     bg: "bg-[#2B7BE4]",
     to: "/admin/applications/create",
   },
