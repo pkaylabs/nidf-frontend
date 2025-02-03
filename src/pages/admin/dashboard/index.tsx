@@ -38,7 +38,7 @@ const quickActions = [
     to: "/admin/applications/create",
   },
   {
-    title: "Create Disbursment",
+    title: "Create Disbursement",
     bg: "bg-[#40BB27]",
     to: ADD_DIBURSEMENT,
   },
