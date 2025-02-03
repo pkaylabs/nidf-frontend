@@ -16,6 +16,7 @@ export const ADD_REPAYMENT = "/repayment/add";
 export const ADMIN_LOGIN = "/admin/auth";
 export const ADMIN_DASHBOARD = "/admin/dashboard";
 export const ADMIN_APPLICATIONS = "/admin/applications";
+export const CREATE_APPLICATIONS = "/admin/applications/create";
 export const ADMIN_APPLICATION_DETAIL = "/admin/applications/:id";
 export const ADMIN_PROGRESS = "/admin/progress-report";
 export const ADMIN_DIBURSEMENT = "/admin/disbursement";

@@ -4,6 +4,7 @@ import { Outlet, Route, SearchPredicate } from "react-location";
 import { LocationGenerics } from "./location";
 
 import {
+  ADMIN_APPLICATIONS,
   ADMIN_DASHBOARD,
   ADMIN_LOGIN,
   APPLICATIONS,
@@ -34,6 +35,9 @@ import Login from "@/pages/client/auth/login";
 import ResetPassword from "@/pages/client/auth/reset-password";
 import AdminAuth from "@/pages/admin/auth";
 import AdminDashboard from "@/pages/admin/dashboard";
+import AdminApplications from "@/pages/admin/applications";
+import CreateApplication from "@/pages/admin/applications/create";
+import AdminApplicationDetails from "@/pages/admin/applications/actions/application-detail";
 
 export type RouteProps = Omit<Route, "children"> & {
   navigation?: boolean;
@@ -155,6 +159,37 @@ const routes: RouteProps[] = [
     meta: {
       layout: "Admin",
     },
+  },
+
+  {
+    path: ADMIN_APPLICATIONS,
+    element: <Outlet />,
+    meta: {
+      layout: "Admin",
+    },
+    children: [
+      {
+        path: "/",
+        element: <AdminApplications />,
+        meta: {
+          layout: "Admin",
+        },
+      },
+      {
+        path: "/create",
+        element: <CreateApplication/>,
+        meta: {
+          layout: "Admin",
+        },
+      },
+      {
+        path: "/:id",
+        element: <AdminApplicationDetails />,
+        meta: {
+          layout: "Admin",
+        },
+      },
+    ],
   },
 
   // Auth routes

@@ -423,7 +423,7 @@ export default function AdminLayout() {
           </div>
 
           <main className="font-poppins flex-1">
-            <div className="h-full pb-4 sm:pb-6 bg-[#EBEBEB] rounded-md">
+            <div className="h-full pb-4 sm:pb-6 bg-[#E9EEFF] rounded-md">
               <Outlet />
             </div>
           </main>
