@@ -4,7 +4,7 @@ import * as Yup from "yup";
 import { IoIosArrowRoundBack } from "react-icons/io";
 import { useNavigate } from "react-location";
 import SelectDropdown from "../applications/support/components/select";
-import { supportTypes } from "@/pages/client/applications/support/components/support-info";
+import { bankNames, supportTypes } from "@/pages/client/applications/support/components/support-info";
 
 const AddDisbursement = () => {
   const navigate = useNavigate();
@@ -123,7 +123,7 @@ const AddDisbursement = () => {
                 Bank Name
               </label>
               <SelectDropdown
-                options={supportTypes}
+                options={bankNames}
                 onChange={(value) => formik.setFieldValue("bankName", value)}
               />
               {errors.bankName && typeof errors.bankName === "string" && (
