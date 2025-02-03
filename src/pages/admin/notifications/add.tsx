@@ -125,12 +125,20 @@ const AddNotification = () => {
               <SelectDropdown
                 options={[
                   {
-                    label: "All Participants",
+                    label: "All Users",
                     value: "all",
                   },
                   {
-                    label: "Approved Churches",
-                    value: "approved",
+                    label: "All Churches",
+                    value: "churches",
+                  },
+                  {
+                    label: "Regional Overseers",
+                    value: "region",
+                  },
+                  {
+                    label: "District Overseers",
+                    value: "district",
                   },
                 ]}
                 onChange={(value) => formik.setFieldValue("recipients", value)}
@@ -187,8 +195,10 @@ const AddNotification = () => {
                 </label>
                 <SelectDropdown
                   options={[
-                    { label: "All Participants", value: "all" },
-                    { label: "Approved Churches", value: "approved" },
+                    { label: "Daily", value: "daily" },
+                    { label: "Weekly", value: "weekly" },
+                    { label: "Forthnightly", value: "forthnightly" },
+                    { label: "Monthly", value: "monthly" },
                   ]}
                   onChange={(value) => formik.setFieldValue("frequency", value)}
                 />
