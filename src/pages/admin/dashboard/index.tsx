@@ -1,3 +1,4 @@
+import { ADD_DIBURSEMENT, ADMIN_NOTIFICATIONS } from "@/constants/page-path";
 import React from "react";
 import { Link, useNavigate } from "react-location";
 
@@ -39,12 +40,12 @@ const quickActions = [
   {
     title: "Create Disbursment",
     bg: "bg-[#40BB27]",
-    to: "/admin/disbursment/create",
+    to: ADD_DIBURSEMENT,
   },
   {
     title: "Broadcast Notification",
     bg: "bg-[#E4AC2B]",
-    to: "/admin/notification",
+    to: `/${ADMIN_NOTIFICATIONS}/add`,
   },
 ];
 
