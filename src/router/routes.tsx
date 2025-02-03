@@ -7,8 +7,11 @@ import {
   ADMIN_APPLICATIONS,
   ADMIN_DASHBOARD,
   ADMIN_DIBURSEMENT,
+  ADMIN_DISTRICTS,
   ADMIN_LOGIN,
   ADMIN_PROGRESS,
+  ADMIN_REGIONS,
+  ADMIN_REPAYMENT,
   APPLICATIONS,
   APPLY_SUPPORT,
   DASHBOARD,
@@ -46,6 +49,14 @@ import AddDisbursement from "@/pages/admin/disbursement/add";
 import DisbursementDetails from "@/pages/admin/disbursement/detail";
 import AdminProgressReport from "@/pages/admin/progress";
 import AdminProgressReportDetails from "@/pages/admin/progress/detail";
+import AdminRepayment from "@/pages/admin/repayment";
+import AdminRepaymentDetails from "@/pages/admin/repayment/detail";
+import Regions from "@/pages/admin/region";
+import AddRegion from "@/pages/admin/region/add";
+import Districts from "@/pages/admin/district";
+import AddDistrict from "@/pages/admin/district/add";
+import RegionDetails from "@/pages/admin/region/details";
+import DistrictDetails from "@/pages/admin/district/details";
 
 export type RouteProps = Omit<Route, "children"> & {
   navigation?: boolean;
@@ -247,6 +258,92 @@ const routes: RouteProps[] = [
       {
         path: "/:id",
         element: <DisbursementDetails />,
+        meta: {
+          layout: "Admin",
+        },
+      },
+    ],
+  },
+  {
+    path: ADMIN_REPAYMENT,
+    element: <Outlet />,
+    meta: {
+      layout: "Admin",
+    },
+    children: [
+      {
+        path: "/",
+        element: <AdminRepayment />,
+        meta: {
+          layout: "Admin",
+        },
+      },
+
+      {
+        path: "/:id",
+        element: <AdminRepaymentDetails />,
+        meta: {
+          layout: "Admin",
+        },
+      },
+    ],
+  },
+  {
+    path: ADMIN_REGIONS,
+    element: <Outlet />,
+    meta: {
+      layout: "Admin",
+    },
+    children: [
+      {
+        path: "/",
+        element: <Regions />,
+        meta: {
+          layout: "Admin",
+        },
+      },
+
+      {
+        path: "/add",
+        element: <AddRegion />,
+        meta: {
+          layout: "Admin",
+        },
+      },
+      {
+        path: "/:id",
+        element: <RegionDetails />,
+        meta: {
+          layout: "Admin",
+        },
+      },
+    ],
+  },
+  {
+    path: ADMIN_DISTRICTS,
+    element: <Outlet />,
+    meta: {
+      layout: "Admin",
+    },
+    children: [
+      {
+        path: "/",
+        element: <Districts />,
+        meta: {
+          layout: "Admin",
+        },
+      },
+
+      {
+        path: "/add",
+        element: <AddDistrict />,
+        meta: {
+          layout: "Admin",
+        },
+      },
+      {
+        path: "/:id",
+        element: <DistrictDetails />,
         meta: {
           layout: "Admin",
         },

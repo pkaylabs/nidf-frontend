@@ -1,25 +1,29 @@
-import { Eye } from "iconsax-react";
+import { Edit2, Eye } from "iconsax-react";
 import React from "react";
 import { IoIosArrowRoundBack } from "react-icons/io";
-import { LiaFileAltSolid } from "react-icons/lia";
-import { RxDownload } from "react-icons/rx";
-import { useNavigate } from "react-location";
 import { IoCheckmark } from "react-icons/io5";
+import { LiaFileAltSolid } from "react-icons/lia";
+import { MdClose } from "react-icons/md";
+import { RxDownload } from "react-icons/rx";
+import { useNavigate, useSearch } from "react-location";
 
-
-const AdminProgressReportDetails = () => {
+const AdminRepaymentDetails = () => {
   const navigate = useNavigate();
+  const search = useSearch<any>();
+
+  const status = search.status;
+
   return (
     <main className="font-poppins p-5">
       <button
         onClick={() => navigate({ to: ".." })}
-        className="font-light flex items-center space-x-2 border-[0.5px] border-[#545454] bg-white text-black py-2.5 px-4 rounded-md transition-all duration-150 ease-in-out "
+        className="font-light flex items-center space-x-2 border-[0.5px] border-[#545454] bg-white text-black py-2.5 px-4 rounded-md transition-all duration-150 ease-in-out mb-5"
       >
         <IoIosArrowRoundBack className="size-5" aria-hidden="true" />{" "}
-        <span>Back to Progress List</span>
+        <span>Back to Repayment List</span>
       </button>
 
-      <section className="p-8 bg-white rounded-md mt-5">
+      <section className="p-10 bg-white rounded-md">
         <div className="border-[0.5px] border-[#71839B] p-8 rounded-md flex items-start justify-between gap-5 shadow ">
           <div className="">
             <h4 className="font-semibold text-xl text-[#454545] ">
@@ -29,20 +33,45 @@ const AdminProgressReportDetails = () => {
             <h2 className="font-semibold text-2xl text-[#252525] ">
               Church Hall Renovation
             </h2>
-            <p className="font-light text-[#545454] mt-6 mb-2">
-              Reporting Date
-            </p>
+            <p className="font-light text-[#545454] mt-6 mb-2">Payment Date</p>
             <h2 className="font-semibold text-2xl text-[#252525] ">
               Jan 15, 2025
             </h2>
+            <p className="font-light text-[#545454] mt-6 mb-2">Amount Paid</p>
+            <h2 className="font-semibold text-2xl text-[#252525] ">
+              GHS 5,000
+            </h2>
+            <p className="font-light text-[#545454] mt-6 mb-2">
+              Payment Reference
+            </p>
+            <h2 className="font-semibold text-2xl text-[#252525] ">
+              REF-12345
+            </h2>
           </div>
-          {/* <p className={`font-semibold text-xl text-[#2D9632] `}>Verified</p> */}
-        </div>
-        <div className="my-5 border-[0.5px] border-[#71839B] p-8 rounded-md shadow ">
-          <h5 className="font-medium text-lg mb-5">Progress Description</h5>
-          <h4 className="font-medium text-xl text-[#545454] ">
-            Roofing completed, electrical wiring underway.
-          </h4>
+
+          <div className="flex flex-col justify-between h-96">
+            <p
+              className={`font-semibold text-xl ${
+                status === "Reconciled" ? "text-[#2D9632]" : "text-[#AD6915]"
+              }  `}
+            >
+              {" "}
+              {status}{" "}
+            </p>
+            <div className="">
+              <>
+                <button className="w-64 h-11 flex justify-center items-center space-x-3 bg-[#2D9632] rounded-md  text-[#FEFEFE] text-lg mb-5 ">
+                  <IoCheckmark className="size-5" aria-hidden="true" />
+                  <span>Approve Appication</span>
+                </button>
+
+                <button className="w-64 h-11 flex justify-center items-center space-x-3 bg-[#F75656] rounded-md  text-[#FEFEFE] text-lg  ">
+                  <MdClose className="size-5" aria-hidden="true" />
+                  <span>Reject Appication</span>
+                </button>
+              </>
+            </div>
+          </div>
         </div>
 
         <div className="my-5 border-[0.5px] border-[#71839B] p-8 rounded-md shadow ">
@@ -84,14 +113,16 @@ const AdminProgressReportDetails = () => {
         </div>
 
         <div className="flex justify-end ">
-          <button className="w-48 h-14 rounded-md bg-primary-50 flex justify-center items-center gap-3 text-white font-medium hover:bg-primary-100 transition-all duration-150 ease-in-out ">
-          <IoCheckmark className="size-6" aria-hidden="true" />
-            <span>Verify Report</span>
-          </button>
+          {/* {status !== "Reconciled" && ( */}
+            <button className="font-medium bg-[#E0E0E0] flex items-center gap-2 px-12 py-3 rounded-md text-[#737373] text-lg hover:bg-primary-100 transition-all duration-150 ease-in-out">
+              <IoCheckmark size="22" color="#737373" />
+              <span className="">#737373</span>
+            </button>
+        {/* //   )} */}
         </div>
       </section>
     </main>
   );
 };
 
-export default AdminProgressReportDetails;
+export default AdminRepaymentDetails;

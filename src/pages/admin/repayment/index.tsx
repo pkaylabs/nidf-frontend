@@ -1,33 +1,28 @@
 import Table from "@/components/table";
 import React, { ReactNode, useState } from "react";
-import { useNavigate } from "react-location";
 import { motion } from "framer-motion";
+import { useNavigate } from "react-location";
 import { LiaFileAltSolid } from "react-icons/lia";
 
-const AdminProgressReport = () => {
+const AdminRepayment = () => {
   const navigate = useNavigate();
 
   const headers = [{ name: "Status", value: "status" }];
 
   const rows = [
     {
-      id: 1,
+      "application id": "APP-12345",
       project: "Church Hall Renovation",
-      description: "Roofing completed, electrical wiring underway.",
-
-      status: "Completed",
+      category: "Emergency Support",
+      "submitted date": "Jan 15, 2025",
+      status: "Reconciled",
     },
     {
-      id: 2,
+      "application id": "BPP-12345",
       project: "Community Center Project",
-      description: "Foundation laid, walls raised.",
+      category: "Aid",
+      "submitted date": "Jan 15, 2025",
       status: "Pending",
-    },
-    {
-      id: 3,
-      project: "Church Hall Renovation",
-      description: "Roofing completed, electrical wiring underway.",
-      status: "Completed",
     },
   ];
 
@@ -48,9 +43,20 @@ const AdminProgressReport = () => {
             <h4 className="font-semibold text-xl text-[#454545] ">
               {row.project}
             </h4>
-            <p className="font-light text-[#545454] my-3">Jan 15, 2025</p>
+            <p className="font-light text-[#545454] my-3">
+              Payment Date: Jan 15, 2025
+            </p>
             <h6 className="font-medium text-lg text-[#454545] mb-3">
-              {row.description}
+              GHS 5,000
+            </h6>
+            <h6
+              className={`font-semibold text-lg ${
+                row.status === "Reconciled"
+                  ? "text-[#2D9632]"
+                  : "text-[#AD6915]"
+              }  mb-3`}
+            >
+              {row.status}
             </h6>
             <div className="flex items-center space-x-4">
               {[1, 2].map((_, i) => (
@@ -65,11 +71,17 @@ const AdminProgressReport = () => {
                 </div>
               ))}
             </div>
+            <p className="font-light text-[#545454] mt-3">Ref: REF-12345</p>
           </div>
           <div className="flex items-center space-x-3">
             <button
               onClick={() =>
-                navigate({ to: `admin/progress-report/${row.id}` })
+                navigate({
+                  to: `admin/repayment/${row["application id"]}`,
+                  search: {
+                    status: row.status,
+                  },
+                })
               }
               className="font-poppins font-light w-40 h-10 flex justify-center items-center border border-[#324054] rounded-md text-[#324054] hover:bg-[#324054] hover:text-white transition-all duration-200 ease-in-out "
             >
@@ -94,13 +106,13 @@ const AdminProgressReport = () => {
         footer={<div>Pagination goes here</div>}
         maxRows={5}
         loading={loading}
-        searchable
-        searchableFields={["project"]}
+        searchable={true}
+        searchableFields={["application id", "project"]}
         filters={[
           { name: "project", fields: [] },
           {
             name: "status",
-            fields: ["Completed", "Pending"],
+            fields: ["Reconciled", "Pending"],
           },
         ]}
       />
@@ -108,4 +120,4 @@ const AdminProgressReport = () => {
   );
 };
 
-export default AdminProgressReport;
+export default AdminRepayment;

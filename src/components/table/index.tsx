@@ -105,7 +105,7 @@ const Table: React.FC<TableProps> = ({
           <SearchBar query={searchQuery} onChange={setSearchQuery} />
         )}
         <div className="flex items-center justify-between flex-1 space-x-5">
-          {filters.map((filter) => (
+          {filters?.map((filter) => (
             <FilterDropdown
               key={filter.name}
               name={filter.name}
