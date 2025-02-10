@@ -1,31 +1,46 @@
-import Table from '@/components/table';
-import { ADMIN_DISTRICTS } from '@/constants/page-path';
-import { Edit2, Trash } from 'iconsax-react';
-import React, { ReactNode, useState } from 'react'
-import { useNavigate } from 'react-location';
+import Table from "@/components/table";
+import { ADMIN_DISTRICTS } from "@/constants/page-path";
+import { Edit2, Eye, Trash } from "iconsax-react";
+import React, { ReactNode, useEffect, useState } from "react";
+import { useNavigate } from "react-location";
 import { motion } from "framer-motion";
 
 const Districts = () => {
   const navigate = useNavigate();
 
-  const headers = [{ name: "Name", value: "name" }];
+  const headers = [
+    { name: "District Name", value: "district name" },
+    { name: "Region", value: "regions" },
+    { name: "Number of Churches", value: "number of churches" },
+    { name: "District Head", value: "district head" },
+    { name: "Action", value: "action" },
+  ];
 
   const rows = [
     {
-      name: "Tema District",
-      districts: "20",
-      churches: "12",
+      "district name": "Adenta District",
+      regions: "Greater Accra",
+      "number of churches": "25",
+      "district head": "Rev. John Mensah",
     },
     {
-      name: "Kpone District",
-      districts: "20",
-      churches: "12",
+      "district name": "Adenta District",
+      regions: "Northern",
+      "number of churches": "50",
+      "district head": "Rev. John Mensah",
     },
     {
-      name: "Volta District",
-      districts: "20",
-      churches: "12",
+      "district name": "Adenta District",
+      regions: "Ashanti",
+      "number of churches": "89",
+      "district head": "Rev. John Mensah",
     },
+    // {
+    //   "district name": "Adenta District",
+    //   region: "",
+    //   "number of churches": "566",
+    //   "district head": "Rev. John Mensah",
+    // },
   ];
 
   const customRowRenderer = (
@@ -39,87 +54,94 @@ const Districts = () => {
       transition={{ delay: index * 0.05 }}
       className="font-poppins border-b text-lg  text-black  border-gray-200 hover:bg-gray-100 transition-all duration-150 ease-in-out"
     >
-      <td className="px-4 py-3 ">
-        <div className="flex justify-between items-center space-x-4 border-[0.5px] border-[#71839B] rounded-md shadow-sm p-6 mb-5">
-          <div className="">
-            <h4 className="font-semibold text-xl text-[#454545] ">
-              {row.name}
-            </h4>
-            <div className="flex gap-2 items-center">
-              <p className="font-light text-[#545454] my-3">
-                {row.districts} Suburbs
-              </p>
-              ·
-              <p className="font-light text-[#545454] my-3">
-                {row.churches} Churches
-              </p>
-            </div>
-          </div>
-          <div className="flex items-center space-x-3">
-            <button
-              onClick={() =>
-                navigate({
-                  to: `/admin/districts/${row.name}`,
-                  search: {
-                    name: row.name,
-                    districts: row.districts,
-                    churches: row.churches
-                  },
-                })
-              }
-              className="font-poppins font-light w-40 h-12 flex justify-center items-center border border-[#324054] rounded-md text-[#324054] hover:bg-[#324054] hover:text-white transition-all duration-200 ease-in-out "
-            >
-              View Details
-            </button>
-            <button
-              onClick={() =>
-                navigate({})
-              }
-              className="font-poppins font-light w-12 h-12 flex justify-center items-center border border-[#324054] rounded-md text-[#324054] hover:bg-[#324054] hover:text-white transition-all duration-200 ease-in-out "
-            >
-              <Edit2 size="24" color="#324054" />
-            </button>
-            <button
-              onClick={() =>
-                navigate({})
-              }
-              className="font-poppins font-light w-12 h-12 flex justify-center text-white items-center border border-[#CE5347] bg-[#CE5347] rounded-md   transition-all duration-200 ease-in-out "
-            >
-              <Trash size="24" color="#FFF" />
-            </button>
-          </div>
+      <td className="px-4 py-3 ">{row["district name"]}</td>
+      <td className="px-4 py-3 ">{row.regions}</td>
+      <td className="px-4 py-3">{row["number of churches"]}</td>
+      <td className="px-4 py-3 ">{row["district head"]}</td>
+
+      <td className="px-4 py-4 ">
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() =>
+              navigate({
+                to: `${ADMIN_DISTRICTS}/${row["district name"]}`,
+                search: {
+                  status: row.status as string,
+                },
+              })
+            }
+            className={` `}
+          >
+            <Edit2 size="20" color="#545454" />
+          </button>
+          <button
+            onClick={() =>
+              navigate({
+                to: `${ADMIN_DISTRICTS}/${row["district name"]}`,
+                search: {
+                  name: row["district name"] as string,
+                  region: row.regions as string,
+                  churches: row["number of churches"] as string,
+                },
+              })
+            }
+            className={` `}
+          >
+            <Eye size="20" color="#545454" />
+          </button>
+          <button onClick={() => {}} className={` `}>
+            <Trash size="20" color="#CE5347" />
+          </button>
         </div>
       </td>
     </motion.tr>
   );
 
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const timeout = setTimeout(() => setLoading(false), 3000); // Simulating a 3-second data load
+    return () => clearTimeout(timeout);
+  }, []);
 
   return (
-    <div className="p-5">
+    <div className="p-5 h-full ">
       <Table
-        displayHeader={false}
-        showAddButton={true}
-        addButtonText="Add New Region"
-        onAddButtonClick={() => navigate({ to: `${ADMIN_DISTRICTS}/add` })}
         headers={headers}
+        showAddButton={true}
+        addButtonText="Add New District"
+        onAddButtonClick={() => navigate({ to: `/${ADMIN_DISTRICTS}/add` })}
         rows={rows}
         renderRow={customRowRenderer}
         footer={<div>Pagination goes here</div>}
         maxRows={5}
         loading={loading}
-        searchable={true}
-        searchableFields={["name"]}
-        //   filters={[
-        //     { name: "project", fields: [] },
-        //     {
-        //       name: "status",
-        //       fields: ["Reconciled", "Pending"],
-        //     },
-        //   ]}
+        searchableFields={["district name"]}
+        filters={[
+          {
+            name: "regions",
+            fields: [
+              "Greater Accra",
+              "Ashanti",
+              "Northern",
+              "Western",
+              "Eastern",
+              "Central",
+              "Volta",
+              "Oti",
+              "Upper East",
+              "Upper West",
+              "Bono",
+              "Bono East",
+              "Ahafo",
+              "Savannah",
+              "North East",
+            ],
+          },
+        ]}
       />
     </div>
   );
-}
+};
 
-export default Districts
+export default Districts;
