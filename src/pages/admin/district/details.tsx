@@ -17,7 +17,7 @@ const DistrictDetails = () => {
     setActiveTab(index);
   };
 
-  const { name, districts, churches } = search;
+  const { name, churches, region } = search;
 
   const tabs = [
     { label: "Churches", component: <Churches /> },
@@ -26,20 +26,20 @@ const DistrictDetails = () => {
 
   const churchData = [
     {
-      label: "Region Name",
+      label: "District Name ",
       value: name,
     },
     {
-      label: "Number Of Suburbs",
-      value: districts,
+      label: "Region",
+      value: region,
     },
     {
       label: "Number Of Churches",
       value: churches,
     },
     {
-      label: "Created By",
-      value: "Admin Sarah",
+      label: "District Head",
+      value: "Rev. John Mensah",
     },
   ];
 

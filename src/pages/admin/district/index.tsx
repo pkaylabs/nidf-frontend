@@ -5,7 +5,6 @@ import React, { ReactNode, useEffect, useState } from "react";
 import { useNavigate } from "react-location";
 import { motion } from "framer-motion";
 
-
 const Districts = () => {
   const navigate = useNavigate();
 
@@ -59,49 +58,40 @@ const Districts = () => {
       <td className="px-4 py-3 ">{row.regions}</td>
       <td className="px-4 py-3">{row["number of churches"]}</td>
       <td className="px-4 py-3 ">{row["district head"]}</td>
-     
+
       <td className="px-4 py-4 ">
         <div className="flex items-center gap-3">
-        <button
-          onClick={() =>
-            navigate({
-              to: `${ADMIN_DISTRICTS}/${row["district name"]}`,
-              search: {
-                status: row.status as string,
-              },
-            })
-          }
-          className={` `}
-        >
-          <Edit2 size="20" color="#545454" />
-        </button>
-        <button
-          onClick={() =>
-            navigate({
-              to: `${ADMIN_DISTRICTS}/${row["district name"]}`,
-              search: {
-                status: row.status as string,
-              },
-            })
-          }
-          className={` `}
-        >
-          <Eye size="20" color="#545454" />
-        </button>
-        <button
-          onClick={() =>
-            navigate({
-              to: `${ADMIN_DISTRICTS}/${row["district name"]}`,
-              search: {
-                status: row.status as string,
-              },
-            })
-          }
-          className={` `}
-        >
-          <Trash size="20" color="#CE5347" />
-        </button>
-        
+          <button
+            onClick={() =>
+              navigate({
+                to: `${ADMIN_DISTRICTS}/${row["district name"]}`,
+                search: {
+                  status: row.status as string,
+                },
+              })
+            }
+            className={` `}
+          >
+            <Edit2 size="20" color="#545454" />
+          </button>
+          <button
+            onClick={() =>
+              navigate({
+                to: `${ADMIN_DISTRICTS}/${row["district name"]}`,
+                search: {
+                  name: row["district name"] as string,
+                  region: row.regions as string,
+                  churches: row["number of churches"] as string,
+                },
+              })
+            }
+            className={` `}
+          >
+            <Eye size="20" color="#545454" />
+          </button>
+          <button onClick={() => {}} className={` `}>
+            <Trash size="20" color="#CE5347" />
+          </button>
         </div>
       </td>
     </motion.tr>
@@ -129,7 +119,6 @@ const Districts = () => {
         searchableFields={["district name"]}
         filters={[
           { name: "regions", fields: ["Greater Accra", "Ashanti", "Northern"] },
-          
         ]}
       />
     </div>
