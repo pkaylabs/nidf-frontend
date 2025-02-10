@@ -95,7 +95,7 @@ const Table: React.FC<TableProps> = ({
 
   return (
     <motion.div
-      className="w-full overflow-hidden "
+      className="w-full h-full overflow-hidden"
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}

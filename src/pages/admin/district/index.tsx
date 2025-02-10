@@ -105,7 +105,7 @@ const Districts = () => {
   }, []);
 
   return (
-    <div className="p-5">
+    <div className="p-5 h-full ">
       <Table
         headers={headers}
         showAddButton={true}
@@ -118,7 +118,26 @@ const Districts = () => {
         loading={loading}
         searchableFields={["district name"]}
         filters={[
-          { name: "regions", fields: ["Greater Accra", "Ashanti", "Northern"] },
+          {
+            name: "regions",
+            fields: [
+              "Greater Accra",
+              "Ashanti",
+              "Northern",
+              "Western",
+              "Eastern",
+              "Central",
+              "Volta",
+              "Oti",
+              "Upper East",
+              "Upper West",
+              "Bono",
+              "Bono East",
+              "Ahafo",
+              "Savannah",
+              "North East",
+            ],
+          },
         ]}
       />
     </div>
