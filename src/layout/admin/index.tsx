@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { Link, Outlet, useLocation } from "react-location";
+import { Link, Outlet, useLocation, useNavigate } from "react-location";
 import { MdOutlineDashboard } from "react-icons/md";
 import { MdOutlineCalendarMonth } from "react-icons/md";
 import { AiOutlineClockCircle } from "react-icons/ai";
@@ -116,6 +116,7 @@ const userNavigation = [
 
 export default function AdminLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const navigate = useNavigate();
 
   const currentPath = useLocation().current.pathname;
 
@@ -371,6 +372,7 @@ export default function AdminLayout() {
               </div>
               <div className="flex items-center gap-x-4 lg:gap-x-6">
                 <button
+                  onClick={() => navigate({ to: ADMIN_NOTIFICATIONS })}
                   type="button"
                   className="relative -m-2.5 p-2 bg-gray-100 rounded-full text-gray-400 hover:text-gray-500"
                 >
