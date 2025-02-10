@@ -68,7 +68,8 @@ const ApplyForSupport = () => {
     if (activeStep < steps.length - 1) {
       setActiveStep((prev) => prev + 1);
     } else {
-      formik.handleSubmit();
+      // formik.handleSubmit();
+      navigate({ to: ".." });
     }
   };
 

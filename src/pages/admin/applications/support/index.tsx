@@ -61,6 +61,7 @@ const CreateApplication = () => {
     }),
     onSubmit: (values) => {
       console.log("Form Submitted: ", values);
+      
     },
   });
 
@@ -68,7 +69,8 @@ const CreateApplication = () => {
     if (activeStep < steps.length - 1) {
       setActiveStep((prev) => prev + 1);
     } else {
-      formik.handleSubmit();
+      // formik.handleSubmit();
+      navigate({ to: ".." });
     }
   };
 
@@ -91,7 +93,7 @@ const CreateApplication = () => {
           className="font-light flex items-center space-x-2 border-[0.5px] border-[#545454] bg-white text-black py-2.5 px-4 rounded-md transition-all"
         >
           <IoIosArrowRoundBack className="size-5" />
-          <span>Back to Application Details</span>
+          <span>Back to Application</span>
         </button>
         <h4 className="font-medium text-2xl text-[#252525]">
           Apply For Support
