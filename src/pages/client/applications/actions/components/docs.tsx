@@ -1,12 +1,14 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { Eye, Trash } from "iconsax-react";
+import PDFModal from "./pdf-modal";
 
 interface DocumentsProps {
   data: any;
 }
 
 const Documents = ({ data }: DocumentsProps) => {
+  const [openPDFModal, setOpenPDFModal] = React.useState(false);
   return (
     <section className="font-poppins px-4 py-5">
       <h4 className="font-medium text-lg text-[#454545] mb-5">Documents</h4>
@@ -38,7 +40,9 @@ const Documents = ({ data }: DocumentsProps) => {
             <td className="w-[35%] py-3  text-lg text-black">
               Cost Estimate Document.pdf
             </td>
-            <td className="w-[25%] flex-1 py-3 text-lg text-black ">Jan 15, 2025</td>
+            <td className="w-[25%] flex-1 py-3 text-lg text-black ">
+              Jan 15, 2025
+            </td>
             <td className="w-[25%] py-3 text-lg text-black ">
               <p
                 className={`w-fit text-[#F5F5F5] text-base py-1 px-5 rounded-md text-center ${
@@ -53,7 +57,7 @@ const Documents = ({ data }: DocumentsProps) => {
             <td className="w-[10%] py-3 text-lg text-black">
               <div className="flex items-center space-x-3">
                 <div
-                  onClick={() => {}}
+                  onClick={() => setOpenPDFModal(true)}
                   className="cursor-pointer hover:bg-gray-50 p-1 rounded-full"
                 >
                   <Eye size="22" color="#545454" />
@@ -66,6 +70,8 @@ const Documents = ({ data }: DocumentsProps) => {
           </tr>
         </tbody>
       </motion.table>
+
+      <PDFModal open={openPDFModal} setOpen={setOpenPDFModal} />
     </section>
   );
 };

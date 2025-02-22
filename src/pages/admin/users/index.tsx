@@ -19,11 +19,11 @@ const Users = () => {
   const navigate = useNavigate();
 
   const headers = [
-    { name: "User ID", value: "user id" },
     { name: "Name", value: "name" },
+    { name: "Type", value: "type" },
     { name: "Email", value: "email" },
     { name: "Phone", value: "phone" },
-    { name: "Type", value: "type" },
+    { name: "Status", value: "status" },
     { name: "Action", value: "action" },
   ];
 
@@ -34,6 +34,7 @@ const Users = () => {
       email: "prince@gmail.com",
       phone: "024567890",
       type: "Admin User",
+      status: "Active",
     },
     {
       "user id": "APP-12346",
@@ -41,6 +42,7 @@ const Users = () => {
       email: "kwame.mensah@gmail.com",
       phone: "024567891",
       type: "Church User",
+      status: "Inactive",
     },
     {
       "user id": "APP-12347",
@@ -48,6 +50,7 @@ const Users = () => {
       email: "abena.boateng@gmail.com",
       phone: "024567892",
       type: "Finance User",
+      status: "Active",
     },
     {
       "user id": "APP-12348",
@@ -55,6 +58,7 @@ const Users = () => {
       email: "kofi.asante@gmail.com",
       phone: "024567893",
       type: "Admin User",
+      status: "Inactive",
     },
     {
       "user id": "APP-12349",
@@ -62,6 +66,7 @@ const Users = () => {
       email: "ama.agyemang@gmail.com",
       phone: "024567894",
       type: "Super User",
+      status: "Active",
     },
     {
       "user id": "APP-12350",
@@ -69,6 +74,7 @@ const Users = () => {
       email: "yaw.owusu@gmail.com",
       phone: "024567895",
       type: "Church User",
+      status: "Inactive",
     },
     {
       "user id": "APP-12351",
@@ -76,6 +82,7 @@ const Users = () => {
       email: "adwoa.opoku@gmail.com",
       phone: "024567896",
       type: "Finance User",
+      status: "Active",
     },
     {
       "user id": "APP-12352",
@@ -83,6 +90,7 @@ const Users = () => {
       email: "kojo.addo@gmail.com",
       phone: "024567897",
       type: "Admin User",
+      status: "Inactive",
     },
     {
       "user id": "APP-12353",
@@ -90,6 +98,7 @@ const Users = () => {
       email: "esi.adjei@gmail.com",
       phone: "024567898",
       type: "Church User",
+      status: "Active",
     },
     {
       "user id": "APP-12354",
@@ -97,6 +106,7 @@ const Users = () => {
       email: "mensah.agyapong@gmail.com",
       phone: "024567899",
       type: "Finance User",
+      status: "Inactive",
     },
   ];
 
@@ -111,21 +121,18 @@ const Users = () => {
       transition={{ delay: index * 0.05 }}
       className="font-poppins border-b text-lg  text-black  border-gray-200 hover:bg-gray-100 transition-all duration-150 ease-in-out"
     >
-      <td className="px-4 py-3 ">{row["user id"]}</td>
       <td className="px-4 py-3 ">{row.name}</td>
+      <td className="px-4 py-3 ">{row.type}</td>
       <td className="px-4 py-3">{row.email}</td>
       <td className="px-4 py-3 ">{row.phone}</td>
       <td className="px-4 py-3 ">
-        {row.type}
-        {/* <p
-          className={`text-[#F5F5F5] text-base py-1 rounded-md text-center ${
-            row.status === "Approved" ? "bg-[#2D9632]" : ""
-          } ${row.status === "Pending" ? "bg-[#71839B]" : ""} ${
-            row.status === "Rejected" ? "bg-[#F75656]" : ""
-          } `}
+        <p
+          className={` text-base py-1 rounded-md text-center ${
+            row.status === "Active" ? "bg-[#2D9632] bg-opacity-40 text-[#2D9632] " : ""
+          } ${row.status === "Inactive" ? "bg-[#CE5347] bg-opacity-40 text-[#CE5347] " : ""}  `}
         >
           {row.status}
-        </p> */}
+        </p>
       </td>
       <td className="px-4 py-4 ">
         <div className="flex items-center gap-3">
