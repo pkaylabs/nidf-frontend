@@ -84,7 +84,7 @@ const navigation = [
     target: "region",
   },
   {
-    name: "District Management",
+    name: "Division Management",
     href: ADMIN_DISTRICTS,
     icon: GiStarCycle,
     target: "districts",

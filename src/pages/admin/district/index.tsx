@@ -9,31 +9,31 @@ const Districts = () => {
   const navigate = useNavigate();
 
   const headers = [
-    { name: "District Name", value: "district name" },
+    { name: "Division Name", value: "division name" },
     { name: "Region", value: "regions" },
     { name: "Number of Churches", value: "number of churches" },
-    { name: "District Head", value: "district head" },
+    { name: "Division Head", value: "division head" },
     { name: "Action", value: "action" },
   ];
 
   const rows = [
     {
-      "district name": "Adenta District",
+      "division name": "Adenta District",
       regions: "Greater Accra",
       "number of churches": "25",
-      "district head": "Rev. John Mensah",
+      "division head": "Rev. John Mensah",
     },
     {
-      "district name": "Adenta District",
+      "division name": "Adenta District",
       regions: "Northern",
       "number of churches": "50",
-      "district head": "Rev. John Mensah",
+      "division head": "Rev. John Mensah",
     },
     {
-      "district name": "Adenta District",
+      "division name": "Adenta District",
       regions: "Ashanti",
       "number of churches": "89",
-      "district head": "Rev. John Mensah",
+      "division head": "Rev. John Mensah",
     },
     // {
     //   "district name": "Adenta District",
@@ -54,17 +54,17 @@ const Districts = () => {
       transition={{ delay: index * 0.05 }}
       className="font-poppins border-b text-lg  text-black  border-gray-200 hover:bg-gray-100 transition-all duration-150 ease-in-out"
     >
-      <td className="px-4 py-3 ">{row["district name"]}</td>
+      <td className="px-4 py-3 ">{row["division name"]}</td>
       <td className="px-4 py-3 ">{row.regions}</td>
       <td className="px-4 py-3">{row["number of churches"]}</td>
-      <td className="px-4 py-3 ">{row["district head"]}</td>
+      <td className="px-4 py-3 ">{row["division head"]}</td>
 
       <td className="px-4 py-4 ">
         <div className="flex items-center gap-3">
           <button
             onClick={() =>
               navigate({
-                to: `${ADMIN_DISTRICTS}/${row["district name"]}`,
+                to: `${ADMIN_DISTRICTS}/${row["division name"]}`,
                 search: {
                   status: row.status as string,
                 },
@@ -77,9 +77,9 @@ const Districts = () => {
           <button
             onClick={() =>
               navigate({
-                to: `${ADMIN_DISTRICTS}/${row["district name"]}`,
+                to: `${ADMIN_DISTRICTS}/${row["division name"]}`,
                 search: {
-                  name: row["district name"] as string,
+                  name: row["division name"] as string,
                   region: row.regions as string,
                   churches: row["number of churches"] as string,
                 },
@@ -109,7 +109,7 @@ const Districts = () => {
       <Table
         headers={headers}
         showAddButton={true}
-        addButtonText="Add New District"
+        addButtonText="Add New Division"
         onAddButtonClick={() => navigate({ to: `/${ADMIN_DISTRICTS}/add` })}
         rows={rows}
         renderRow={customRowRenderer}

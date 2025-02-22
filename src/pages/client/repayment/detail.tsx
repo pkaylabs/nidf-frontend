@@ -4,8 +4,10 @@ import { IoIosArrowRoundBack } from "react-icons/io";
 import { LiaFileAltSolid } from "react-icons/lia";
 import { RxDownload } from "react-icons/rx";
 import { useNavigate, useSearch } from "react-location";
+import PDFModal from "../applications/actions/components/pdf-modal";
 
 const RepaymentDetails = () => {
+  const [openPDFModal, setOpenPDFModal] = React.useState(false);
   const navigate = useNavigate();
   const search = useSearch<any>();
 
@@ -46,7 +48,14 @@ const RepaymentDetails = () => {
               REF-12345
             </h2>
           </div>
-          <p className={`font-semibold text-xl ${status === "Reconciled" ? "text-[#2D9632]" : "text-[#AD6915]" }  `}> {status} </p>
+          <p
+            className={`font-semibold text-xl ${
+              status === "Reconciled" ? "text-[#2D9632]" : "text-[#AD6915]"
+            }  `}
+          >
+            {" "}
+            {status}{" "}
+          </p>
         </div>
 
         <div className="my-5 border-[0.5px] border-[#71839B] p-8 rounded-md shadow ">
@@ -69,7 +78,10 @@ const RepaymentDetails = () => {
                 </p>
               </div>
               <div className="flex items-center gap-4">
-                <button className="flex items-center gap-2 border border-[#71839B] text-[#545454] text-lg px-4 py-1.5 rounded-md hover:shadow-md transition-all duration-150 ease-in-out">
+                <button
+                  onClick={() => setOpenPDFModal(true)}
+                  className="flex items-center gap-2 border border-[#71839B] text-[#545454] text-lg px-4 py-1.5 rounded-md hover:shadow-md transition-all duration-150 ease-in-out"
+                >
                   <Eye
                     size="22"
                     color="#545454"
@@ -89,13 +101,14 @@ const RepaymentDetails = () => {
 
         <div className="flex justify-end ">
           {status !== "Reconciled" && (
-            <button className="font-medium bg-primary-50 flex items-center gap-2 px-12 py-3 rounded-md text-white text-lg hover:bg-primary-100 transition-all duration-150 ease-in-out">    
+            <button className="font-medium bg-primary-50 flex items-center gap-2 px-12 py-3 rounded-md text-white text-lg hover:bg-primary-100 transition-all duration-150 ease-in-out">
               <Edit2 size="22" color="#fff" />
               <span className="">Edit</span>
             </button>
           )}
         </div>
       </section>
+      <PDFModal open={openPDFModal} setOpen={setOpenPDFModal} />
     </main>
   );
 };

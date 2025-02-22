@@ -1,3 +1,4 @@
+import PDFModal from "@/pages/client/applications/actions/components/pdf-modal";
 import { Edit2, Eye } from "iconsax-react";
 import React from "react";
 import { IoIosArrowRoundBack } from "react-icons/io";
@@ -8,6 +9,7 @@ import { RxDownload } from "react-icons/rx";
 import { useNavigate, useSearch } from "react-location";
 
 const AdminRepaymentDetails = () => {
+  const [openPDFModal, setOpenPDFModal] = React.useState(false);
   const navigate = useNavigate();
   const search = useSearch<any>();
 
@@ -94,7 +96,10 @@ const AdminRepaymentDetails = () => {
                 </p>
               </div>
               <div className="flex items-center gap-4">
-                <button className="flex items-center gap-2 border border-[#71839B] text-[#545454] text-lg px-4 py-1.5 rounded-md hover:shadow-md transition-all duration-150 ease-in-out">
+                <button
+                  onClick={() => setOpenPDFModal(true)}
+                  className="flex items-center gap-2 border border-[#71839B] text-[#545454] text-lg px-4 py-1.5 rounded-md hover:shadow-md transition-all duration-150 ease-in-out"
+                >
                   <Eye
                     size="22"
                     color="#545454"
@@ -113,14 +118,15 @@ const AdminRepaymentDetails = () => {
         </div>
 
         <div className="flex justify-end ">
-          {/* {status !== "Reconciled" && ( */}
+          {status !== "Reconciled" && (
             <button className="font-medium bg-[#E0E0E0] flex items-center gap-2 px-12 py-3 rounded-md text-[#737373] text-lg hover:bg-primary-100 transition-all duration-150 ease-in-out">
               <IoCheckmark size="22" color="#737373" />
-              <span className="">#737373</span>
+              <span className="">Reconcile</span>
             </button>
-        {/* //   )} */}
+          )}
         </div>
       </section>
+      <PDFModal open={openPDFModal} setOpen={setOpenPDFModal} />
     </main>
   );
 };

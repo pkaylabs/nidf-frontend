@@ -150,9 +150,13 @@ const Users = () => {
           <button
             onClick={() =>
               navigate({
-                to: `#`,
+                to: `${ADMIN_USERS}/add`,
                 search: {
-                  status: row.status as string,
+                  name: row.name,
+                  type: row.type,
+                  email: row.email,
+                  phone: row.phone,
+                  status: row.status,
                 },
               })
             }
