@@ -95,7 +95,7 @@ const AddDistrict = () => {
           <span>Back to List</span>
         </button>
         <h4 className="font-medium text-2xl text-[#252525] ">
-          Add New District
+          Add New Division
         </h4>
       </div>
 
