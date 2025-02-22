@@ -5,9 +5,10 @@ import { LiaFileAltSolid } from "react-icons/lia";
 import { RxDownload } from "react-icons/rx";
 import { useNavigate } from "react-location";
 import { IoCheckmark } from "react-icons/io5";
-
+import PDFModal from "@/pages/client/applications/actions/components/pdf-modal";
 
 const AdminProgressReportDetails = () => {
+  const [openPDFModal, setOpenPDFModal] = React.useState(false);
   const navigate = useNavigate();
   return (
     <main className="font-poppins p-5">
@@ -65,7 +66,10 @@ const AdminProgressReportDetails = () => {
                 </p>
               </div>
               <div className="flex items-center gap-4">
-                <button className="flex items-center gap-2 border border-[#71839B] text-[#545454] text-lg px-4 py-1.5 rounded-md hover:shadow-md transition-all duration-150 ease-in-out">
+                <button
+                  onClick={() => setOpenPDFModal(true)}
+                  className="flex items-center gap-2 border border-[#71839B] text-[#545454] text-lg px-4 py-1.5 rounded-md hover:shadow-md transition-all duration-150 ease-in-out"
+                >
                   <Eye
                     size="22"
                     color="#545454"
@@ -85,11 +89,12 @@ const AdminProgressReportDetails = () => {
 
         <div className="flex justify-end ">
           <button className="w-48 h-14 rounded-md bg-primary-50 flex justify-center items-center gap-3 text-white font-medium hover:bg-primary-100 transition-all duration-150 ease-in-out ">
-          <IoCheckmark className="size-6" aria-hidden="true" />
+            <IoCheckmark className="size-6" aria-hidden="true" />
             <span>Verify Report</span>
           </button>
         </div>
       </section>
+      <PDFModal open={openPDFModal} setOpen={setOpenPDFModal} />
     </main>
   );
 };

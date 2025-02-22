@@ -13,17 +13,22 @@ import { useNavigate } from "react-location";
 import { motion } from "framer-motion";
 import { Edit2, Eye, Trash } from "iconsax-react";
 import Table from "@/components/table";
-import { ADMIN_APPLICATIONS, CREATE_APPLICATIONS } from "@/constants/page-path";
+import {
+  ADMIN_APPLICATIONS,
+  ADMIN_USERS,
+  CREATE_APPLICATIONS,
+} from "@/constants/page-path";
+import ViewUserModal from "./components/view-modal";
 
 const Users = () => {
   const navigate = useNavigate();
 
   const headers = [
-    { name: "User ID", value: "user id" },
     { name: "Name", value: "name" },
+    { name: "Type", value: "type" },
     { name: "Email", value: "email" },
     { name: "Phone", value: "phone" },
-    { name: "Type", value: "type" },
+    { name: "Status", value: "status" },
     { name: "Action", value: "action" },
   ];
 
@@ -34,6 +39,7 @@ const Users = () => {
       email: "prince@gmail.com",
       phone: "024567890",
       type: "Admin User",
+      status: "Active",
     },
     {
       "user id": "APP-12346",
@@ -41,6 +47,7 @@ const Users = () => {
       email: "kwame.mensah@gmail.com",
       phone: "024567891",
       type: "Church User",
+      status: "Inactive",
     },
     {
       "user id": "APP-12347",
@@ -48,6 +55,7 @@ const Users = () => {
       email: "abena.boateng@gmail.com",
       phone: "024567892",
       type: "Finance User",
+      status: "Active",
     },
     {
       "user id": "APP-12348",
@@ -55,6 +63,7 @@ const Users = () => {
       email: "kofi.asante@gmail.com",
       phone: "024567893",
       type: "Admin User",
+      status: "Inactive",
     },
     {
       "user id": "APP-12349",
@@ -62,6 +71,7 @@ const Users = () => {
       email: "ama.agyemang@gmail.com",
       phone: "024567894",
       type: "Super User",
+      status: "Active",
     },
     {
       "user id": "APP-12350",
@@ -69,6 +79,7 @@ const Users = () => {
       email: "yaw.owusu@gmail.com",
       phone: "024567895",
       type: "Church User",
+      status: "Inactive",
     },
     {
       "user id": "APP-12351",
@@ -76,6 +87,7 @@ const Users = () => {
       email: "adwoa.opoku@gmail.com",
       phone: "024567896",
       type: "Finance User",
+      status: "Active",
     },
     {
       "user id": "APP-12352",
@@ -83,6 +95,7 @@ const Users = () => {
       email: "kojo.addo@gmail.com",
       phone: "024567897",
       type: "Admin User",
+      status: "Inactive",
     },
     {
       "user id": "APP-12353",
@@ -90,6 +103,7 @@ const Users = () => {
       email: "esi.adjei@gmail.com",
       phone: "024567898",
       type: "Church User",
+      status: "Active",
     },
     {
       "user id": "APP-12354",
@@ -97,6 +111,7 @@ const Users = () => {
       email: "mensah.agyapong@gmail.com",
       phone: "024567899",
       type: "Finance User",
+      status: "Inactive",
     },
   ];
 
@@ -111,30 +126,37 @@ const Users = () => {
       transition={{ delay: index * 0.05 }}
       className="font-poppins border-b text-lg  text-black  border-gray-200 hover:bg-gray-100 transition-all duration-150 ease-in-out"
     >
-      <td className="px-4 py-3 ">{row["user id"]}</td>
       <td className="px-4 py-3 ">{row.name}</td>
+      <td className="px-4 py-3 ">{row.type}</td>
       <td className="px-4 py-3">{row.email}</td>
       <td className="px-4 py-3 ">{row.phone}</td>
       <td className="px-4 py-3 ">
-        {row.type}
-        {/* <p
-          className={`text-[#F5F5F5] text-base py-1 rounded-md text-center ${
-            row.status === "Approved" ? "bg-[#2D9632]" : ""
-          } ${row.status === "Pending" ? "bg-[#71839B]" : ""} ${
-            row.status === "Rejected" ? "bg-[#F75656]" : ""
-          } `}
+        <p
+          className={` text-base py-1 rounded-md text-center ${
+            row.status === "Active"
+              ? "bg-[#2D9632] bg-opacity-40 text-[#2D9632] "
+              : ""
+          } ${
+            row.status === "Inactive"
+              ? "bg-[#CE5347] bg-opacity-40 text-[#CE5347] "
+              : ""
+          }  `}
         >
           {row.status}
-        </p> */}
+        </p>
       </td>
       <td className="px-4 py-4 ">
         <div className="flex items-center gap-3">
           <button
             onClick={() =>
               navigate({
-                to: `#`,
+                to: `${ADMIN_USERS}/add`,
                 search: {
-                  status: row.status as string,
+                  name: row.name,
+                  type: row.type,
+                  email: row.email,
+                  phone: row.phone,
+                  status: row.status,
                 },
               })
             }
@@ -143,16 +165,20 @@ const Users = () => {
             <Edit2 size="20" color="#545454" />
           </button>
           <button
-            onClick={() =>
+            onClick={() => {
+              setOpenUserModal(true);
+
               navigate({
-                to: `#`,
+                to: `.`,
                 search: {
-                  name: row["district name"] as string,
-                  region: row.regions as string,
-                  churches: row["number of churches"] as string,
+                  name: row.name,
+                  type: row.type,
+                  email: row.email,
+                  phone: row.phone,
+                  status: row.status,
                 },
-              })
-            }
+              });
+            }}
             className={` `}
           >
             <Eye size="20" color="#545454" />
@@ -166,6 +192,7 @@ const Users = () => {
   );
 
   const [loading, setLoading] = useState(true);
+  const [openUserModal, setOpenUserModal] = useState(false);
 
   useEffect(() => {
     const timeout = setTimeout(() => setLoading(false), 3000); // Simulating a 3-second data load
@@ -177,8 +204,8 @@ const Users = () => {
       <Table
         headers={headers}
         showAddButton={true}
-        addButtonText="Create User"
-        onAddButtonClick={() => navigate({ to: "#" })}
+        addButtonText="Add New User"
+        onAddButtonClick={() => navigate({ to: `${ADMIN_USERS}/add` })}
         rows={rows}
         renderRow={customRowRenderer}
         footer={<div>Pagination goes here</div>}
@@ -191,6 +218,15 @@ const Users = () => {
             fields: ["Church User", "Admin User", "Finance User", "Super User"],
           },
         ]}
+      />
+      <ViewUserModal
+        open={openUserModal}
+        setOpen={() => {
+          setOpenUserModal(false);
+          navigate({
+            to: "..",
+          });
+        }}
       />
     </div>
   );

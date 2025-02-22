@@ -36,7 +36,7 @@ const AddDistrict = () => {
       phone: "",
     },
     validationSchema: Yup.object().shape({
-      districtName: Yup.string().required("District name is required"),
+      districtName: Yup.string().required("Division name is required"),
       region: Yup.string().required("Region is required"),
       districtHead: Yup.string().required("District head is required"),
       email: Yup.string()
@@ -100,14 +100,14 @@ const AddDistrict = () => {
       </div>
 
       <section className="p-5 rounded-md bg-white ">
-        <h4 className="font-semibold text-lg text-black mb-2">New District</h4>
+        <h4 className="font-semibold text-lg text-black mb-2">New Division</h4>
         <p className=" font-light text-lg text-[#71839B] ">
-          Create a new district
+          Create a new division
         </p>
 
         <div className="w-full my-5">
           {input(
-            "District Name",
+            "Division Name",
             "districtName",
             "text",
             false,
@@ -154,7 +154,7 @@ const AddDistrict = () => {
             onClick={() => handleSubmit()}
             className="bg-primary text-white w-44 h-[50px] flex justify-center items-center  rounded-md text-lg"
           >
-           Create District
+            Create Division
           </button>
         </div>
       </section>

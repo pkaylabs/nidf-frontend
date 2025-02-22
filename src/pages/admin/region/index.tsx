@@ -75,7 +75,7 @@ const Regions = () => {
               onClick={() =>
                 navigate({})
               }
-              className="font-poppins font-light w-12 h-12 flex justify-center items-center border border-[#324054] rounded-md text-[#324054] hover:bg-[#324054] hover:text-white transition-all duration-200 ease-in-out "
+              className="font-poppins font-light w-12 h-12 flex justify-center items-center border border-[#324054] rounded-md text-[#324054] hover:text-white transition-all duration-200 ease-in-out "
             >
               <Edit2 size="24" color="#324054" />
             </button>

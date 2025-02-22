@@ -26,7 +26,7 @@ const DistrictDetails = () => {
 
   const churchData = [
     {
-      label: "District Name ",
+      label: "Division Name ",
       value: name,
     },
     {
@@ -38,7 +38,7 @@ const DistrictDetails = () => {
       value: churches,
     },
     {
-      label: "District Head",
+      label: "Division Head",
       value: "Rev. John Mensah",
     },
   ];
@@ -50,13 +50,13 @@ const DistrictDetails = () => {
         className="font-light flex items-center space-x-2 border-[0.5px] border-[#545454] bg-white text-black py-2.5 px-4 rounded-md transition-all duration-150 ease-in-out mb-5"
       >
         <IoIosArrowRoundBack className="size-5" aria-hidden="true" />{" "}
-        <span>Back to Districts</span>
+        <span>Back to Divisions</span>
       </button>
 
       <section className="p-8 bg-white rounded-md ">
         <div className="border-[0.5px] border-[#71839B] rounded-md  p-5 ">
           <h3 className="font-semibold text-xl text-[#454545] ">
-            District Details
+            Division Details
           </h3>
 
           <div className="mt-6 flex flex-wrap justify-between">

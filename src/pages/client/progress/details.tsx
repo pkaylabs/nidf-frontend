@@ -4,8 +4,10 @@ import { IoIosArrowRoundBack } from "react-icons/io";
 import { LiaFileAltSolid } from "react-icons/lia";
 import { RxDownload } from "react-icons/rx";
 import { useNavigate } from "react-location";
+import PDFModal from "../applications/actions/components/pdf-modal";
 
 const ProgressReportDetail = () => {
+  const [openPDFModal, setOpenPDFModal] = React.useState(false);
   const navigate = useNavigate();
   return (
     <main className="font-poppins p-5">
@@ -58,11 +60,21 @@ const ProgressReportDetail = () => {
                   className="size-6 text-[#545454]"
                   aria-hidden="true"
                 />
-                <p className="font-light text-[#545454] text-xl">progress_report.pdf</p>
+                <p className="font-light text-[#545454] text-xl">
+                  progress_report.pdf
+                </p>
               </div>
               <div className="flex items-center gap-4">
-                <button className="flex items-center gap-2 border border-[#71839B] text-[#545454] text-lg px-4 py-1.5 rounded-md hover:shadow-md transition-all duration-150 ease-in-out">
-                  <Eye size="22" color="#545454" className="" aria-hidden="true" />
+                <button
+                  onClick={() => setOpenPDFModal(true)}
+                  className="flex items-center gap-2 border border-[#71839B] text-[#545454] text-lg px-4 py-1.5 rounded-md hover:shadow-md transition-all duration-150 ease-in-out"
+                >
+                  <Eye
+                    size="22"
+                    color="#545454"
+                    className=""
+                    aria-hidden="true"
+                  />
                   <span className="group-hover:text-white">View</span>
                 </button>
                 <button className="flex items-center gap-2 border border-[#71839B] text-[#545454] text-lg px-4 py-1.5  rounded-md hover:shadow-md transition-all duration-150 ease-in-out">
@@ -74,6 +86,7 @@ const ProgressReportDetail = () => {
           ))}
         </div>
       </section>
+      <PDFModal open={openPDFModal} setOpen={setOpenPDFModal} />
     </main>
   );
 };

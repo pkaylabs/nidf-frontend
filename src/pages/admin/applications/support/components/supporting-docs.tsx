@@ -2,6 +2,7 @@ import React from "react";
 import { FormikProps } from "formik";
 import { FiUpload } from "react-icons/fi";
 import ButtonLoader from "@/components/loaders/button";
+import PDFModal from "@/pages/client/applications/actions/components/pdf-modal";
 
 interface ChurchInfoProps {
   title: string;
@@ -104,6 +105,7 @@ const SupportingDocs: React.FC<ChurchInfoProps> = ({
           </div>
         ))}
       </div>
+      
     </div>
   );
 };
