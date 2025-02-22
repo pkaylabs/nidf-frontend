@@ -72,7 +72,7 @@ const Onboarding = () => {
       name: Yup.string().required("Name is required"),
       location: Yup.string().required("Location is required"),
       // region: Yup.string().required("Region is required"),
-      district: Yup.string().required("District is required"),
+      district: Yup.string().required("Division is required"),
       phone: Yup.string().required("Phone is required"),
       email: Yup.string().required("Email is required"),
       pastor_name: Yup.string().required("Pastor name is required"),
@@ -233,7 +233,7 @@ const Onboarding = () => {
             </div>
             <div className="flex-1">
               <label htmlFor="district" className="font-normal text-xs">
-                District
+                Division
               </label>
               <input
                 id="district"

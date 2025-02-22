@@ -16,6 +16,15 @@ export const supportTypes = [
   { label: "Other", value: "other" },
 ];
 
+
+export const bankNames = [
+  { label: "Fidelity Bank", value: "fidelity" },
+  { label: "Cal Bank", value: "calbank" },
+  { label: "Zenith Bank", value: "zenith" },
+  { label: "Standard Chartered Bank", value: "stanchart" },
+  { label: "Other", value: "other" },
+];
+
 const SupportInfo: React.FC<ChurchInfoProps> = ({
   formik,
   title,
