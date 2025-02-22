@@ -13,7 +13,12 @@ import { useNavigate } from "react-location";
 import { motion } from "framer-motion";
 import { Edit2, Eye, Trash } from "iconsax-react";
 import Table from "@/components/table";
-import { ADMIN_APPLICATIONS, CREATE_APPLICATIONS } from "@/constants/page-path";
+import {
+  ADMIN_APPLICATIONS,
+  ADMIN_USERS,
+  CREATE_APPLICATIONS,
+} from "@/constants/page-path";
+import ViewUserModal from "./components/view-modal";
 
 const Users = () => {
   const navigate = useNavigate();
@@ -128,8 +133,14 @@ const Users = () => {
       <td className="px-4 py-3 ">
         <p
           className={` text-base py-1 rounded-md text-center ${
-            row.status === "Active" ? "bg-[#2D9632] bg-opacity-40 text-[#2D9632] " : ""
-          } ${row.status === "Inactive" ? "bg-[#CE5347] bg-opacity-40 text-[#CE5347] " : ""}  `}
+            row.status === "Active"
+              ? "bg-[#2D9632] bg-opacity-40 text-[#2D9632] "
+              : ""
+          } ${
+            row.status === "Inactive"
+              ? "bg-[#CE5347] bg-opacity-40 text-[#CE5347] "
+              : ""
+          }  `}
         >
           {row.status}
         </p>
@@ -150,16 +161,20 @@ const Users = () => {
             <Edit2 size="20" color="#545454" />
           </button>
           <button
-            onClick={() =>
+            onClick={() => {
+              setOpenUserModal(true);
+
               navigate({
-                to: `#`,
+                to: `.`,
                 search: {
-                  name: row["district name"] as string,
-                  region: row.regions as string,
-                  churches: row["number of churches"] as string,
+                  name: row.name,
+                  type: row.type,
+                  email: row.email,
+                  phone: row.phone,
+                  status: row.status,
                 },
-              })
-            }
+              });
+            }}
             className={` `}
           >
             <Eye size="20" color="#545454" />
@@ -173,6 +188,7 @@ const Users = () => {
   );
 
   const [loading, setLoading] = useState(true);
+  const [openUserModal, setOpenUserModal] = useState(false);
 
   useEffect(() => {
     const timeout = setTimeout(() => setLoading(false), 3000); // Simulating a 3-second data load
@@ -184,8 +200,8 @@ const Users = () => {
       <Table
         headers={headers}
         showAddButton={true}
-        addButtonText="Create User"
-        onAddButtonClick={() => navigate({ to: "#" })}
+        addButtonText="Add New User"
+        onAddButtonClick={() => navigate({ to: `${ADMIN_USERS}/add` })}
         rows={rows}
         renderRow={customRowRenderer}
         footer={<div>Pagination goes here</div>}
@@ -198,6 +214,15 @@ const Users = () => {
             fields: ["Church User", "Admin User", "Finance User", "Super User"],
           },
         ]}
+      />
+      <ViewUserModal
+        open={openUserModal}
+        setOpen={() => {
+          setOpenUserModal(false);
+          navigate({
+            to: "..",
+          });
+        }}
       />
     </div>
   );

@@ -63,6 +63,7 @@ import Notifications from "@/pages/admin/notifications";
 import AddNotification from "@/pages/admin/notifications/add";
 import NotificationDetails from "@/pages/admin/notifications/details";
 import Users from "@/pages/admin/users";
+import AddUser from "@/pages/admin/users/add";
 
 export type RouteProps = Omit<Route, "children"> & {
   navigation?: boolean;
@@ -397,6 +398,13 @@ const routes: RouteProps[] = [
       {
         path: "/",
         element: <Users />,
+        meta: {
+          layout: "Admin",
+        },
+      },
+      {
+        path: "/add",
+        element: <AddUser />,
         meta: {
           layout: "Admin",
         },
