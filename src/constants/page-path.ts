@@ -30,4 +30,4 @@ export const ADMIN_USER_DETAIL = "/admin/users/:id";
 
 export const ADMIN_NOTIFICATIONS = "/admin/notifications";
 
-export const BACKEND_BASE_URL = "";
+export const BACKEND_BASE_URL = "http://159.223.215.232/api-v1/";

@@ -1,13 +1,15 @@
-
 interface ButtonLoaderProps {
   title: string;
+  color?: string;
 }
 
-export default function ButtonLoader({ title }: ButtonLoaderProps) {
+export default function ButtonLoader({ title, color }: ButtonLoaderProps) {
   return (
-    <>
+    <span className="whitespace-nowrap flex-nowrap flex items-center justify-center">
       <svg
-        className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+        className={`animate-spin -ml-1 mr-3 h-5 w-5 ${
+          color ? color : "text-white"
+        }`}
         xmlns="http://www.w3.org/2000/svg"
         fill="none"
         viewBox="0 0 24 24"
@@ -18,7 +20,6 @@ export default function ButtonLoader({ title }: ButtonLoaderProps) {
           cy="12"
           r="10"
           stroke="currentColor"
-          strokeWidth="4"
         ></circle>
         <path
           className="opacity-75"
@@ -27,6 +28,6 @@ export default function ButtonLoader({ title }: ButtonLoaderProps) {
         ></path>
       </svg>
       <span>{title}</span>
-    </>
+    </span>
   );
 }

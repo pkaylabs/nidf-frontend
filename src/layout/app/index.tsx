@@ -1,6 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { Link, Outlet, useLocation } from "react-location";
+import {
+  Link,
+  Navigate,
+  Outlet,
+  useLocation,
+  useNavigate,
+} from "react-location";
 import { MdOutlineDashboard } from "react-icons/md";
 import { MdOutlineCalendarMonth } from "react-icons/md";
 import { AiOutlineClockCircle } from "react-icons/ai";
@@ -34,6 +40,13 @@ import {
 import logo from "@/assets/images/logo.png";
 import { ArrowDown2 } from "iconsax-react";
 import { TbLogout2 } from "react-icons/tb";
+import LoadingProgressBar from "@/components/loaders/loadingProgressBar";
+import { useAppDispatch, useAppSelector } from "@/redux";
+import {
+  logout,
+  selectCurrentToken,
+  selectCurrentUser,
+} from "@/redux/features/auth/authSlice";
 
 const navigation = [
   {
@@ -72,6 +85,33 @@ export default function AppLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const currentPath = useLocation().current.pathname;
+  const navigate = useNavigate();
+
+  const dispatch = useAppDispatch();
+
+  const user = useAppSelector(selectCurrentUser);
+  const token = useAppSelector(selectCurrentToken);
+
+  const handleLogout = () => {
+    dispatch(logout());
+  };
+
+  if (!token || !user || user?.user_type !== "CHURCH_USER")
+    return (
+      <Navigate
+        to={LOGIN}
+        // search={{ redirect: current === "/user-profile" ? "" : currentHref }}
+        replace
+      />
+    );
+
+  // if (false)
+  //   return (
+  //     <LoadingProgressBar
+  //       isDone={isLoading || loadingbusiness}
+  //       className="absolute top-0 left-0 w-full"
+  //     />
+  //   );
 
   return (
     <>
@@ -282,16 +322,16 @@ export default function AppLayout() {
                   </ul>
                 </li> */}
                 <li className="mt-auto">
-                  <Link
-                    to={LOGIN}
-                    className="font-poppins group -mx-2 flex gap-x-3 rounded-md p-2 font-medium text-gray-700 hover:bg-gray-50 hover:text-primary-600"
+                  <button
+                    onClick={handleLogout}
+                    className="font-poppins w-full group -mx-2 flex gap-x-3 rounded-md p-2 font-medium text-gray-700 hover:bg-gray-50 hover:text-primary-600"
                   >
                     <TbLogout2
                       aria-hidden="true"
                       className="size-6 shrink-0 text-gray-500 group-hover:text-primary-600"
                     />
                     Logout
-                  </Link>
+                  </button>
                 </li>
               </ul>
             </nav>
@@ -318,7 +358,7 @@ export default function AppLayout() {
             <div className="font-poppins flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
               <div className="font-semibold text-[1.75rem] text-gray-900 flex-1 flex items-center">
                 {currentPath === DASHBOARD
-                  ? "Welcome Prince!"
+                  ? `Welcome ${user?.name?.split(" ")[0] ?? "User"}!`
                   : currentPath.includes(APPLICATIONS)
                   ? "My Applications"
                   : currentPath.includes(PROGRESS)
@@ -345,10 +385,7 @@ export default function AppLayout() {
 
                 {/* Profile dropdown */}
                 <Menu as="div" className="relative">
-                  <MenuButton
-                    
-                    className="-m-1.5 flex items-center p-1.5"
-                  >
+                  <MenuButton className="-m-1.5 flex items-center p-1.5">
                     <span className="sr-only">Open user menu</span>
                     <img
                       alt=""
@@ -372,20 +409,26 @@ export default function AppLayout() {
                       aria-hidden="true"
                       className="px-3 text-sm leading-none text-left font-semibold text-gray-900"
                     >
-                      Prince Kyeremateng <br />
+                      {user?.name} <br />
                     </span>
                     {userNavigation.map((item, idx) => (
                       <MenuItem key={item.name}>
-                        <Link
-                          to={item.href}
-                          className={`block px-3 py-1 text-sm/6 ${
+                        <button
+                          onClick={
+                            idx === userNavigation.length - 1
+                              ? handleLogout
+                              : () => {
+                                  navigate({ to: item.href });
+                                }
+                          }
+                          className={`block w-full text-left px-3 py-1 text-sm/6 ${
                             idx === userNavigation.length - 1
                               ? "text-red"
                               : "text-gray-900"
                           }  data-[focus]:bg-gray-50 data-[focus]:outline-none`}
                         >
                           {item.name}
-                        </Link>
+                        </button>
                       </MenuItem>
                     ))}
                   </MenuItems>

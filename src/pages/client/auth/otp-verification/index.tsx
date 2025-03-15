@@ -1,13 +1,16 @@
 import ButtonLoader from "@/components/loaders/button";
 import { ONBOARDING } from "@/constants/page-path";
+import { useVerifyOtpMutation } from "@/redux/features/auth/authApiSlice";
 import React, { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-location";
+import toast from "react-hot-toast";
+import { useNavigate, useSearch } from "react-location";
 
 const OtpVerification = () => {
-  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const [otp, setOtp] = useState<string[]>(new Array(4).fill(""));
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
+
+  const search = useSearch<any>();
 
   const handleChange = (
     element: React.ChangeEvent<HTMLInputElement>,
@@ -39,22 +42,48 @@ const OtpVerification = () => {
     }
   };
 
+  useEffect(() => {
+    document.title = "NIDF | OTP Verification";
+  }, []);
+
+  const [verify, { isLoading }] = useVerifyOtpMutation();
+
   const handleOtpSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const otpCode = otp.join("");
 
     try {
-      // make some api call to the verify otp endpoint
-      // if response is ok
-      setLoading(true);
-      setTimeout(() => {
-        navigate({ to: "/otp-verification", replace: true });
-        if (otpCode) navigate({ to: ONBOARDING, replace: true });
-        setLoading(false);
-      }, 4000);
-    } catch (error) {
-      // if there is error catch it here
-      console.log(error);
+      const res = await verify({
+        otp: otpCode,
+      }).unwrap();
+
+      console.log(res, "res");
+
+      if (res?.message) {
+        toast(
+          JSON.stringify({
+            type: "success",
+            title: res?.message ?? `Verification successful`,
+          })
+        );
+
+        navigate({ to: ONBOARDING, replace: true });
+      } else {
+        toast(
+          JSON.stringify({
+            type: "error",
+            title: "Verification failed",
+          })
+        );
+      }
+    } catch (err: any) {
+      console.log(err);
+      toast(
+        JSON.stringify({
+          type: "error",
+          title: err?.data?.error ?? "Verification failed",
+        })
+      );
     }
   };
 
@@ -73,12 +102,18 @@ const OtpVerification = () => {
         <h1 className="font-semibold text-3xl mobile:text-lg">
           OTP Verification
         </h1>
-        <p className="text-lg text-[#808080] font-normal mobile:text-sm">
-          We’ve sent an otp code to your phone number{" "}
-          <span className="text-[#1024A3] mobile:text-sm">
-            +233 xx xxx xxxx
-          </span>
-        </p>
+        {!search?.phone ? (
+          <p className="text-lg text-[#808080] font-normal mobile:text-sm">
+            Please verify your phone number to continue.
+          </p>
+        ) : (
+          <p className="text-lg text-[#808080] font-normal mobile:text-sm">
+            We’ve sent an otp code to your phone number{" "}
+            <span className="text-[#1024A3] mobile:text-sm">
+              +233 ({search?.phone ?? "xxxxxxxxxxxx"})
+            </span>
+          </p>
+        )}
       </div>
       <div className="flex flex-wrap items-center justify-center  mobile:overflow-x-auto ">
         {otp.map((data, index) => {
@@ -88,6 +123,7 @@ const OtpVerification = () => {
               ref={(input) => (inputRefs.current[index] = input)}
               type="text"
               value={data}
+              disabled={isLoading}
               onChange={(e) => handleChange(e, index)}
               className="w-20 h-20 shadow-sm border border-[#808080] text-center m-5 rounded-md font-normal text-4xl mobile:w-12 mobile:h-12 mobile:text-lg mobile:ml-1"
             />
@@ -95,10 +131,11 @@ const OtpVerification = () => {
         })}
       </div>
       <button
+        disabled={isLoading}
         type="submit"
-        className="bg-[#17567E] w-36 h-12 flex justify-center items-center rounded-md text-white  mx-auto mt-8 mobile:px-10 mobile:py-2 mobile:text-sm"
+        className="bg-[#17567E] w-36 h-12 flex justify-center items-center rounded-md text-white  mx-auto mt-8 mobile:px-10 mobile:py-2 mobile:text-sm disabled:opacity-80"
       >
-        {loading ? <ButtonLoader title="Verifying" /> : "Verify"}
+        {isLoading ? <ButtonLoader title="Verifying" /> : "Verify"}
       </button>
     </form>
   );
