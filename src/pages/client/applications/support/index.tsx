@@ -1,75 +1,478 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { IoIosArrowRoundBack, IoIosArrowRoundForward } from "react-icons/io";
-import { useNavigate } from "react-location";
+import { useNavigate, useSearch } from "react-location";
 import { motion } from "framer-motion";
-import ChurchInfo from "./components/church-info";
-import SupportInfo from "./components/support-info";
-import SupportingDocs from "./components/supporting-docs";
-import ReviewSubmit from "./components/review-submit";
+import _, { set } from "lodash";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-
-const steps = [
-  { id: 0, title: "Church Information", content: ChurchInfo },
-  { id: 1, title: "Support Information", content: SupportInfo },
-  { id: 2, title: "Supporting Documents", content: SupportingDocs },
-  { id: 3, title: "Review & Submit", content: ReviewSubmit },
-];
+import { useAppSelector } from "@/redux";
+import { selectCurrentUser } from "@/redux/features/auth/authSlice";
+import { useGetChurchesQuery } from "@/redux/features/churches/churchApiSlice";
+import { supportApplicationSteps } from "@/constants";
+import {
+  useCreateApplicationMutation,
+  useFinalCreateApplicationMutation,
+} from "@/redux/features/applications/applicationsApiSlice";
+import toast from "react-hot-toast";
+import ButtonLoader from "@/components/loaders/button";
 
 const ApplyForSupport = () => {
   const [activeStep, setActiveStep] = useState(0);
+  const [applicationId, setApplicationId] = useState<any>(null);
   const navigate = useNavigate();
+
+  const search = useSearch<any>();
+
+  const user = useAppSelector(selectCurrentUser);
+  // console.log("user ", user);
+
+  const { data } = useGetChurchesQuery({});
 
   const formik = useFormik({
     initialValues: {
-      churchName: "DLCF Legon",
-      churchAddress: "DLCF Auditorium - Lybia Quarters - Legon",
+      churchName: "",
+      churchAddress: "",
       pastorName: "",
       pastorEmail: "",
       pastorPhone: "",
+      //
       supportType: "",
+      typeOfChurchProject: "",
       purposeForAid: "",
+      isEmergency: false,
       progressDescription: "",
-      amountRequested: 0,
+      amountRequested: "",
+      amountInWords: "",
+      estimatedProjectCost: "",
+      projectLocation: "",
+      phase: "",
       expectedCompletionDate: "",
-      currentStatePic: "",
-      costEstimateFIle: "",
-      ownershipDoc: "",
-      invoices: "",
+      //
+      avgServiceAttendance: "",
+      avgMonthlyIncome: "",
+      avgMonthlyContributions: "",
+      avgMonthlyExpenses: "",
+      availableFundsForProject: "",
+      //
+      currentStatePic: null,
+      costEstimateFIle: null,
+      ownershipDoc: null,
+      invoices: null,
     },
     validationSchema: Yup.object().shape({
       churchName: Yup.string().required("Church name is required"),
       churchAddress: Yup.string().required("Church address is required"),
       pastorName: Yup.string().required("Pastor name is required"),
+      pastorEmail: Yup.string()
+        .email("Invalid email address")
+        .required("Pastor email is required"),
       pastorPhone: Yup.string().required("Pastor phone is required"),
-      pastorEmail: Yup.string().required("Pastor email is required"),
       supportType: Yup.string().required("Support type is required"),
-      purposeForAid: Yup.string().required("Support type is required"),
+      typeOfChurchProject: Yup.string().required(
+        "Type of church project is required"
+      ),
+      purposeForAid: Yup.string().required("Purpose for aid is required"),
+      isEmergency: Yup.boolean(),
       progressDescription: Yup.string().required(
         "Progress description is required"
       ),
-      amountRequested: Yup.number().required("Amount requested is required"),
+      amountRequested: Yup.string()
+        .matches(/^\d+$/, "Amount requested must be a valid number")
+        .required("Amount requested is required"),
+      amountInWords: Yup.string().required("Amount in words is required"),
+      estimatedProjectCost: Yup.string()
+        .matches(/^\d+$/, "Estimated project cost must be a valid number")
+        .required("Estimated project cost is required"),
+      projectLocation: Yup.string().required("Project location is required"),
+      phase: Yup.string().required("Phase is required"),
       expectedCompletionDate: Yup.string().required(
         "Expected completion date is required"
       ),
-      currentStatePic: Yup.string().required(
+      avgServiceAttendance: Yup.string()
+        .matches(/^\d+$/, "Average service attendance must be a valid number")
+        .required("Average service attendance is required"),
+      avgMonthlyIncome: Yup.string()
+        .matches(/^\d+$/, "Average monthly income must be a valid number")
+        .required("Average monthly income is required"),
+      avgMonthlyContributions: Yup.string()
+        .matches(
+          /^\d+$/,
+          "Average monthly contributions must be a valid number"
+        )
+        .required("Average monthly contributions are required"),
+      avgMonthlyExpenses: Yup.string()
+        .matches(/^\d+$/, "Average monthly expenses must be a valid number")
+        .required("Average monthly expenses are required"),
+      availableFundsForProject: Yup.string()
+        .matches(/^\d+$/, "Available funds for project must be a valid number")
+        .required("Available funds for project are required"),
+      currentStatePic: Yup.mixed().required(
         "Current state picture is required"
       ),
-      costEstimateFIle: Yup.string().required("Cost estimate file is required"),
-      ownershipDoc: Yup.string().required("Ownership document is required"),
-      invoices: Yup.string().required("Invoices are required"),
+      costEstimateFIle: Yup.mixed().required("Cost estimate file is required"),
+      ownershipDoc: Yup.mixed().required("Ownership document is required"),
+      invoices: Yup.mixed().required("Invoices are required"),
     }),
     onSubmit: (values) => {
-      console.log("Form Submitted: ", values);
+      console.log("values ", values);
     },
   });
 
+  const [createApplication, { isLoading }] = useCreateApplicationMutation();
+  const [createFinalApplication, { isLoading: isFinalLoading }] =
+    useFinalCreateApplicationMutation();
+
+  const handleProceed = async () => {
+    if (activeStep === 0) {
+      // Validate fields for step 0
+      if (
+        _.isEmpty(formik.errors.churchName) &&
+        !_.isEmpty(formik.values.churchName) &&
+        _.isEmpty(formik.errors.churchAddress) &&
+        !_.isEmpty(formik.values.churchAddress) &&
+        _.isEmpty(formik.errors.pastorName) &&
+        !_.isEmpty(formik.values.pastorName) &&
+        _.isEmpty(formik.errors.pastorEmail) &&
+        !_.isEmpty(formik.values.pastorEmail) &&
+        _.isEmpty(formik.errors.pastorPhone) &&
+        !_.isEmpty(formik.values.pastorPhone)
+      ) {
+        try {
+          const formData = new FormData();
+          formData.append("churchName", formik.values.churchName);
+          formData.append("churchAddress", formik.values.churchAddress);
+          formData.append("pastorName", formik.values.pastorName);
+          formData.append("pastorEmail", formik.values.pastorEmail);
+          formData.append("pastorPhone", formik.values.pastorPhone);
+          formData.append("church", user?.church_profile ?? "");
+
+          const res = await createApplication(formData).unwrap();
+          console.log("res ", res);
+
+          if (res?.application) {
+            setApplicationId(res?.application?.application_id);
+            // toast(
+            //   JSON.stringify({
+            //     type: "success",
+            //     title: res?.message ?? ``,
+            //   })
+            // );
+            navigate({
+              to: `.`,
+              search: { applicationId: res?.application?.application_id },
+            });
+            setActiveStep((prev) => prev + 1);
+          } else {
+            toast(
+              JSON.stringify({
+                type: "error",
+                title: "An error occurred",
+              })
+            );
+          }
+        } catch (error: any) {
+          console.log(error);
+          toast(
+            JSON.stringify({
+              type: "error",
+              title: error?.data?.error ?? "An error occurred",
+            })
+          );
+        }
+      } else {
+        formik.setTouched({
+          churchName: true,
+          churchAddress: true,
+          pastorName: true,
+          pastorEmail: true,
+          pastorPhone: true,
+        });
+      }
+    }
+
+    if (activeStep === 1) {
+      if (
+        _.isEmpty(formik.errors.supportType) &&
+        !_.isEmpty(formik.values.supportType) &&
+        _.isEmpty(formik.errors.typeOfChurchProject) &&
+        !_.isEmpty(formik.values.typeOfChurchProject) &&
+        _.isEmpty(formik.errors.purposeForAid) &&
+        !_.isEmpty(formik.values.purposeForAid) &&
+        _.isEmpty(formik.errors.progressDescription) &&
+        !_.isEmpty(formik.values.progressDescription) &&
+        _.isEmpty(formik.errors.amountRequested) &&
+        !_.isEmpty(formik.values.amountRequested) &&
+        _.isEmpty(formik.errors.amountInWords) &&
+        !_.isEmpty(formik.values.amountInWords) &&
+        _.isEmpty(formik.errors.estimatedProjectCost) &&
+        !_.isEmpty(formik.values.estimatedProjectCost) &&
+        _.isEmpty(formik.errors.projectLocation) &&
+        !_.isEmpty(formik.values.projectLocation) &&
+        _.isEmpty(formik.errors.phase) &&
+        !_.isEmpty(formik.values.phase) &&
+        _.isEmpty(formik.errors.expectedCompletionDate) &&
+        !_.isEmpty(formik.values.expectedCompletionDate)
+      ) {
+        try {
+          const formData = new FormData();
+          formData.append("support_type", formik.values.supportType);
+          formData.append(
+            "type_of_church_project",
+            formik.values.typeOfChurchProject
+          );
+          formData.append("purpose", formik.values.purposeForAid);
+          formData.append("is_emergency", formik.values.isEmergency.toString());
+          formData.append("description", formik.values.progressDescription);
+          formData.append("amount", formik.values.amountRequested);
+          formData.append("amount_in_words", formik.values.amountInWords);
+          formData.append(
+            "estimated_project_cost",
+            formik.values.estimatedProjectCost
+          );
+          formData.append("project_location", formik.values.projectLocation);
+          formData.append("phase", formik.values.phase);
+          formData.append(
+            "expected_completion_date",
+            formik.values.expectedCompletionDate
+          );
+          formData.append("church", user?.church_profile ?? "");
+          formData.append(
+            "application_id",
+            search?.applicationId ?? applicationId
+          );
+
+          const res = await createApplication(formData).unwrap();
+          console.log("res 2", res);
+
+          if (res?.application) {
+            setApplicationId(res?.application?.application_id);
+
+            navigate({
+              to: `.`,
+              search: { applicationId: res?.application?.application_id },
+            });
+            setActiveStep((prev) => prev + 1);
+          } else {
+            toast(
+              JSON.stringify({
+                type: "error",
+                title: "An error occurred",
+              })
+            );
+          }
+        } catch (error: any) {
+          console.log(error);
+          toast(
+            JSON.stringify({
+              type: "error",
+              title: error?.data?.error ?? "An error occurred",
+            })
+          );
+        }
+      } else {
+        formik.setTouched({
+          supportType: true,
+          typeOfChurchProject: true,
+          purposeForAid: true,
+          progressDescription: true,
+          amountRequested: true,
+          amountInWords: true,
+          estimatedProjectCost: true,
+          projectLocation: true,
+          phase: true,
+          expectedCompletionDate: true,
+        });
+      }
+    }
+
+    if (activeStep === 2) {
+      if (
+        _.isEmpty(formik.errors.avgServiceAttendance) &&
+        !_.isEmpty(formik.values.avgServiceAttendance) &&
+        _.isEmpty(formik.errors.avgMonthlyIncome) &&
+        !_.isEmpty(formik.values.avgMonthlyIncome) &&
+        _.isEmpty(formik.errors.avgMonthlyContributions) &&
+        !_.isEmpty(formik.values.avgMonthlyContributions) &&
+        _.isEmpty(formik.errors.avgMonthlyExpenses) &&
+        !_.isEmpty(formik.values.avgMonthlyExpenses) &&
+        _.isEmpty(formik.errors.availableFundsForProject) &&
+        !_.isEmpty(formik.values.availableFundsForProject)
+      ) {
+        try {
+          const formData = new FormData();
+          formData.append(
+            "avg_service_attendance",
+            formik.values.avgServiceAttendance
+          );
+          formData.append("avg_monthly_income", formik.values.avgMonthlyIncome);
+          formData.append(
+            "avg_monthly_contributions",
+            formik.values.avgMonthlyContributions
+          );
+          formData.append(
+            "avg_monthly_expenses",
+            formik.values.avgMonthlyExpenses
+          );
+          formData.append(
+            "available_funds_for_project",
+            formik.values.availableFundsForProject
+          );
+
+          formData.append("church", user?.church_profile ?? "");
+          formData.append(
+            "application_id",
+            search?.applicationId ?? applicationId
+          );
+
+          const res = await createApplication(formData).unwrap();
+          console.log("res 3", res);
+
+          if (res?.application) {
+            navigate({
+              to: ".",
+              search: { applicationId: res?.application?.application_id },
+            });
+            setActiveStep((prev) => prev + 1);
+          } else {
+            toast(
+              JSON.stringify({
+                type: "error",
+                title: "An error occurred",
+              })
+            );
+          }
+        } catch (error: any) {
+          console.log(error);
+          toast(
+            JSON.stringify({
+              type: "error",
+              title: error?.data?.error ?? "An error occurred",
+            })
+          );
+        }
+      } else {
+        formik.setTouched({
+          avgServiceAttendance: true,
+          avgMonthlyIncome: true,
+          avgMonthlyContributions: true,
+          avgMonthlyExpenses: true,
+          availableFundsForProject: true,
+        });
+      }
+    }
+
+    if (activeStep === 3) {
+      if (
+        _.isEmpty(formik.errors.currentStatePic) &&
+        formik.values.currentStatePic !== null &&
+        _.isEmpty(formik.errors.costEstimateFIle) &&
+        formik.values.costEstimateFIle !== null &&
+        _.isEmpty(formik.errors.ownershipDoc) &&
+        formik.values.ownershipDoc !== null &&
+        _.isEmpty(formik.errors.invoices) &&
+        formik.values.invoices !== null
+      ) {
+        try {
+          const formData = new FormData();
+          if (formik.values.currentStatePic) {
+            formData.append("current_stage", formik.values.currentStatePic);
+          }
+
+          if (formik.values.costEstimateFIle) {
+            formData.append("cost_estimate", formik.values.costEstimateFIle);
+          }
+          if (formik.values.ownershipDoc) {
+            formData.append("land_ownership", formik.values.ownershipDoc);
+          }
+          if (formik.values.invoices) {
+            formData.append("invoices", formik.values.invoices);
+          }
+
+          formData.append("church", user?.church_profile ?? "");
+          formData.append(
+            "application_id",
+            search?.applicationId ?? applicationId
+          );
+
+          console.log("formData ", formData);
+
+          const res = await createApplication(formData).unwrap();
+          console.log("res 4", res);
+
+          if (res?.application) {
+            navigate({
+              to: ".",
+              search: { applicationId: res?.application?.application_id },
+            });
+            setActiveStep((prev) => prev + 1);
+          } else {
+            toast(
+              JSON.stringify({
+                type: "error",
+                title: "An error occurred",
+              })
+            );
+          }
+        } catch (error: any) {
+          console.log(error);
+          toast(
+            JSON.stringify({
+              type: "error",
+              title: error?.data?.error ?? "An error occurred",
+            })
+          );
+        }
+      } else {
+        formik.setTouched({
+          currentStatePic: true,
+          costEstimateFIle: true,
+          ownershipDoc: true,
+          invoices: true,
+        });
+      }
+    }
+
+    if (activeStep === supportApplicationSteps.length - 1) {
+      try {
+        const res = await createFinalApplication({
+          application: search?.applicationId ?? applicationId,
+        }).unwrap();
+        console.log("res 5", res);
+
+        if (res?.message) {
+          toast(
+            JSON.stringify({
+              type: "success",
+              title: res?.message ?? `Application submitted successfully`,
+            })
+          );
+          navigate({ to: ".." });
+        } else {
+          toast(
+            JSON.stringify({
+              type: "error",
+              title: "An error occurred",
+            })
+          );
+        }
+      } catch (error: any) {
+        console.log(error);
+        toast(
+          JSON.stringify({
+            type: "error",
+            title: error?.data?.message ?? "An error occurred",
+          })
+        );
+      }
+    }
+  };
+
   const nextStep = () => {
-    if (activeStep < steps.length - 1) {
+    if (activeStep < supportApplicationSteps.length - 1) {
       setActiveStep((prev) => prev + 1);
     } else {
-      // formik.handleSubmit();
-      navigate({ to: ".." });
+      formik.handleSubmit();
+      // navigate({ to: ".." });
     }
   };
 
@@ -77,10 +480,22 @@ const ApplyForSupport = () => {
     if (activeStep > 0) setActiveStep((prev) => prev - 1);
   };
 
-  const CurrentComponent = steps[activeStep].content;
-  const title = steps[activeStep].title;
+  useEffect(() => {
+    if (data) {
+      formik.setFieldValue("churchName", data[0]?.name);
+      formik.setFieldValue("churchAddress", data[0]?.address);
+      formik.setFieldValue("pastorName", data[0]?.pastor_name);
+      formik.setFieldValue("pastorEmail", data[0]?.pastor_email);
+      formik.setFieldValue("pastorPhone", data[0]?.pastor_phone);
+    }
+  }, [data]);
+
+  // console.log("data ", data?.[0]);
+
+  const CurrentComponent = supportApplicationSteps[activeStep].content;
+  const title = supportApplicationSteps[activeStep].title;
   const description =
-    activeStep < steps.length - 1
+    activeStep < supportApplicationSteps.length - 1
       ? "Please fill in all required information"
       : "Review your application and submit";
 
@@ -104,8 +519,8 @@ const ApplyForSupport = () => {
       </p>
 
       <section className="bg-white rounded-md p-8">
-        <div className="flex justify-between items-center gap-x-4 max-w-lg mx-auto">
-          {steps.map((step, index) => (
+        <div className="flex justify-between items-center gap-x-2 max-w-lg mx-auto">
+          {supportApplicationSteps.map((step, index) => (
             <button
               key={step.id}
               className={`font-medium w-14 h-14 rounded-full flex justify-center items-center border text-2xl
@@ -148,11 +563,23 @@ const ApplyForSupport = () => {
               <span>Previous</span>
             </button>
             <button
-              onClick={nextStep}
-              className="w-56 h-16 flex justify-center items-center gap-x-2 rounded-md bg-primary text-white text-lg "
+              onClick={handleProceed}
+              disabled={isLoading || isFinalLoading}
+              className="w-56 h-16 flex justify-center items-center gap-x-2 rounded-md bg-primary text-white text-lg disabled:opacity-80 "
             >
-              <span>{activeStep === steps.length - 1 ? "Submit" : "Next"}</span>
-              <IoIosArrowRoundForward className="size-8" />
+              {isLoading || isFinalLoading ? (
+                <ButtonLoader title="Processing" />
+              ) : (
+                <>
+                  {" "}
+                  <span>
+                    {activeStep === supportApplicationSteps.length - 1
+                      ? "Submit"
+                      : "Next"}
+                  </span>
+                  <IoIosArrowRoundForward className="size-8" />
+                </>
+              )}
             </button>
           </div>
         </div>

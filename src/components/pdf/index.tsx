@@ -120,124 +120,128 @@ export default function PdfReactPdf({ src }: PdfProps) {
 
   return (
     <div style={{ width: "100%", height: "100%" }} className="font-poppins ">
-      <div className="flex h-full gap-4">
-        {/* Thumbnails */}
-        <div className="px-4 py-2 shadow-md bg-white flex flex-col gap-2 overflow-y-auto">
-          {pdfDocument &&
-            Array.from({ length: numPages }, (_, index) => {
-              const thumbPageNumber = index + 1;
-              return (
-                <div
-                  key={thumbPageNumber}
-                  className={`cursor-pointer p-1 rounded-md ${
-                    pageNumber === thumbPageNumber
-                      ? "border-2 border-primary-500"
-                      : "border border-transparent"
-                  }`}
-                  onClick={() => {
-                    if (isContinuous) {
-                      // In continuous mode, scroll to the corresponding page container.
-                      pageRefs.current[thumbPageNumber - 1]?.scrollIntoView({
-                        behavior: "smooth",
-                      });
-                      setPageNumber(thumbPageNumber);
-                    } else {
-                      setPageNumber(thumbPageNumber);
-                    }
-                  }}
-                >
-                  <Page
-                    pageNumber={thumbPageNumber}
-                    scale={0.2}
-                    renderTextLayer={false}
-                    renderAnnotationLayer={false}
-                    pdf={pdfDocument}
-                  />
-                </div>
-              );
-            })}
-        </div>
-
-        {/* Main PDF Viewer */}
-        <div className="h-full flex-1 overflow-y-auto">
-          <Document
-            file={src}
-            onLoadSuccess={onDocumentLoadSuccess}
-            className="my-react-pdf"
-          >
-            {isContinuous ? (
-              // Continuous scroll: render all pages wrapped in ObservedPage
+      <>
+        <div className="flex h-full gap-4">
+          {/* Thumbnails */}
+          <div className="px-4 py-2 shadow-md bg-white flex flex-col gap-2 overflow-y-auto">
+            {pdfDocument &&
               Array.from({ length: numPages }, (_, index) => {
-                const pNumber = index + 1;
+                const thumbPageNumber = index + 1;
                 return (
                   <div
-                    key={`page_${pNumber}`}
-                    ref={(el) => (pageRefs.current[index] = el)}
-                    className="border-b border-gray-300"
+                    key={thumbPageNumber}
+                    className={`cursor-pointer p-1 rounded-md ${
+                      pageNumber === thumbPageNumber
+                        ? "border-2 border-primary-500"
+                        : "border border-transparent"
+                    }`}
+                    onClick={() => {
+                      if (isContinuous) {
+                        // In continuous mode, scroll to the corresponding page container.
+                        pageRefs.current[thumbPageNumber - 1]?.scrollIntoView({
+                          behavior: "smooth",
+                        });
+                        setPageNumber(thumbPageNumber);
+                      } else {
+                        setPageNumber(thumbPageNumber);
+                      }
+                    }}
                   >
-                    <ObservedPage
-                      pageNumber={pNumber}
-                      scale={scale}
-                      onVisible={handlePageVisible}
+                    <Page
+                      pageNumber={thumbPageNumber}
+                      scale={0.2}
+                      renderTextLayer={false}
+                      renderAnnotationLayer={false}
+                      pdf={pdfDocument}
                     />
                   </div>
                 );
-              })
-            ) : (
-              // Single page mode
-              <Page pageNumber={pageNumber} scale={scale} />
-            )}
-          </Document>
+              })}
+          </div>
+
+          {/* Main PDF Viewer */}
+          <div className="h-full flex-1 overflow-y-auto">
+            <Document
+              file={src}
+              onLoadSuccess={onDocumentLoadSuccess}
+              className="my-react-pdf"
+            >
+              {isContinuous ? (
+                // Continuous scroll: render all pages wrapped in ObservedPage
+                Array.from({ length: numPages }, (_, index) => {
+                  const pNumber = index + 1;
+                  return (
+                    <div
+                      key={`page_${pNumber}`}
+                      ref={(el) => (pageRefs.current[index] = el)}
+                      className="border-b border-gray-300"
+                    >
+                      <ObservedPage
+                        pageNumber={pNumber}
+                        scale={scale}
+                        onVisible={handlePageVisible}
+                      />
+                    </div>
+                  );
+                })
+              ) : (
+                // Single page mode
+                <Page pageNumber={pageNumber} scale={scale} />
+              )}
+            </Document>
+          </div>
         </div>
-      </div>
 
-      {/* Navigation, Zoom, and Mode Toggle Controls */}
-      <div className="absolute z-10 bottom-2 right-5 p-2 flex items-center gap-3">
-        <button
-          className="flex items-center gap-2 border border-gray-300 rounded-md py-1 px-2 text-xs cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-          onClick={prevPage}
-          disabled={pageNumber <= 1}
-        >
-          <IoIosArrowBack />
-          Previous
-        </button>
-        <button
-          className="flex items-center gap-2 border border-gray-300 rounded-md py-1 px-2 text-xs cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-          onClick={nextPage}
-          disabled={pageNumber >= numPages}
-        >
-          Next
-          <IoIosArrowForward />
-        </button>
-        <button
-          className="flex items-center gap-1 border border-gray-300 rounded-md py-1 px-2 text-xs cursor-pointer"
-          onClick={zoomOut}
-          disabled={scale <= 0.5}
-        >
-          - Zoom Out
-        </button>
-        <span className="font-light text-xs">{(scale * 100).toFixed(0)}%</span>
-        <button
-          className="flex items-center gap-1 border border-gray-300 rounded-md py-1 px-2 text-xs cursor-pointer"
-          onClick={zoomIn}
-          disabled={scale >= 3.0}
-        >
-          + Zoom In
-        </button>
-        <button
-          className={`flex items-center gap-2 border border-gray-300 rounded-md py-1 px-2 text-xs  ${
-            isContinuous ? "bg-primary-500 text-white" : ""
-          } transition-all duration-150 ease-in-out cursor-pointer `}
-          onClick={toggleContinuous}
-        >
-          {isContinuous ? "Continuous" : "Single Page"}
-        </button>
-      </div>
+        {/* Navigation, Zoom, and Mode Toggle Controls */}
+        <div className="absolute z-10 bottom-2 right-5 p-2 flex items-center gap-3">
+          <button
+            className="flex items-center gap-2 border border-gray-300 rounded-md py-1 px-2 text-xs cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+            onClick={prevPage}
+            disabled={pageNumber <= 1}
+          >
+            <IoIosArrowBack />
+            Previous
+          </button>
+          <button
+            className="flex items-center gap-2 border border-gray-300 rounded-md py-1 px-2 text-xs cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+            onClick={nextPage}
+            disabled={pageNumber >= numPages}
+          >
+            Next
+            <IoIosArrowForward />
+          </button>
+          <button
+            className="flex items-center gap-1 border border-gray-300 rounded-md py-1 px-2 text-xs cursor-pointer"
+            onClick={zoomOut}
+            disabled={scale <= 0.5}
+          >
+            - Zoom Out
+          </button>
+          <span className="font-light text-xs">
+            {(scale * 100).toFixed(0)}%
+          </span>
+          <button
+            className="flex items-center gap-1 border border-gray-300 rounded-md py-1 px-2 text-xs cursor-pointer"
+            onClick={zoomIn}
+            disabled={scale >= 3.0}
+          >
+            + Zoom In
+          </button>
+          <button
+            className={`flex items-center gap-2 border border-gray-300 rounded-md py-1 px-2 text-xs  ${
+              isContinuous ? "bg-primary-500 text-white" : ""
+            } transition-all duration-150 ease-in-out cursor-pointer `}
+            onClick={toggleContinuous}
+          >
+            {isContinuous ? "Continuous" : "Single Page"}
+          </button>
+        </div>
 
-      {/* Page Info */}
-      <p className="absolute font-medium bottom-2 left-5 p-2 text-xs ">
-        Page {pageNumber} of {numPages}
-      </p>
+        {/* Page Info */}
+        <p className="absolute font-medium bottom-2 left-5 p-2 text-xs ">
+          Page {pageNumber} of {numPages}
+        </p>
+      </>
     </div>
   );
 }

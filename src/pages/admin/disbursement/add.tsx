@@ -4,7 +4,7 @@ import * as Yup from "yup";
 import { IoIosArrowRoundBack } from "react-icons/io";
 import { useNavigate } from "react-location";
 import SelectDropdown from "../applications/support/components/select";
-import { bankNames, supportTypes } from "@/pages/client/applications/support/components/support-info";
+import { bankNames, supportTypes } from "@/constants";
 
 const AddDisbursement = () => {
   const navigate = useNavigate();

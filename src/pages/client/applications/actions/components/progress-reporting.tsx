@@ -1,8 +1,10 @@
 import ButtonLoader from "@/components/loaders/button";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { FiUpload } from "react-icons/fi";
 
-const ProgressReportingComponent = () => {
+const ProgressReportingComponent = ({ data }: any) => {
+  const [desc, setDesc] = useState(data?.description ?? "");
+
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -13,6 +15,7 @@ const ProgressReportingComponent = () => {
       }
     }
   };
+
   return (
     <section className="font-poppins px-4 py-5">
       <h4 className="font-medium text-lg text-[#454545] mb-5">
@@ -25,13 +28,15 @@ const ProgressReportingComponent = () => {
             Progress Description
           </label>
           <textarea
-            name=""
-            id=""
+            name="description"
+            id="description"
+            value={desc}
+            onChange={(e) => setDesc(e.target.value)}
             placeholder="Write a brief description of the current projects’ status..."
             className="border border-[#71839B] w-full h-36  rounded-md p-4 mt-2 text-base resize-none"
           ></textarea>
         </div>
-        
+
         <div className="mt-5">
           <label className="font-medium text-lg text-black">
             Upload Supporting Documents or Photos
@@ -72,7 +77,9 @@ const ProgressReportingComponent = () => {
         </div>
 
         <div className="mt-5">
-            <button className="w-full h-14 text-white rounded-md bg-primary-50 hover:bg-primary-100 ">Submit Progress Update</button>
+          <button className="w-full h-14 text-white rounded-md bg-primary-50 hover:bg-primary-100 ">
+            Submit Progress Update
+          </button>
         </div>
       </div>
     </section>

@@ -4,6 +4,8 @@ import { motion } from "framer-motion";
 import { Edit2, Eye, Trash } from "iconsax-react";
 import { useNavigate } from "react-location";
 import { APPLICATIONS, APPLY_SUPPORT } from "@/constants/page-path";
+import { useGetApplicationsQuery } from "@/redux/features/applications/applicationsApiSlice";
+import moment from "moment";
 
 const Applications = () => {
   const navigate = useNavigate();
@@ -16,56 +18,9 @@ const Applications = () => {
     { name: "Action", value: "action" },
   ];
 
-  const rows = [
-    {
-      "application id": "APP-12345",
-      category: "Emergency Support",
-      "submitted date": "Jan 15, 2025",
-      status: "Reviewing",
-    },
-    {
-      "application id": "BPP-12345",
-      category: "Aid",
-      "submitted date": "Jan 15, 2025",
-      status: "Approved",
-    },
-    {
-      "application id": "CPP-12345",
-      category: "Revolving Fund",
-      "submitted date": "Jan 15, 2025",
-      status: "Pending",
-    },
-    {
-      "application id": "DPP-12345",
-      category: "Emergency Support",
-      "submitted date": "Jan 15, 2025",
-      status: "Reviewing",
-    },
-    {
-      "application id": "APP-12345",
-      category: "Emergency Support",
-      "submitted date": "Jan 15, 2025",
-      status: "Reviewing",
-    },
-    {
-      "application id": "BPP-12345",
-      category: "Aid",
-      "submitted date": "Jan 15, 2025",
-      status: "Approved",
-    },
-    {
-      "application id": "CPP-12345",
-      category: "Revolving Fund",
-      "submitted date": "Jan 15, 2025",
-      status: "Pending",
-    },
-    {
-      "application id": "DPP-12345",
-      category: "Emergency Support",
-      "submitted date": "Jan 15, 2025",
-      status: "Reviewing",
-    },
-  ];
+  const { data, isLoading, refetch, isError } = useGetApplicationsQuery({});
+  // console.log(data, "data");
+  const rows = data ?? [];
 
   const customRowRenderer = (
     row: { [key: string]: ReactNode },
@@ -78,16 +33,25 @@ const Applications = () => {
       transition={{ delay: index * 0.05 }}
       className="font-poppins border-b text-lg  text-black  border-gray-200 hover:bg-gray-100 transition-all duration-150 ease-in-out"
     >
-      <td className="px-4 py-3 ">{row["application id"]}</td>
-      <td className="px-4 py-3">{row.category}</td>
-      <td className="px-4 py-3 ">{row["submitted date"]}</td>
+      <td className="px-4 py-3 ">{row?.application_id}</td>
+      <td className="px-4 py-3">{row?.support_type}</td>
       <td className="px-4 py-3 ">
+        {row?.created_at && typeof row.created_at === "string"
+          ? moment(row.created_at).format("LL")
+          : "N/A"}
+      </td>
+      <td className="px-4 py-3 select-none">
         <p
-          className={`text-[#F5F5F5] text-base py-1 rounded-md text-center ${
-            row.status === "Approved" ? "bg-[#2D9632]" : ""
-          } ${row.status === "Pending" ? "bg-[#BAB21D]" : ""} ${
-            row.status === "Reviewing" ? "bg-[#71839B]" : ""
-          } `}
+          className={`text-[#F5F5F5] text-sm py-2 rounded-md text-center !capitalize ${
+            row.status === "APPROVED" ? "bg-[#2D9632]" : ""
+          }
+           
+           ${row.status === "PENDING REVIEW" ? "bg-[#BAB21D]" : ""}
+          ${row.status === "UNDER REVIEW" ? "bg-[#1da5ba]" : ""}
+           ${row.status === "DRAFT" ? "bg-[#71839B]" : ""}
+           ${row.status === "WAITING NO`S APPROVAL" ? "bg-[#719b96]" : ""}
+           ${row.status === "REJECTED" ? "bg-red" : ""}
+            `}
         >
           {row.status}
         </p>
@@ -100,9 +64,22 @@ const Applications = () => {
           <div
             onClick={() =>
               navigate({
-                to: `${APPLICATIONS}/${row["application id"]}`,
+                to: `${APPLICATIONS}/${row?.application_id}`,
                 search: {
                   status: row.status as string,
+                  application_id: row.application_id as string,
+                  support_type: row.support_type as string,
+                  created_at: row.created_at as string,
+                  category: row.category as string,
+                  amount: row.amount as string,
+                  description: row.description as string,
+                  purpose: row.purpose as string,
+                  expected_completion_date:
+                    row.expected_completion_date as string,
+                  current_stage: row.current_stage as string,
+                  cost_estimate: row.cost_estimate as string,
+                  land_ownership: row.land_ownership as string,
+                  invoices: row.invoices as string,
                 },
               })
             }
@@ -118,12 +95,12 @@ const Applications = () => {
     </motion.tr>
   );
 
-  const [loading, setLoading] = useState(true);
+  // const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const timeout = setTimeout(() => setLoading(false), 3000); // Simulating a 3-second data load
-    return () => clearTimeout(timeout);
-  }, []);
+  // useEffect(() => {
+  //   const timeout = setTimeout(() => setLoading(false), 3000); // Simulating a 3-second data load
+  //   return () => clearTimeout(timeout);
+  // }, []);
 
   return (
     <div className="p-5">
@@ -136,13 +113,23 @@ const Applications = () => {
         renderRow={customRowRenderer}
         footer={<div>Pagination goes here</div>}
         maxRows={5}
-        loading={loading}
-        searchableFields={["application id"]}
+        loading={isLoading}
+        searchableFields={["application_id"]}
         filters={[
-          { name: "status", fields: ["Reviewing", "Approved", "Pending"] },
           {
-            name: "category",
-            fields: ["Emergency Support", "Aid", "Revolving Fund"],
+            name: "status",
+            fields: [
+              "APPROVED",
+              "PENDING REVIEW",
+              "UNDER REVIEW",
+              "DRAFT",
+              "REJECTED",
+              "WAITING NO`S APPROVAL",
+            ],
+          },
+          {
+            name: "support_type",
+            fields: ["AID", "REVOLVING_FUND"],
           },
         ]}
       />

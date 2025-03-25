@@ -14,8 +14,6 @@ import {
   ComboboxOptions,
 } from "@headlessui/react";
 import { CheckIcon, ChevronDownIcon } from "@heroicons/react/20/solid";
-import clsx from "clsx";
-import { set } from "lodash";
 import { useAppDispatch, useAppSelector } from "@/redux";
 import {
   selectCurrentToken,
@@ -125,6 +123,7 @@ const Onboarding = () => {
     onSubmit: async (values, actions) => {
       try {
         const formData = new FormData();
+
         formData.append("name", values.name);
         formData.append("address", values.location);
         formData.append("church_phone", values.phone);
@@ -143,7 +142,7 @@ const Onboarding = () => {
 
         const res = await createChurch(formData).unwrap();
 
-        console.log(res, "res");
+        // console.log(res, "res");
 
         if (res) {
           toast(
@@ -167,13 +166,7 @@ const Onboarding = () => {
           );
         }
       } catch (err: any) {
-        console.log(err);
-        toast(
-          JSON.stringify({
-            type: "error",
-            title: err?.data?.error ?? "Onboarding failed",
-          })
-        );
+       
       }
     },
   });
@@ -181,7 +174,7 @@ const Onboarding = () => {
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      console.log(file);
+      // console.log(file);
       setSelectedLogo(file);
 
       const localUrl = URL.createObjectURL(file);

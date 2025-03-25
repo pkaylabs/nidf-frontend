@@ -1,6 +1,7 @@
 import React from "react";
 import { FormikProps } from "formik";
 import SelectDropdown from "./select";
+import { churchProjectTypes, supportTypes } from "@/constants";
 
 interface ChurchInfoProps {
   title: string;
@@ -8,29 +9,42 @@ interface ChurchInfoProps {
   formik: FormikProps<any>;
 }
 
-export const supportTypes = [
-  { label: "Financial Support", value: "financial" },
-  { label: "Material Support", value: "material" },
-  { label: "Prayer Support", value: "prayer" },
-  { label: "Moral Support", value: "moral" },
-  { label: "Other", value: "other" },
-];
-
-
-export const bankNames = [
-  { label: "Fidelity Bank", value: "fidelity" },
-  { label: "Cal Bank", value: "calbank" },
-  { label: "Zenith Bank", value: "zenith" },
-  { label: "Standard Chartered Bank", value: "stanchart" },
-  { label: "Other", value: "other" },
-];
-
 const SupportInfo: React.FC<ChurchInfoProps> = ({
   formik,
   title,
   description,
 }) => {
   const { values, handleBlur, handleChange, touched, errors } = formik;
+
+  const input = (
+    label: string,
+    name: string,
+    type: string = "text",
+    disabled: boolean = false,
+    placeholder: string = ""
+  ) => {
+    return (
+      <div className="font-poppins mt-5">
+        <label htmlFor={name} className=" block text-lg font-medium text-black">
+          {label}
+        </label>
+        <input
+          disabled={disabled}
+          placeholder={placeholder}
+          type={type}
+          name={name}
+          id={name}
+          value={values[name] || ""}
+          onChange={handleChange}
+          onBlur={handleBlur}
+          className={`w-full px-4 py-3 mt-2 text-lg border border-[#71839B] placeholder:font-light disabled:bg-[#EFEFEF] rounded-md focus:outline-none focus:ring-1 focus:ring-primary focus:border-transparent`}
+        />
+        {errors[name] && touched[name] && typeof errors[name] === "string" && (
+          <p className="font-normal text-sm text-[#fc8181]">{errors[name]}</p>
+        )}
+      </div>
+    );
+  };
 
   return (
     <div className="font-poppins">
@@ -55,27 +69,61 @@ const SupportInfo: React.FC<ChurchInfoProps> = ({
             </p>
           )}
         </div>
+
         <div className="mt-5">
           <label
-            htmlFor="supportType"
+            htmlFor="typeOfChurchProject"
             className=" block text-lg font-medium text-black"
           >
-            Purpose For Aid
+            Select Church Project Type
           </label>
           <SelectDropdown
-            options={supportTypes}
-            onChange={(value) => formik.setFieldValue("purposeForAid", value)}
+            options={churchProjectTypes}
+            onChange={(value) =>
+              formik.setFieldValue("typeOfChurchProject", value)
+            }
           />
-          {errors.purposeForAid && typeof errors.purposeForAid === "string" && (
+          {errors.typeOfChurchProject &&
+            typeof errors.typeOfChurchProject === "string" && (
+              <p className="font-normal text-sm text-[#fc8181]">
+                {errors.typeOfChurchProject}
+              </p>
+            )}
+        </div>
+
+        {input(
+          "Purpose For Aid",
+          "purposeForAid",
+          "text",
+          false,
+          "Enter Purpose For Aid"
+        )}
+
+        <div className="mt-5">
+          <label
+            className=" flex items-center text-lg font-medium text-black"
+            htmlFor="isEmergency"
+          >
+            <input
+              id="isEmergency"
+              name="isEmergency"
+              type="checkbox"
+              className="mr-2 size-5 bg-primary-50 border border-primary rounded-lg focus:outline-none  focus:ring-primary "
+              checked={formik.values.isEmergency}
+              onChange={formik.handleChange}
+            />
+            Is Emergency
+          </label>
+          {errors.isEmergency && typeof errors.isEmergency === "string" && (
             <p className="font-normal text-sm text-[#fc8181]">
-              {errors.purposeForAid}
+              {errors.isEmergency}
             </p>
           )}
         </div>
 
         <div className="mt-5">
           <label
-            htmlFor="supportType"
+            htmlFor="progressDescription"
             className=" block text-lg font-medium text-black"
           >
             Progress Description
@@ -97,41 +145,44 @@ const SupportInfo: React.FC<ChurchInfoProps> = ({
             )}
         </div>
 
-        <div className="font-poppins mt-5">
-          <label
-            htmlFor="amountRequested"
-            className=" block text-lg font-medium text-black"
-          >
-            Amount Requested
-          </label>
-          <input
-            placeholder="Enter only the figure"
-            type="number"
-            name="amountRequested"
-            id="amountRequested"
-            value={values.amountRequested || ""}
-            onChange={handleChange}
-            onBlur={handleBlur}
-            className={`w-full px-4 py-3 mt-2 text-lg border border-[#71839B] placeholder:font-light disabled:bg-[#EFEFEF] rounded-md focus:outline-none focus:ring-1 focus:ring-primary focus:border-transparent`}
-          />
-          {errors.amountRequested &&
-            touched.amountRequested &&
-            typeof errors.amountRequested === "string" && (
-              <p className="font-normal text-sm text-[#fc8181]">
-                {errors.amountRequested}
-              </p>
-            )}
-        </div>
+        {input(
+          "Amount Requested",
+          "amountRequested",
+          "text",
+          false,
+          "Enter only the figure"
+        )}
+        {input(
+          "Amount Requested In Words",
+          "amountInWords",
+          "text",
+          false,
+          "Enter Amount Requested In Words"
+        )}
+        {input(
+          "Estimated Project Cost",
+          "estimatedProjectCost",
+          "text",
+          false,
+          "Enter only the figure"
+        )}
+        {input(
+          "Project Location",
+          "projectLocation",
+          "text",
+          false,
+          "Enter Project Location"
+        )}
+        {input("Phase", "phase", "text", false, "Enter Phase")}
 
-        <div className="font-poppins mt-5">
+        {/* <div className="font-poppins mt-5">
           <label
-            htmlFor="amountRequested"
+            htmlFor="expectedCompletionDate"
             className=" block text-lg font-medium text-black"
           >
             Expected Completion Date
           </label>
           <input
-            // placeholder="Enter only the figure"
             type="date"
             name="expectedCompletionDate"
             id="expectedCompletionDate"
@@ -147,7 +198,14 @@ const SupportInfo: React.FC<ChurchInfoProps> = ({
                 {errors.expectedCompletionDate}
               </p>
             )}
-        </div>
+        </div> */}
+        {input(
+          "Expected Completion Date",
+          "expectedCompletionDate",
+          "date",
+          false,
+          "Enter Expected Completion Date"
+        )}
       </div>
     </div>
   );

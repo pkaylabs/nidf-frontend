@@ -13,13 +13,23 @@ import * as Yup from "yup";
 import PdfReactPdf from "@/components/pdf";
 import doc from "@/assets/pdfs/quiz.pdf";
 import { IoCloseOutline } from "react-icons/io5";
+import { isImageFileByExtension } from "@/helpers/image-checker";
 
-interface AdditionalInfoModalProps {
+interface PDFModalProps {
   open: boolean;
   setOpen: (open: boolean) => void;
+  fileName?: string;
+  file?: string;
 }
 
-export default function PDFModal({ open, setOpen }: AdditionalInfoModalProps) {
+export default function PDFModal({
+  open,
+  setOpen,
+  fileName,
+  file,
+}: PDFModalProps) {
+  const isImage = isImageFileByExtension(file);
+
   return (
     <Dialog
       open={open}
@@ -49,7 +59,7 @@ export default function PDFModal({ open, setOpen }: AdditionalInfoModalProps) {
                 as="h3"
                 className="text-lg  font-semibold text-gray-900"
               >
-                PDF Document
+                {fileName ?? "Document/Image"}
               </DialogTitle>
               <button
                 onClick={() => setOpen(false)}
@@ -61,7 +71,15 @@ export default function PDFModal({ open, setOpen }: AdditionalInfoModalProps) {
             </div>
 
             <div className="h-full shadow-md w-full  border border-gray-300 rounded-md overflow-hidden">
-              <PdfReactPdf src={doc} />
+              {isImage ? (
+                <img
+                  src={file ?? ""}
+                  alt={fileName}
+                  className="w-full h-full object-contain"
+                />
+              ) : (
+                <PdfReactPdf src={file ?? ""} />
+              )}
             </div>
           </DialogPanel>
         </div>

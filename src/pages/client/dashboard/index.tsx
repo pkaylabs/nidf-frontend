@@ -12,8 +12,6 @@ const Dashboard = () => {
 
   const { data, isLoading } = useGetDashboardDataQuery({});
 
-  console.log(data, "data");
-
   return (
     <main className="font-poppins">
       <Show if={true}>

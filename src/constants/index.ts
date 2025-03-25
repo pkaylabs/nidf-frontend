@@ -1,7 +1,11 @@
+import ChurchInfo from "@/pages/client/applications/support/components/church-info";
+import OtherInfo from "@/pages/client/applications/support/components/other-info";
+import ReviewSubmit from "@/pages/client/applications/support/components/review-submit";
+import SupportInfo from "@/pages/client/applications/support/components/support-info";
+import SupportingDocs from "@/pages/client/applications/support/components/supporting-docs";
 import { BsExclamationDiamond } from "react-icons/bs";
 import { GrPowerCycle } from "react-icons/gr";
 import { VscTarget } from "react-icons/vsc";
-
 
 export const applicationTypes = [
   {
@@ -22,4 +26,42 @@ export const applicationTypes = [
     description: "Urgent funding for disasters or critical issues.",
     link: "/emergency-support",
   },
+];
+
+export const supportApplicationSteps = [
+  { id: 0, title: "Church Information", content: ChurchInfo },
+  { id: 1, title: "Support Information", content: SupportInfo },
+  { id: 2, title: "Other Information", content: OtherInfo },
+  { id: 3, title: "Supporting Documents", content: SupportingDocs },
+  { id: 4, title: "Review & Submit", content: ReviewSubmit },
+];
+
+export const supportTypes = [
+  { label: "Aid", value: "AID" },
+  { label: "Revolving fund", value: "REVOLVING_FUND" },
+];
+
+export const bankNames = [
+  { label: "Fidelity Bank", value: "fidelity" },
+  { label: "Cal Bank", value: "calbank" },
+  { label: "Zenith Bank", value: "zenith" },
+  { label: "Standard Chartered Bank", value: "stanchart" },
+  { label: "Other", value: "other" },
+];
+
+export const churchProjectTypes = [
+  {
+    label: " Regional headquarters church",
+    value: "REGIONAL HEADQUARTERS CHURCH",
+  },
+  {
+    label: "Divisional headquarters church",
+    value: "DIVISIONAL HEADQUARTERS CHURCH",
+  },
+  {
+    label: "Group of districts headquarters church",
+    value: "GROUP OF DISTRICTS HEADQUARTERS CHURCH",
+  },
+  { label: "District church", value: "DISTRICT CHURCH" },
+  { label: "Location church", value: "LOCATION CHURCH" },
 ];

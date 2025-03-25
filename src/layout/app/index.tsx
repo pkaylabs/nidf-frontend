@@ -31,6 +31,7 @@ import { useState } from "react";
 import { classNames } from "@/utils";
 import {
   APPLICATIONS,
+  BACKEND_BASE_URL,
   DASHBOARD,
   LOGIN,
   PROGRESS,
@@ -85,6 +86,7 @@ export default function AppLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const currentPath = useLocation().current.pathname;
+  const currentHref = useLocation().current.href;
   const navigate = useNavigate();
 
   const dispatch = useAppDispatch();
@@ -96,11 +98,16 @@ export default function AppLayout() {
     dispatch(logout());
   };
 
+  const churchLogo = BACKEND_BASE_URL.replace("/api-v1/", "").concat(
+    user?.church_logo
+  );
+
   if (!token || !user || user?.user_type !== "CHURCH_USER")
     return (
       <Navigate
         to={LOGIN}
         // search={{ redirect: current === "/user-profile" ? "" : currentHref }}
+        search={{ redirect: currentHref }}
         replace
       />
     );
@@ -365,7 +372,7 @@ export default function AppLayout() {
                   ? "Progress Report"
                   : currentPath.includes(REPAYMENT)
                   ? "Repayment Reconciliation"
-                  : "Welcome Prince"}
+                  : `Welcome ${user?.name?.split(" ")[0] ?? "User"}!`}
               </div>
               <div className="flex items-center gap-x-4 lg:gap-x-6">
                 <button
@@ -389,8 +396,9 @@ export default function AppLayout() {
                     <span className="sr-only">Open user menu</span>
                     <img
                       alt=""
-                      src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                      className="size-11 rounded-full bg-gray-50"
+                      // src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                      src={churchLogo ?? logo}
+                      className="size-11 rounded-full object-cover bg-gray-50"
                     />
                     <span className="hidden lg:flex lg:items-start">
                       <ArrowDown2

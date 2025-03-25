@@ -4,7 +4,7 @@ import { IoIosArrowRoundBack } from "react-icons/io";
 import { LiaFileAltSolid } from "react-icons/lia";
 import { RxDownload } from "react-icons/rx";
 import { useNavigate } from "react-location";
-import PDFModal from "../applications/actions/components/pdf-modal";
+import PDFModal from "../../../components/pdf/pdf-modal";
 
 const ProgressReportDetail = () => {
   const [openPDFModal, setOpenPDFModal] = React.useState(false);

@@ -6,30 +6,20 @@ import { motion } from "framer-motion";
 import AppDetailsComponent from "./components/app-details";
 import ProgressReportingComponent from "./components/progress-reporting";
 import Documents from "./components/docs";
-
-const summery = [
-  {
-    title: "Application ID",
-    value: "APP-12345",
-  },
-  {
-    title: "Amount Requested",
-    value: "GHS 50,000",
-  },
-  {
-    title: "Amount Approved",
-    value: "GHS 40,000",
-  },
-  {
-    title: "Date Submitted",
-    value: "Jan 10, 2025",
-  },
-];
+import moment from "moment";
+import { BACKEND_BASE_URL } from "@/constants/page-path";
 
 interface TabProps {
   label: string;
   active: boolean;
   onClick: () => void;
+}
+
+export interface documentsDataProps {
+  name: string;
+  date: string;
+  status: string;
+  url: string;
 }
 
 const Tab = ({ label, active, onClick }: TabProps) => (
@@ -56,14 +46,99 @@ const ViewApplicationDetail = () => {
 
   const navigate = useNavigate();
   const search = useSearch<any>();
+  console.log(search, "search");
+
   const status = search.status;
 
-  const tabs = [
-    { label: "Application Details", component: <AppDetailsComponent /> },
-    { label: "Progress Reporting", component: <ProgressReportingComponent /> },
-    { label: "Documents", component: <Documents data={status} /> },
+  const summery = [
+    {
+      title: "Application ID",
+      value: search?.application_id ?? "N/A",
+    },
+    {
+      title: "Amount Requested",
+      value: `GHS ${search?.amount ?? "0.00"}`,
+    },
+    {
+      title: "Amount Approved",
+      value: "GHS 40,000",
+    },
+    {
+      title: "Date Submitted",
+      value: moment(search.created_at).format("LL") ?? "N/A",
+    },
   ];
-// 
+
+  const projectDetailsData = {
+    purpose: search?.purpose ?? "N/A",
+    estimated: search?.expected_completion_date ?? "N/A",
+  };
+  const progressDetailsData = {
+    description: search?.description ?? "N/A",
+  };
+  const documentsData: documentsDataProps[] = [
+    {
+      name:
+        search?.cost_estimate?.replace(
+          "/assets/applications/cost_estimate/",
+          ""
+        ) ?? "Cost Estimate Document",
+      date: moment(search.created_at).format("LL") ?? "N/A",
+      status: search.status,
+      url:
+        BACKEND_BASE_URL.replace("/api-v1/", "").concat(
+          search?.cost_estimate
+        ) ?? "",
+    },
+    {
+      name:
+        search?.current_stage?.replace(
+          "/assets/applications/current_stage/",
+          ""
+        ) ?? "Current Stage Document",
+      date: moment(search.created_at).format("LL") ?? "N/A",
+      status: search.status,
+      url:
+        BACKEND_BASE_URL.replace("/api-v1/", "").concat(
+          search?.current_stage
+        ) ?? "",
+    },
+    {
+      name:
+        search?.land_ownership?.replace(
+          "/assets/applications/land_ownership/",
+          ""
+        ) ?? "Land Ownership Document",
+      date: moment(search.created_at).format("LL") ?? "N/A",
+      status: search.status,
+      url:
+        BACKEND_BASE_URL.replace("/api-v1/", "").concat(
+          search?.land_ownership
+        ) ?? "",
+    },
+    {
+      name:
+        search?.invoices?.replace("/assets/applications/invoices/", "") ??
+        "Invoices",
+      date: moment(search.created_at).format("LL") ?? "N/A",
+      status: search.status,
+      url:
+        BACKEND_BASE_URL.replace("/api-v1/", "").concat(search?.invoices) ?? "",
+    },
+  ];
+
+  const tabs = [
+    {
+      label: "Application Details",
+      component: <AppDetailsComponent data={projectDetailsData} />,
+    },
+    {
+      label: "Progress Reporting",
+      component: <ProgressReportingComponent data={progressDetailsData} />,
+    },
+    { label: "Documents", component: <Documents data={documentsData} /> },
+  ];
+  //
   return (
     <main className="font-poppins p-5">
       <div className="flex items-center gap-x-4">
@@ -89,11 +164,16 @@ const ViewApplicationDetail = () => {
           </h4>
 
           <p
-            className={`text-[#F5F5F5] text-base py-1.5 px-4 rounded-md text-center ${
-              status === "Approved" ? "bg-[#2D9632]" : ""
-            } ${status === "Pending" ? "bg-[#BAB21D]" : ""} ${
-              status === "Reviewing" ? "bg-[#71839B]" : ""
-            } `}
+            className={`text-[#F5F5F5] text-sm py-2 px-4 rounded-md text-center !capitalize ${
+              status === "APPROVED" ? "bg-[#2D9632]" : ""
+            }
+           
+           ${status === "PENDING REVIEW" ? "bg-[#BAB21D]" : ""}
+          ${status === "UNDER REVIEW" ? "bg-[#1da5ba]" : ""}
+           ${status === "DRAFT" ? "bg-[#71839B]" : ""}
+           ${status === "WAITING NO`S APPROVAL" ? "bg-[#719b96]" : ""}
+           ${status === "REJECTED" ? "bg-red" : ""}
+            `}
           >
             {status}
           </p>
@@ -110,7 +190,7 @@ const ViewApplicationDetail = () => {
           ))}
         </div>
 
-        {status === "Approved" && (
+        {status === "APPROVED" && (
           <div className="flex space-x-4 flex-wrap items-center mt-5">
             {["Download Acceptance Aggreement", "Download Award Letter"].map(
               (item, index) => (
