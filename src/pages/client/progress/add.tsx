@@ -20,11 +20,6 @@ const options = [
 ];
 
 const AddProgressReport = () => {
-  const [selectedProject, setSelectedProject] = useState({
-    name: "",
-    value: "",
-  });
-
   const navigate = useNavigate();
 
   const [previewUrl, setPreviewUrl] = useState<string>("");

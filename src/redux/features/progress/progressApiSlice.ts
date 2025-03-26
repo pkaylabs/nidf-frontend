@@ -10,13 +10,7 @@ export const progressApiSlice = api.injectEndpoints({
         body: formData,
       }),
     }),
-    // finalCreateApplication: builder.mutation({
-    //   query: (credentials) => ({
-    //     url: "applications/",
-    //     method: "PUT",
-    //     body: { ...credentials },
-    //   }),
-    // }),
+   
     getProgressReports: builder.query({
       query: () => "progressreports/",
     }),

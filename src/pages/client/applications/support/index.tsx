@@ -395,7 +395,6 @@ const ApplyForSupport = () => {
             "application_id",
             search?.application_id ?? applicationId
           );
-          
 
           const filteredEntries: any = [];
           formData.forEach((value: any, key) => {
@@ -500,59 +499,90 @@ const ApplyForSupport = () => {
 
   useEffect(() => {
     if (data) {
-      formik.setFieldValue("churchName", data[0]?.name);
-      formik.setFieldValue("churchAddress", data[0]?.address);
-      formik.setFieldValue("pastorName", data[0]?.pastor_name);
-      formik.setFieldValue("pastorEmail", data[0]?.pastor_email);
-      formik.setFieldValue("pastorPhone", data[0]?.pastor_phone);
+      formik.setValues({
+        ...formik.values,
+        churchName: data?.[0]?.church_name,
+        churchAddress: data?.[0]?.church_address,
+        pastorName: data?.[0]?.pastor_name,
+        pastorEmail: data?.[0]?.pastor_email,
+        pastorPhone: data?.[0]?.pastor_phone,
+      });
 
-      // search
-
-      if (search?.id) {
-        formik.setFieldValue("supportType", search?.support_type);
-        formik.setFieldValue(
-          "typeOfChurchProject",
-          search?.type_of_church_project
-        );
-        formik.setFieldValue("purposeForAid", search?.purpose);
-        formik.setFieldValue("isEmergency", search?.is_emergency);
-        formik.setFieldValue("progressDescription", search?.description);
-        formik.setFieldValue("amountRequested", search?.amount);
-        formik.setFieldValue("amountInWords", search?.amount_in_words);
-        formik.setFieldValue(
-          "estimatedProjectCost",
-          search?.estimated_project_cost
-        );
-        formik.setFieldValue("projectLocation", search?.project_location);
-        formik.setFieldValue("phase", search?.phase);
-        formik.setFieldValue(
-          "expectedCompletionDate",
-          search?.expected_completion_date
-        );
-        formik.setFieldValue(
-          "avgServiceAttendance",
-          search?.avg_service_attendance
-        );
-        formik.setFieldValue("avgMonthlyIncome", search?.avg_monthly_income);
-        formik.setFieldValue(
-          "avgMonthlyContributions",
-          search?.avg_monthly_contributions
-        );
-        formik.setFieldValue(
-          "avgMonthlyExpenses",
-          search?.avg_monthly_expenses
-        );
-        formik.setFieldValue(
-          "availableFundsForProject",
-          search?.available_funds_for_project
-        );
-        formik.setFieldValue("currentStatePic", search?.current_stage);
-        formik.setFieldValue("costEstimateFIle", search?.cost_estimate);
-        formik.setFieldValue("ownershipDoc", search?.land_ownership);
-        formik.setFieldValue("invoices", search?.invoices);
-      }
+      // search?.id
+    }
+    if (search?.id) {
+      formik.setValues({
+        ...formik.values,
+        // churchName: search?.church_name,
+        // churchAddress: search?.church_address,
+        // pastorName: search?.pastor_name,
+        // pastorEmail: search?.pastor_email,
+        // pastorPhone: search?.pastor_phone,
+        supportType: search?.support_type,
+        typeOfChurchProject: search?.type_of_church_project,
+        purposeForAid: search?.purpose,
+        isEmergency: search?.is_emergency,
+        progressDescription: search?.description,
+        amountRequested: search?.amount,
+        amountInWords: search?.amount_in_words,
+        estimatedProjectCost: search?.estimated_project_cost,
+        projectLocation: search?.project_location,
+        phase: search?.phase,
+        expectedCompletionDate: search?.expected_completion_date,
+        avgServiceAttendance: search?.avg_service_attendance,
+        avgMonthlyIncome: search?.avg_monthly_income,
+        avgMonthlyContributions: search?.avg_monthly_contributions,
+        avgMonthlyExpenses: search?.avg_monthly_expenses,
+        availableFundsForProject: search?.available_funds_for_project,
+        currentStatePic: search?.current_stage,
+        costEstimateFIle: search?.cost_estimate,
+        ownershipDoc: search?.land_ownership,
+        invoices: search?.invoices,
+      });
     }
   }, [data, search]);
+
+  // formik.setFieldValue("supportType", search?.support_type);
+  //       formik.setFieldValue(
+  //         "typeOfChurchProject",
+  //         search?.type_of_church_project
+  //       );
+  //       formik.setFieldValue("purposeForAid", search?.purpose);
+  //       formik.setFieldValue("isEmergency", search?.is_emergency);
+  //       formik.setFieldValue("progressDescription", search?.description);
+  //       formik.setFieldValue("amountRequested", search?.amount);
+  //       formik.setFieldValue("amountInWords", search?.amount_in_words);
+  //       formik.setFieldValue(
+  //         "estimatedProjectCost",
+  //         search?.estimated_project_cost
+  //       );
+  //       formik.setFieldValue("projectLocation", search?.project_location);
+  //       formik.setFieldValue("phase", search?.phase);
+  //       formik.setFieldValue(
+  //         "expectedCompletionDate",
+  //         search?.expected_completion_date
+  //       );
+  //       formik.setFieldValue(
+  //         "avgServiceAttendance",
+  //         search?.avg_service_attendance
+  //       );
+  //       formik.setFieldValue("avgMonthlyIncome", search?.avg_monthly_income);
+  //       formik.setFieldValue(
+  //         "avgMonthlyContributions",
+  //         search?.avg_monthly_contributions
+  //       );
+  //       formik.setFieldValue(
+  //         "avgMonthlyExpenses",
+  //         search?.avg_monthly_expenses
+  //       );
+  //       formik.setFieldValue(
+  //         "availableFundsForProject",
+  //         search?.available_funds_for_project
+  //       );
+  //       formik.setFieldValue("currentStatePic", search?.current_stage);
+  //       formik.setFieldValue("costEstimateFIle", search?.cost_estimate);
+  //       formik.setFieldValue("ownershipDoc", search?.land_ownership);
+  //       formik.setFieldValue("invoices", search?.invoices);
 
   // console.log("data ", data?.[0]);
 
