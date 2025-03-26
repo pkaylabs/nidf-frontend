@@ -15,6 +15,7 @@ import {
 } from "@/redux/features/applications/applicationsApiSlice";
 import toast from "react-hot-toast";
 import ButtonLoader from "@/components/loaders/button";
+import { APPLICATIONS } from "@/constants/page-path";
 
 const ApplyForSupport = () => {
   const [activeStep, setActiveStep] = useState(0);
@@ -24,7 +25,8 @@ const ApplyForSupport = () => {
   const search = useSearch<any>();
 
   const user = useAppSelector(selectCurrentUser);
-  // console.log("user ", user);
+
+  // console.log("search oo", search.id);
 
   const { data } = useGetChurchesQuery({});
 
@@ -159,7 +161,7 @@ const ApplyForSupport = () => {
             // );
             navigate({
               to: `.`,
-              search: { applicationId: res?.application?.application_id },
+              search: { application_id: res?.application?.application_id },
             });
             setActiveStep((prev) => prev + 1);
           } else {
@@ -238,7 +240,7 @@ const ApplyForSupport = () => {
           formData.append("church", user?.church_profile ?? "");
           formData.append(
             "application_id",
-            search?.applicationId ?? applicationId
+            search?.application_id ?? applicationId
           );
 
           const res = await createApplication(formData).unwrap();
@@ -249,7 +251,7 @@ const ApplyForSupport = () => {
 
             navigate({
               to: `.`,
-              search: { applicationId: res?.application?.application_id },
+              search: { application_id: res?.application?.application_id },
             });
             setActiveStep((prev) => prev + 1);
           } else {
@@ -321,7 +323,7 @@ const ApplyForSupport = () => {
           formData.append("church", user?.church_profile ?? "");
           formData.append(
             "application_id",
-            search?.applicationId ?? applicationId
+            search?.application_id ?? applicationId
           );
 
           const res = await createApplication(formData).unwrap();
@@ -330,7 +332,7 @@ const ApplyForSupport = () => {
           if (res?.application) {
             navigate({
               to: ".",
-              search: { applicationId: res?.application?.application_id },
+              search: { application_id: res?.application?.application_id },
             });
             setActiveStep((prev) => prev + 1);
           } else {
@@ -391,18 +393,43 @@ const ApplyForSupport = () => {
           formData.append("church", user?.church_profile ?? "");
           formData.append(
             "application_id",
-            search?.applicationId ?? applicationId
+            search?.application_id ?? applicationId
           );
+          
 
-          console.log("formData ", formData);
+          const filteredEntries: any = [];
+          formData.forEach((value: any, key) => {
+            if (
+              typeof value === "string" &&
+              !value.includes("/assets/applications/")
+            ) {
+              filteredEntries.push([key, value]);
+            } else if (!(typeof value === "string")) {
+              // If it's not a string (e.g., File), just push it (or handle based on your needs)
+              filteredEntries.push([key, value]);
+            }
+          });
 
-          const res = await createApplication(formData).unwrap();
+          // Convert the filtered entries back into FormData
+          const filteredFormData = new FormData();
+          filteredEntries.forEach(([key, value]: [string, any]) => {
+            filteredFormData.append(key, value);
+          });
+
+          // Logging the filtered form data
+          filteredFormData.forEach((value, key) => {
+            console.log("key:", key);
+            console.log("value:", value);
+          });
+
+          const res = await createApplication(filteredFormData).unwrap();
+
           console.log("res 4", res);
 
           if (res?.application) {
             navigate({
               to: ".",
-              search: { applicationId: res?.application?.application_id },
+              search: { application_id: res?.application?.application_id },
             });
             setActiveStep((prev) => prev + 1);
           } else {
@@ -435,7 +462,7 @@ const ApplyForSupport = () => {
     if (activeStep === supportApplicationSteps.length - 1) {
       try {
         const res = await createFinalApplication({
-          application: search?.applicationId ?? applicationId,
+          application: search?.application_id ?? applicationId,
         }).unwrap();
         console.log("res 5", res);
 
@@ -467,15 +494,6 @@ const ApplyForSupport = () => {
     }
   };
 
-  const nextStep = () => {
-    if (activeStep < supportApplicationSteps.length - 1) {
-      setActiveStep((prev) => prev + 1);
-    } else {
-      formik.handleSubmit();
-      // navigate({ to: ".." });
-    }
-  };
-
   const prevStep = () => {
     if (activeStep > 0) setActiveStep((prev) => prev - 1);
   };
@@ -487,8 +505,54 @@ const ApplyForSupport = () => {
       formik.setFieldValue("pastorName", data[0]?.pastor_name);
       formik.setFieldValue("pastorEmail", data[0]?.pastor_email);
       formik.setFieldValue("pastorPhone", data[0]?.pastor_phone);
+
+      // search
+
+      if (search?.id) {
+        formik.setFieldValue("supportType", search?.support_type);
+        formik.setFieldValue(
+          "typeOfChurchProject",
+          search?.type_of_church_project
+        );
+        formik.setFieldValue("purposeForAid", search?.purpose);
+        formik.setFieldValue("isEmergency", search?.is_emergency);
+        formik.setFieldValue("progressDescription", search?.description);
+        formik.setFieldValue("amountRequested", search?.amount);
+        formik.setFieldValue("amountInWords", search?.amount_in_words);
+        formik.setFieldValue(
+          "estimatedProjectCost",
+          search?.estimated_project_cost
+        );
+        formik.setFieldValue("projectLocation", search?.project_location);
+        formik.setFieldValue("phase", search?.phase);
+        formik.setFieldValue(
+          "expectedCompletionDate",
+          search?.expected_completion_date
+        );
+        formik.setFieldValue(
+          "avgServiceAttendance",
+          search?.avg_service_attendance
+        );
+        formik.setFieldValue("avgMonthlyIncome", search?.avg_monthly_income);
+        formik.setFieldValue(
+          "avgMonthlyContributions",
+          search?.avg_monthly_contributions
+        );
+        formik.setFieldValue(
+          "avgMonthlyExpenses",
+          search?.avg_monthly_expenses
+        );
+        formik.setFieldValue(
+          "availableFundsForProject",
+          search?.available_funds_for_project
+        );
+        formik.setFieldValue("currentStatePic", search?.current_stage);
+        formik.setFieldValue("costEstimateFIle", search?.cost_estimate);
+        formik.setFieldValue("ownershipDoc", search?.land_ownership);
+        formik.setFieldValue("invoices", search?.invoices);
+      }
     }
-  }, [data]);
+  }, [data, search]);
 
   // console.log("data ", data?.[0]);
 
@@ -503,7 +567,7 @@ const ApplyForSupport = () => {
     <main className="font-poppins p-5">
       <div className="flex items-center gap-x-4">
         <button
-          onClick={() => navigate({ to: ".." })}
+          onClick={() => navigate({ to: APPLICATIONS })}
           className="font-light flex items-center space-x-2 border-[0.5px] border-[#545454] bg-white text-black py-2.5 px-4 rounded-md transition-all"
         >
           <IoIosArrowRoundBack className="size-5" />

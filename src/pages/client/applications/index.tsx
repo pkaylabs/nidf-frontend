@@ -3,9 +3,14 @@ import React, { ReactNode, useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Edit2, Eye, Trash } from "iconsax-react";
 import { useNavigate } from "react-location";
-import { APPLICATIONS, APPLY_SUPPORT } from "@/constants/page-path";
+import {
+  APPLICATIONS,
+  APPLY_SUPPORT,
+  UPDATE_SUPPORT,
+} from "@/constants/page-path";
 import { useGetApplicationsQuery } from "@/redux/features/applications/applicationsApiSlice";
 import moment from "moment";
+import { Tooltip } from "react-tooltip";
 
 const Applications = () => {
   const navigate = useNavigate();
@@ -19,7 +24,7 @@ const Applications = () => {
   ];
 
   const { data, isLoading, refetch, isError } = useGetApplicationsQuery({});
-  // console.log(data, "data");
+  console.log(data, "data");
   const rows = data ?? [];
 
   const customRowRenderer = (
@@ -58,16 +63,84 @@ const Applications = () => {
       </td>
       <td className="px-4 py-4 ">
         <div className="flex items-center space-x-3">
-          <div className="cursor-pointer hover:bg-gray-50 p-1 rounded-full">
+          <button
+            id={`edit-anchor-${index}`}
+            // disabled={!row.id || !row.application_id || row.status !== "DRAFT"}
+            onClick={() =>
+              navigate({
+                to: `${
+                  row.id &&
+                  row.application_id &&
+                  `${UPDATE_SUPPORT}/${row.application_id}`
+                } `,
+                search: {
+                  id: row.id as string,
+                  status: (row.status as string) ?? "",
+                  application_id: row.application_id as string,
+                  support_type: (row.support_type as string) ?? "",
+                  type_of_church_project:
+                    (row.type_of_church_project as string) ?? "",
+                  is_emergency: row.is_emergency ?? false,
+                  created_at: (row.created_at as string) ?? "",
+                  category: (row.category as string) ?? "",
+                  amount: (row.amount as string) ?? "",
+                  amount_in_words: (row.amount_in_words as string) ?? "",
+                  description: (row.description as string) ?? "",
+                  purpose: (row.purpose as string) ?? "",
+                  estimated_project_cost:
+                    (row.estimated_project_cost as string) ?? "",
+                  avg_service_attendance:
+                    (row.avg_service_attendance as string) ?? "",
+                  project_location: (row.project_location as string) ?? "",
+                  phase: (row.phase as string) ?? "",
+                  expected_completion_date:
+                    (row.expected_completion_date as string) ?? "",
+
+                  avg_monthly_contributions:
+                    (row.avg_monthly_contributions as string) ?? "",
+                  avg_monthly_expenses:
+                    (row.avg_monthly_expenses as string) ?? "",
+                  avg_monthly_income: (row.avg_monthly_income as string) ?? "",
+                  available_funds_for_project:
+                    (row.available_funds_for_project as string) ?? "",
+                  current_stage: (row.current_stage as string) ?? null,
+                  cost_estimate: (row.cost_estimate as string) ?? null,
+                  land_ownership: (row.land_ownership as string) ?? null,
+                  invoices: (row.invoices as string) ?? null,
+                },
+              })
+            }
+            className="cursor-pointer hover:bg-gray-50 p-1 rounded-full"
+          >
             <Edit2 size="22" color="#545454" />
-          </div>
-          <div
+            <Tooltip
+              style={{
+                fontSize: "12px",
+                fontWeight: "300",
+                backgroundColor: "#101828",
+                color: "#fff",
+                borderRadius: "8px",
+                marginTop: "10px",
+              }}
+              anchorSelect={`#edit-anchor-${index}`}
+              content={`${
+                row.status !== "DRAFT"
+                  ? "Only drafted applications can be edited"
+                  : "Edit"
+              } `}
+              className="z-[3]"
+            />
+          </button>
+
+          <button
+            id={`view-anchor-${index}`}
             onClick={() =>
               navigate({
                 to: `${APPLICATIONS}/${row?.application_id}`,
                 search: {
+                  id: row.id as string,
                   status: row.status as string,
-                  application_id: row.application_id as string,
+                  application_id: row.application_id,
                   support_type: row.support_type as string,
                   created_at: row.created_at as string,
                   category: row.category as string,
@@ -86,10 +159,44 @@ const Applications = () => {
             className="cursor-pointer hover:bg-gray-50 p-1 rounded-full"
           >
             <Eye size="22" color="#545454" />
-          </div>
-          <div className="cursor-pointer hover:bg-gray-50 p-1 rounded-full">
+            <Tooltip
+              style={{
+                fontSize: "12px",
+                fontWeight: "300",
+                backgroundColor: "#101828",
+                color: "#fff",
+                borderRadius: "8px",
+                marginTop: "10px",
+              }}
+              anchorSelect={`#view-anchor-${index}`}
+              content={`View`}
+              className="z-[3]"
+            />
+          </button>
+
+          <button
+            id={`delete-anchor-${index}`}
+            className="cursor-pointer hover:bg-gray-50 p-1 rounded-full"
+          >
             <Trash size="22" color="#FF8A65" />
-          </div>
+            <Tooltip
+              style={{
+                fontSize: "12px",
+                fontWeight: "300",
+                backgroundColor: "#101828",
+                color: "#fff",
+                borderRadius: "8px",
+                marginTop: "10px",
+              }}
+              anchorSelect={`#delete-anchor-${index}`}
+              content={`${
+                row.status !== "DRAFT"
+                  ? "Only drafted applications can be deleted"
+                  : "Delete"
+              } `}
+              className="z-[3]"
+            />
+          </button>
         </div>
       </td>
     </motion.tr>

@@ -2,6 +2,7 @@ import React from "react";
 import { FormikProps } from "formik";
 import { FiUpload } from "react-icons/fi";
 import ButtonLoader from "@/components/loaders/button";
+import { useSearch } from "react-location";
 
 interface ChurchInfoProps {
   title: string;
@@ -14,13 +15,21 @@ const SupportingDocs: React.FC<ChurchInfoProps> = ({
   title,
   description,
 }) => {
-  const { values, errors, setFieldValue } = formik;
+  const { values, errors, setFieldValue, touched } = formik;
+  const search = useSearch<any>();
 
   // Store preview URLs for each file field
-  const [previewUrls, setPreviewUrls] = React.useState<{ [key: string]: string }>({});
+  const [previewUrls, setPreviewUrls] = React.useState<{
+    [key: string]: string;
+  }>({});
 
   const docTypes = [
     {
+      documentName: search?.current_stage?.replace(
+        "/assets/applications/current_stage/",
+        ""
+      ),
+      check: search?.current_stage,
       label: "Pictures of Current State",
       description: "Upload photos showing the current project state",
       value: values.currentStatePic,
@@ -28,6 +37,11 @@ const SupportingDocs: React.FC<ChurchInfoProps> = ({
       name: "currentStatePic",
     },
     {
+      documentName: search?.cost_estimate?.replace(
+        "/assets/applications/cost_estimate/",
+        ""
+      ),
+      check: search?.cost_estimate,
       label: "Cost Estimates",
       description: "Attach cost estimates from contractors",
       value: values.costEstimateFIle,
@@ -35,6 +49,11 @@ const SupportingDocs: React.FC<ChurchInfoProps> = ({
       name: "costEstimateFIle",
     },
     {
+      documentName: search?.land_ownership?.replace(
+        "/assets/applications/land_ownership/",
+        ""
+      ),
+      check: search?.land_ownership,
       label: "Land Ownership Documents",
       description: "Upload land ownership or build permits",
       value: values.ownershipDoc,
@@ -42,6 +61,11 @@ const SupportingDocs: React.FC<ChurchInfoProps> = ({
       name: "ownershipDoc",
     },
     {
+      documentName: search?.invoices?.replace(
+        "/assets/applications/invoices/",
+        ""
+      ),
+      check: search?.invoices,
       label: "Invoices (Optional)",
       description: "Attach supplier invoices if available",
       value: values.invoices,
@@ -87,13 +111,16 @@ const SupportingDocs: React.FC<ChurchInfoProps> = ({
       <div className="mt-8">
         {docTypes.map((doc, index) => (
           <div key={index} className="mt-5">
-            <label className="font-medium text-lg text-black">{doc.label}</label>
+            <label className="font-medium text-lg text-black">
+              {doc.label}
+            </label>
             <div className="w-full py-12 border border-dashed border-[#71839B] relative group overflow-hidden rounded-xl transition-all duration-200 ease-in-out mt-3">
               <div className="flex h-full justify-center items-center transition-all duration-200 ease-in-out">
                 <div className="flex flex-col items-center mb-8">
                   {doc.value ? (
                     // If a file is available, display its preview or name in place of the icon
-                    doc.value instanceof File && doc.value.type.startsWith("image/") ? (
+                    doc.value instanceof File &&
+                    doc.value.type.startsWith("image/") ? (
                       previewUrls[doc.name] ? (
                         <img
                           src={previewUrls[doc.name]}
@@ -102,7 +129,14 @@ const SupportingDocs: React.FC<ChurchInfoProps> = ({
                         />
                       ) : null
                     ) : (
-                      <p>{doc.value?.name}</p>
+                      // <p>{doc.check ? doc?.documentName : doc.value?.name}</p>
+                      <p>
+                        {!doc.value?.name
+                          ? doc.check
+                            ? doc?.documentName
+                            : doc.value?.name
+                          : doc.value?.name}
+                      </p>
                     )
                   ) : (
                     // When no file is selected, show the upload icon and instructions
@@ -141,9 +175,13 @@ const SupportingDocs: React.FC<ChurchInfoProps> = ({
                 </label>
               </div>
             </div>
-            {doc.error && typeof doc.error === "string" && (
-              <p className="font-normal text-sm text-[#fc8181]">{doc.error}</p>
-            )}
+            {touched[doc.name] &&
+              doc.error &&
+              typeof doc.error === "string" && (
+                <p className="font-normal text-sm text-[#fc8181]">
+                  {doc.error}
+                </p>
+              )}
           </div>
         ))}
       </div>

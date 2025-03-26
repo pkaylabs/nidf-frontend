@@ -100,7 +100,7 @@ const AddProgressReport = () => {
           </div>
         </div>
 
-        <div className="flex flex-col mt-5">
+        {/* <div className="flex flex-col mt-5">
           <label className="font-medium text-lg text-black ">
             Previously Uploaded Files
           </label>
@@ -130,7 +130,7 @@ const AddProgressReport = () => {
               </div>
             ))}
           </div>
-        </div>
+        </div> */}
 
         <div className="flex items-center space-x-5 mt-6">
           <button className="font-poppins font-light w-56 h-10 bg-primary text-[#F5F5F5] flex justify-center items-center border border-primary rounded-md  ">

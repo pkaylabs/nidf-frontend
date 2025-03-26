@@ -72,9 +72,9 @@ ${doc.status === "REJECTED" ? "bg-red" : ""}
                   >
                     <Eye size="22" color="#545454" />
                   </div>
-                  <div className="cursor-pointer hover:bg-gray-50 p-1 rounded-full">
+                  {/* <div className="cursor-pointer hover:bg-gray-50 p-1 rounded-full">
                     <Trash size="22" color="#FF8A65" />
-                  </div>
+                  </div> */}
                 </div>
               </td>
             </tr>

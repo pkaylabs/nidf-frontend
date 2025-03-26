@@ -7,6 +7,7 @@ export const USER_PROFILE = "/user-profile";
 export const DASHBOARD = "/";
 export const APPLICATIONS = "/my-applications";
 export const APPLY_SUPPORT = "/my-applications/support";
+export const UPDATE_SUPPORT = "/my-applications/update-support";
 export const PROGRESS = "/progress-report";
 export const ADD_PROGRESS = "/progress-report/add";
 export const REPAYMENT = "/repayment";
