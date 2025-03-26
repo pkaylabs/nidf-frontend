@@ -1,20 +1,68 @@
 import { ADD_PROGRESS } from "@/constants/page-path";
 import { isImageFileByExtension } from "@/helpers/image-checker";
-import { useGetProgressReportsQuery } from "@/redux/features/progress/progressApiSlice";
+import {
+  useDeleteProgressReportMutation,
+  useGetProgressReportsQuery,
+} from "@/redux/features/progress/progressApiSlice";
 import moment from "moment";
 import React from "react";
 import { LiaFileAltSolid } from "react-icons/lia";
 import { useNavigate } from "react-location";
 import { IoImageOutline } from "react-icons/io5";
+import Swal from "sweetalert2";
 
 const ProgressReport = () => {
   const navigate = useNavigate();
 
   const { data, isLoading, refetch, isError } = useGetProgressReportsQuery({});
-  console.log(data, "data");
+  // console.log(data, "data");
   const rows = data ?? [];
 
   // const isImage = isImageFileByExtension(row);
+  const [deleteProgress, { isLoading: isDeleting }] =
+    useDeleteProgressReportMutation();
+
+  const handleDelete = async (id: string) => {
+    try {
+      Swal.fire({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#17567E",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, delete it!",
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          try {
+            const res = await deleteProgress({ report: id }).unwrap();
+            // console.log(res, "res deleting");
+
+            refetch();
+            Swal.fire({
+              title: "Deleted!",
+              text: "Your progress report has been deleted.",
+              icon: "success",
+            });
+          } catch (error) {
+            console.error(error);
+            Swal.fire({
+              title: "Error!",
+              text: "An error occurred while deleting the report.",
+              icon: "error",
+            });
+          }
+        }
+      });
+    } catch (error) {
+      console.log(error);
+      Swal.fire({
+        title: "Error!",
+        text: "An error occurred. Please try again.",
+        icon: "error",
+      });
+    }
+  };
 
   return (
     <section className="font-poppins p-5 ">
@@ -82,7 +130,11 @@ const ProgressReport = () => {
                 >
                   View Details
                 </button>
-                <button className="font-poppins font-light w-40 h-10 flex justify-center items-center border border-[#CE5347] rounded-md text-[#CE5347] hover:bg-[#CE5347] hover:text-white transition-all duratioin-200 ease-in-out ">
+                <button
+                  disabled={isDeleting}
+                  onClick={() => handleDelete(row?.report_id)}
+                  className="font-poppins font-light w-40 h-10 flex justify-center items-center border border-[#CE5347] rounded-md text-[#CE5347] hover:bg-[#CE5347] hover:text-white transition-all duratioin-200 ease-in-out "
+                >
                   Delete
                 </button>
               </div>
