@@ -65,7 +65,7 @@ const Applications = () => {
         <div className="flex items-center space-x-3">
           <button
             id={`edit-anchor-${index}`}
-            // disabled={!row.id || !row.application_id || row.status !== "DRAFT"}
+            disabled={!row.id || !row.application_id || row.status !== "DRAFT"}
             onClick={() =>
               navigate({
                 to: `${
@@ -202,11 +202,8 @@ const Applications = () => {
     </motion.tr>
   );
 
-  // const [loading, setLoading] = useState(true);
-
   // useEffect(() => {
-  //   const timeout = setTimeout(() => setLoading(false), 3000); // Simulating a 3-second data load
-  //   return () => clearTimeout(timeout);
+   
   // }, []);
 
   return (
