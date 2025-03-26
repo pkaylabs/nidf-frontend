@@ -8,9 +8,14 @@ import {
   APPLY_SUPPORT,
   UPDATE_SUPPORT,
 } from "@/constants/page-path";
-import { useGetApplicationsQuery } from "@/redux/features/applications/applicationsApiSlice";
+import {
+  useDeleteApplicationMutation,
+  useGetApplicationsQuery,
+} from "@/redux/features/applications/applicationsApiSlice";
 import moment from "moment";
 import { Tooltip } from "react-tooltip";
+import { tooltipStyle } from "@/constants";
+import Swal from "sweetalert2";
 
 const Applications = () => {
   const navigate = useNavigate();
@@ -24,8 +29,53 @@ const Applications = () => {
   ];
 
   const { data, isLoading, refetch, isError } = useGetApplicationsQuery({});
-  console.log(data, "data");
+  // console.log(data, "data");
   const rows = data ?? [];
+
+  const [deleteApplication, { isLoading: isDeleting }] =
+    useDeleteApplicationMutation();
+
+  const handleDelete = async (id: string) => {
+    try {
+      Swal.fire({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#17567E",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, delete it!",
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          try {
+            const res = await deleteApplication({ application: id }).unwrap();
+            console.log(res, "res deleting");
+
+            refetch();
+            Swal.fire({
+              title: "Deleted!",
+              text: "Your application has been deleted.",
+              icon: "success",
+            });
+          } catch (error) {
+            console.error(error);
+            Swal.fire({
+              title: "Error!",
+              text: "An error occurred while deleting the application.",
+              icon: "error",
+            });
+          }
+        }
+      });
+    } catch (error) {
+      console.log(error);
+      Swal.fire({
+        title: "Error!",
+        text: "An error occurred. Please try again.",
+        icon: "error",
+      });
+    }
+  };
 
   const customRowRenderer = (
     row: { [key: string]: ReactNode },
@@ -114,14 +164,7 @@ const Applications = () => {
           >
             <Edit2 size="22" color="#545454" />
             <Tooltip
-              style={{
-                fontSize: "12px",
-                fontWeight: "300",
-                backgroundColor: "#101828",
-                color: "#fff",
-                borderRadius: "8px",
-                marginTop: "10px",
-              }}
+              style={tooltipStyle}
               anchorSelect={`#edit-anchor-${index}`}
               content={`${
                 row.status !== "DRAFT"
@@ -160,14 +203,7 @@ const Applications = () => {
           >
             <Eye size="22" color="#545454" />
             <Tooltip
-              style={{
-                fontSize: "12px",
-                fontWeight: "300",
-                backgroundColor: "#101828",
-                color: "#fff",
-                borderRadius: "8px",
-                marginTop: "10px",
-              }}
+              style={tooltipStyle}
               anchorSelect={`#view-anchor-${index}`}
               content={`View`}
               className="z-[3]"
@@ -175,19 +211,14 @@ const Applications = () => {
           </button>
 
           <button
+            disabled={row.status !== "DRAFT" || isDeleting}
+            onClick={() => handleDelete(row?.application_id as string)}
             id={`delete-anchor-${index}`}
             className="cursor-pointer hover:bg-gray-50 p-1 rounded-full"
           >
             <Trash size="22" color="#FF8A65" />
             <Tooltip
-              style={{
-                fontSize: "12px",
-                fontWeight: "300",
-                backgroundColor: "#101828",
-                color: "#fff",
-                borderRadius: "8px",
-                marginTop: "10px",
-              }}
+              style={tooltipStyle}
               anchorSelect={`#delete-anchor-${index}`}
               content={`${
                 row.status !== "DRAFT"
@@ -203,7 +234,7 @@ const Applications = () => {
   );
 
   // useEffect(() => {
-   
+
   // }, []);
 
   return (

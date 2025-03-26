@@ -10,12 +10,18 @@ export const progressApiSlice = api.injectEndpoints({
         body: formData,
       }),
     }),
-   
+    deleteProgressReport: builder.mutation({
+      query: (credentials) => ({
+        url: "progressreports/",
+        method: "DELETE",
+        body: { ...credentials },
+      }),
+    }),
     getProgressReports: builder.query({
       query: () => "progressreports/",
     }),
   }),
 });
 
-export const { useCreateProgressReportMutation, useGetProgressReportsQuery } =
+export const { useCreateProgressReportMutation, useDeleteProgressReportMutation, useGetProgressReportsQuery } =
   progressApiSlice;

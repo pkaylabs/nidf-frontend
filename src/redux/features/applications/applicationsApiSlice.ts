@@ -17,6 +17,13 @@ export const applicationApiSlice = api.injectEndpoints({
         body: { ...credentials },
       }),
     }),
+    deleteApplication: builder.mutation({
+      query: (credentials) => ({
+        url: "applications/",
+        method: "DELETE",
+        body: { ...credentials },
+      }),
+    }),
     getApplications: builder.query({
       query: () => "applications/",
     }),
@@ -26,5 +33,6 @@ export const applicationApiSlice = api.injectEndpoints({
 export const {
   useCreateApplicationMutation,
   useFinalCreateApplicationMutation,
+  useDeleteApplicationMutation,
   useGetApplicationsQuery,
 } = applicationApiSlice;

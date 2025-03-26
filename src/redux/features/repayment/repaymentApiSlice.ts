@@ -10,12 +10,29 @@ export const repaymentApiSlice = api.injectEndpoints({
         body: formData,
       }),
     }),
-   
+    updateRepayment: builder.mutation({
+      query: (credentials) => ({
+        url: "repayments/",
+        method: "PUT",
+        body: { ...credentials },
+      }),
+    }),
+    deleteRepayment: builder.mutation({
+      query: (credentials) => ({
+        url: "repayments/",
+        method: "DELETE",
+        body: { ...credentials },
+      }),
+    }),
     getRepayments: builder.query({
       query: () => "repayments/",
     }),
   }),
 });
 
-export const { useCreateRepaymentMutation, useGetRepaymentsQuery } =
-repaymentApiSlice;
+export const {
+  useCreateRepaymentMutation,
+  useUpdateRepaymentMutation,
+  useDeleteRepaymentMutation,
+  useGetRepaymentsQuery,
+} = repaymentApiSlice;

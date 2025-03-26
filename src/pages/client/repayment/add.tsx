@@ -29,7 +29,7 @@ const AddRepayment = () => {
   } = useGetApplicationsQuery({});
   const { data: dashboardStat, isLoading: loadingDashboadStat } =
     useGetDashboardDataQuery({});
-  // console.log(dashboardStat, "dashboardStat");
+  console.log(dashboardStat, "dashboardStat");
 
   const applicationOptions = data?.map((app: any) => {
     return { label: app?.purpose, value: app?.id };
@@ -40,7 +40,8 @@ const AddRepayment = () => {
     { name: " Amount Repaid", value: dashboardStat?.amount_repaid ?? "0" },
     {
       name: "Outstanding Balance",
-      value: dashboardStat?.outstanding_balance ?? "0",
+      value:
+        Math.abs(dashboardStat?.arrears - dashboardStat?.amount_repaid) ?? "0",
     },
     {
       name: "Next Repayment Due",

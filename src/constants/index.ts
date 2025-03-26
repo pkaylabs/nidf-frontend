@@ -65,3 +65,12 @@ export const churchProjectTypes = [
   { label: "District church", value: "DISTRICT CHURCH" },
   { label: "Location church", value: "LOCATION CHURCH" },
 ];
+
+export const tooltipStyle = {
+  fontSize: "12px",
+  fontWeight: "300",
+  backgroundColor: "#101828",
+  color: "#fff",
+  borderRadius: "8px",
+  marginTop: "10px",
+};
