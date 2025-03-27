@@ -1,13 +1,28 @@
 import ButtonLoader from "@/components/loaders/button";
-import { DASHBOARD, SIGNUP } from "@/constants/page-path";
+import {
+  DASHBOARD,
+  ONBOARDING,
+  OTP_VERIFICATION,
+  SIGNUP,
+} from "@/constants/page-path";
+import { useAppDispatch } from "@/redux";
+import { useLoginMutation } from "@/redux/features/auth/authApiSlice";
+import { setCredentials } from "@/redux/features/auth/authSlice";
+import { LocationGenerics } from "@/router/location";
 import { useFormik } from "formik";
 import { useState } from "react";
-import { Link, useNavigate } from "react-location";
+import toast from "react-hot-toast";
+import { Link, useNavigate, useSearch } from "react-location";
 import * as Yup from "yup";
 
 const Login = () => {
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
+
+  const search = useSearch<LocationGenerics>();
+
+  const dispatch = useAppDispatch();
+
+  const [login, { isLoading }] = useLoginMutation();
 
   const {
     values,
@@ -32,13 +47,55 @@ const Login = () => {
         .required("Password is required"),
     }),
 
-    onSubmit: (values, actions) => {
-      setLoading(true);
-      setTimeout(() => {
-        navigate({ to: DASHBOARD });
-        actions.resetForm();
-        setLoading(false);
-      }, 4000);
+    onSubmit: async (values, actions) => {
+      try {
+        const res = await login(values).unwrap();
+
+        console.log(res, "res");
+
+        if (res?.token && res?.user?.user_type === "CHURCH_USER") {
+          if (!res?.user?.phone_verified) {
+            return navigate({
+              to: OTP_VERIFICATION,
+            });
+          } else if (!res?.user?.church_profile) {
+            return navigate({
+              to: ONBOARDING,
+            });
+          } else {
+            dispatch(setCredentials({ ...res }));
+            toast(
+              JSON.stringify({
+                type: "success",
+                title: `Welcome back ${res?.user?.name?.split(" ")[0]}`,
+              })
+            );
+
+            navigate({
+              replace: true,
+              to:
+                search.redirect === ""
+                  ? DASHBOARD
+                  : search.redirect ?? DASHBOARD,
+            });
+          }
+        } else {
+          toast(
+            JSON.stringify({
+              type: "error",
+              title: "Error logging in",
+            })
+          );
+        }
+      } catch (err: any) {
+        console.log(err);
+        toast(
+          JSON.stringify({
+            type: "error",
+            title: err?.data?.error_message ?? "Error logging in",
+          })
+        );
+      }
     },
   });
 
@@ -104,10 +161,10 @@ const Login = () => {
           disabled={isSubmitting}
           type="submit"
           className={`bg-[#17567E] w-44 h-12 flex justify-center items-center rounded-md text-white mobile:text-sm mx-auto my-3 mobile:py-2 mobile:px-10 ${
-            isSubmitting ? "opacity-35" : ""
+            isSubmitting ? "opacity-80" : ""
           }`}
         >
-          {loading ? <ButtonLoader title="Logging In" /> : "Log In"}
+          {isLoading ? <ButtonLoader title="Logging In" /> : "Log In"}
         </button>
         <p
           className="mx-auto font-normal text-base mobile:text-sm mobile:text-center"

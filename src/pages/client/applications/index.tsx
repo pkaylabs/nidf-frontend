@@ -3,7 +3,19 @@ import React, { ReactNode, useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Edit2, Eye, Trash } from "iconsax-react";
 import { useNavigate } from "react-location";
-import { APPLICATIONS, APPLY_SUPPORT } from "@/constants/page-path";
+import {
+  APPLICATIONS,
+  APPLY_SUPPORT,
+  UPDATE_SUPPORT,
+} from "@/constants/page-path";
+import {
+  useDeleteApplicationMutation,
+  useGetApplicationsQuery,
+} from "@/redux/features/applications/applicationsApiSlice";
+import moment from "moment";
+import { Tooltip } from "react-tooltip";
+import { tooltipStyle } from "@/constants";
+import Swal from "sweetalert2";
 
 const Applications = () => {
   const navigate = useNavigate();
@@ -16,56 +28,54 @@ const Applications = () => {
     { name: "Action", value: "action" },
   ];
 
-  const rows = [
-    {
-      "application id": "APP-12345",
-      category: "Emergency Support",
-      "submitted date": "Jan 15, 2025",
-      status: "Reviewing",
-    },
-    {
-      "application id": "BPP-12345",
-      category: "Aid",
-      "submitted date": "Jan 15, 2025",
-      status: "Approved",
-    },
-    {
-      "application id": "CPP-12345",
-      category: "Revolving Fund",
-      "submitted date": "Jan 15, 2025",
-      status: "Pending",
-    },
-    {
-      "application id": "DPP-12345",
-      category: "Emergency Support",
-      "submitted date": "Jan 15, 2025",
-      status: "Reviewing",
-    },
-    {
-      "application id": "APP-12345",
-      category: "Emergency Support",
-      "submitted date": "Jan 15, 2025",
-      status: "Reviewing",
-    },
-    {
-      "application id": "BPP-12345",
-      category: "Aid",
-      "submitted date": "Jan 15, 2025",
-      status: "Approved",
-    },
-    {
-      "application id": "CPP-12345",
-      category: "Revolving Fund",
-      "submitted date": "Jan 15, 2025",
-      status: "Pending",
-    },
-    {
-      "application id": "DPP-12345",
-      category: "Emergency Support",
-      "submitted date": "Jan 15, 2025",
-      status: "Reviewing",
-    },
-  ];
+  const { data, isLoading, refetch, isError } = useGetApplicationsQuery({});
+  // console.log(data, "data");
+  const rows = data ?? [];
+
+  const [deleteApplication, { isLoading: isDeleting }] =
+    useDeleteApplicationMutation();
+
+  const handleDelete = async (id: string) => {
+    try {
+      Swal.fire({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#17567E",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, delete it!",
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          try {
+            const res = await deleteApplication({ application: id }).unwrap();
+            console.log(res, "res deleting");
+
+            refetch();
+            Swal.fire({
+              title: "Deleted!",
+              text: "Your application has been deleted.",
+              icon: "success",
+            });
+          } catch (error) {
+            console.error(error);
+            Swal.fire({
+              title: "Error!",
+              text: "An error occurred while deleting the application.",
+              icon: "error",
+            });
+          }
+        }
+      });
+    } catch (error) {
+      console.log(error);
+      Swal.fire({
+        title: "Error!",
+        text: "An error occurred. Please try again.",
+        icon: "error",
+      });
+    }
+  };
 
   const customRowRenderer = (
     row: { [key: string]: ReactNode },
@@ -78,51 +88,155 @@ const Applications = () => {
       transition={{ delay: index * 0.05 }}
       className="font-poppins border-b text-lg  text-black  border-gray-200 hover:bg-gray-100 transition-all duration-150 ease-in-out"
     >
-      <td className="px-4 py-3 ">{row["application id"]}</td>
-      <td className="px-4 py-3">{row.category}</td>
-      <td className="px-4 py-3 ">{row["submitted date"]}</td>
+      <td className="px-4 py-3 ">{row?.application_id}</td>
+      <td className="px-4 py-3">{row?.support_type}</td>
       <td className="px-4 py-3 ">
+        {row?.created_at && typeof row.created_at === "string"
+          ? moment(row.created_at).format("LL")
+          : "N/A"}
+      </td>
+      <td className="px-4 py-3 select-none">
         <p
-          className={`text-[#F5F5F5] text-base py-1 rounded-md text-center ${
-            row.status === "Approved" ? "bg-[#2D9632]" : ""
-          } ${row.status === "Pending" ? "bg-[#BAB21D]" : ""} ${
-            row.status === "Reviewing" ? "bg-[#71839B]" : ""
-          } `}
+          className={`text-[#F5F5F5] text-sm py-2 rounded-md text-center !capitalize ${
+            row.status === "APPROVED" ? "bg-[#2D9632]" : ""
+          }
+           
+           ${row.status === "PENDING REVIEW" ? "bg-[#BAB21D]" : ""}
+          ${row.status === "UNDER REVIEW" ? "bg-[#1da5ba]" : ""}
+           ${row.status === "DRAFT" ? "bg-[#71839B]" : ""}
+           ${row.status === "WAITING NO`S APPROVAL" ? "bg-[#719b96]" : ""}
+           ${row.status === "REJECTED" ? "bg-red" : ""}
+            `}
         >
           {row.status}
         </p>
       </td>
       <td className="px-4 py-4 ">
         <div className="flex items-center space-x-3">
-          <div className="cursor-pointer hover:bg-gray-50 p-1 rounded-full">
-            <Edit2 size="22" color="#545454" />
-          </div>
-          <div
+          <button
+            id={`edit-anchor-${index}`}
+            disabled={!row.id || !row.application_id || row.status !== "DRAFT"}
             onClick={() =>
               navigate({
-                to: `${APPLICATIONS}/${row["application id"]}`,
+                to: `${
+                  row.id &&
+                  row.application_id &&
+                  `${UPDATE_SUPPORT}/${row.application_id}`
+                } `,
                 search: {
+                  id: row.id as string,
+                  
+
+                  status: (row.status as string) ?? "",
+                  application_id: row.application_id as string,
+                  support_type: (row.support_type as string) ?? "",
+                  type_of_church_project:
+                    (row.type_of_church_project as string) ?? "",
+                  is_emergency: row.is_emergency ?? false,
+                  created_at: (row.created_at as string) ?? "",
+                  category: (row.category as string) ?? "",
+                  amount: (row.amount as string) ?? "",
+                  amount_in_words: (row.amount_in_words as string) ?? "",
+                  description: (row.description as string) ?? "",
+                  purpose: (row.purpose as string) ?? "",
+                  estimated_project_cost:
+                    (row.estimated_project_cost as string) ?? "",
+                  avg_service_attendance:
+                    (row.avg_service_attendance as string) ?? "",
+                  project_location: (row.project_location as string) ?? "",
+                  phase: (row.phase as string) ?? "",
+                  expected_completion_date:
+                    (row.expected_completion_date as string) ?? "",
+
+                  avg_monthly_contributions:
+                    (row.avg_monthly_contributions as string) ?? "",
+                  avg_monthly_expenses:
+                    (row.avg_monthly_expenses as string) ?? "",
+                  avg_monthly_income: (row.avg_monthly_income as string) ?? "",
+                  available_funds_for_project:
+                    (row.available_funds_for_project as string) ?? "",
+                  current_stage: (row.current_stage as string) ?? null,
+                  cost_estimate: (row.cost_estimate as string) ?? null,
+                  land_ownership: (row.land_ownership as string) ?? null,
+                  invoices: (row.invoices as string) ?? null,
+                },
+              })
+            }
+            className="cursor-pointer hover:bg-gray-50 p-1 rounded-full"
+          >
+            <Edit2 size="22" color="#545454" />
+            <Tooltip
+              style={tooltipStyle}
+              anchorSelect={`#edit-anchor-${index}`}
+              content={`${
+                row.status !== "DRAFT"
+                  ? "Only drafted applications can be edited"
+                  : "Edit"
+              } `}
+              className="z-[3]"
+            />
+          </button>
+
+          <button
+            id={`view-anchor-${index}`}
+            onClick={() =>
+              navigate({
+                to: `${APPLICATIONS}/${row?.application_id}`,
+                search: {
+                  id: row.id as string,
                   status: row.status as string,
+                  application_id: row.application_id,
+                  support_type: row.support_type as string,
+                  created_at: row.created_at as string,
+                  category: row.category as string,
+                  amount: row.amount as string,
+                  description: row.description as string,
+                  purpose: row.purpose as string,
+                  expected_completion_date:
+                    row.expected_completion_date as string,
+                  current_stage: row.current_stage as string,
+                  cost_estimate: row.cost_estimate as string,
+                  land_ownership: row.land_ownership as string,
+                  invoices: row.invoices as string,
                 },
               })
             }
             className="cursor-pointer hover:bg-gray-50 p-1 rounded-full"
           >
             <Eye size="22" color="#545454" />
-          </div>
-          <div className="cursor-pointer hover:bg-gray-50 p-1 rounded-full">
+            <Tooltip
+              style={tooltipStyle}
+              anchorSelect={`#view-anchor-${index}`}
+              content={`View`}
+              className="z-[3]"
+            />
+          </button>
+
+          <button
+            disabled={row.status !== "DRAFT" || isDeleting}
+            onClick={() => handleDelete(row?.application_id as string)}
+            id={`delete-anchor-${index}`}
+            className="cursor-pointer hover:bg-gray-50 p-1 rounded-full"
+          >
             <Trash size="22" color="#FF8A65" />
-          </div>
+            <Tooltip
+              style={tooltipStyle}
+              anchorSelect={`#delete-anchor-${index}`}
+              content={`${
+                row.status !== "DRAFT"
+                  ? "Only drafted applications can be deleted"
+                  : "Delete"
+              } `}
+              className="z-[3]"
+            />
+          </button>
         </div>
       </td>
     </motion.tr>
   );
 
-  const [loading, setLoading] = useState(true);
-
   useEffect(() => {
-    const timeout = setTimeout(() => setLoading(false), 3000); // Simulating a 3-second data load
-    return () => clearTimeout(timeout);
+    refetch();
   }, []);
 
   return (
@@ -136,13 +250,23 @@ const Applications = () => {
         renderRow={customRowRenderer}
         footer={<div>Pagination goes here</div>}
         maxRows={5}
-        loading={loading}
-        searchableFields={["application id"]}
+        loading={isLoading}
+        searchableFields={["application_id"]}
         filters={[
-          { name: "status", fields: ["Reviewing", "Approved", "Pending"] },
           {
-            name: "category",
-            fields: ["Emergency Support", "Aid", "Revolving Fund"],
+            name: "status",
+            fields: [
+              "APPROVED",
+              "PENDING REVIEW",
+              "UNDER REVIEW",
+              "DRAFT",
+              "REJECTED",
+              "WAITING NO`S APPROVAL",
+            ],
+          },
+          {
+            name: "support_type",
+            fields: ["AID", "REVOLVING_FUND"],
           },
         ]}
       />

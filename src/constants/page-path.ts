@@ -7,6 +7,7 @@ export const USER_PROFILE = "/user-profile";
 export const DASHBOARD = "/";
 export const APPLICATIONS = "/my-applications";
 export const APPLY_SUPPORT = "/my-applications/support";
+export const UPDATE_SUPPORT = "/my-applications/update-support";
 export const PROGRESS = "/progress-report";
 export const ADD_PROGRESS = "/progress-report/add";
 export const REPAYMENT = "/repayment";
@@ -30,4 +31,4 @@ export const ADMIN_USER_DETAIL = "/admin/users/:id";
 
 export const ADMIN_NOTIFICATIONS = "/admin/notifications";
 
-export const BACKEND_BASE_URL = "";
+export const BACKEND_BASE_URL = "http://159.223.215.232/api-v1/";

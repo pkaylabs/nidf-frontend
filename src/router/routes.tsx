@@ -102,6 +102,13 @@ const routes: RouteProps[] = [
         },
       },
       {
+        path: "/update-support/:id",
+        element: <ApplyForSupport />,
+        meta: {
+          layout: "App",
+        },
+      },
+      {
         path: "/:id",
         element: <ViewApplicationDetail />,
         meta: {

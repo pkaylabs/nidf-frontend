@@ -1,41 +1,251 @@
 import Select from "@/components/core/select";
 import ButtonLoader from "@/components/loaders/button";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FiUpload } from "react-icons/fi";
 import { FaRegFileAlt } from "react-icons/fa";
-import { useNavigate } from "react-location";
+import { useNavigate, useSearch } from "react-location";
 import { IoIosArrowRoundBack } from "react-icons/io";
-
-const options = [
-  { name: "Option 1", value: "option1" },
-  { name: "Option 2", value: "option2" },
-  { name: "Option 3", value: "option3" },
-];
-
-const loan = [
-  { name: "Total Loan Amount", value: "GHS 50,000" },
-  { name: " Amount Repaid", value: "GHS 30,000" },
-  { name: "Outstanding Balance", value: "GHS 20,000" },
-  { name: "Next Repayment Due", value: "1/31/2025" },
-];
+import toast from "react-hot-toast";
+import { FormikProps, useFormik } from "formik";
+import * as Yup from "yup";
+import {
+  useCreateRepaymentMutation,
+  useUpdateRepaymentMutation,
+} from "@/redux/features/repayment/repaymentApiSlice";
+import { useGetApplicationsQuery } from "@/redux/features/applications/applicationsApiSlice";
+import SelectDropdown from "../applications/support/components/select";
+import { useGetDashboardDataQuery } from "@/redux/features/dashbaord/dashbaordApiSlice";
+import moment from "moment";
 
 const AddRepayment = () => {
-  const [selectedProject, setSelectedProject] = useState({
-    name: "",
-    value: "",
+  const navigate = useNavigate();
+  const search = useSearch<any>();
+
+  const [previewUrl, setPreviewUrl] = useState<string>("");
+
+  const [addRepayment, { isLoading }] = useCreateRepaymentMutation();
+  const [updateRepayment, { isLoading: updating }] =
+    useUpdateRepaymentMutation();
+
+  const {
+    data,
+    isLoading: fetchingApplications,
+    refetch,
+    isError,
+  } = useGetApplicationsQuery({});
+  const { data: dashboardStat, isLoading: loadingDashboadStat } =
+    useGetDashboardDataQuery({});
+  console.log(dashboardStat, "dashboardStat");
+
+  const applicationOptions = data?.map((app: any) => {
+    return { label: app?.purpose, value: app?.id };
   });
 
-  const navigate = useNavigate();
+  const loan = [
+    { name: "Total Loan Amount", value: dashboardStat?.arrears ?? "0" },
+    { name: " Amount Repaid", value: dashboardStat?.amount_repaid ?? "0" },
+    {
+      name: "Outstanding Balance",
+      value:
+        Math.abs(dashboardStat?.arrears - dashboardStat?.amount_repaid) ?? "0",
+    },
+    {
+      name: "Next Repayment Due",
+      value:
+        moment(dashboardStat?.next_due_date).format("LL") ?? "Date not set",
+    },
+  ];
 
-  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const formik = useFormik({
+    initialValues: {
+      application: "",
+      paymentDate: "",
+      amountPaid: "",
+      paymentReference: "",
+      doc: null as File | null,
+    },
+    validationSchema: Yup.object({
+      application: Yup.string().required("Application is required"),
+      paymentDate: Yup.string().required("Payment date is required"),
+      amountPaid: Yup.string().required("Amount paid is required"),
+      paymentReference: Yup.string().required("Payment reference is required"),
+      doc: Yup.mixed().required("Supporting document is required"),
+    }),
+    onSubmit: async (values) => {
+      console.log("Submitted values: ", values);
+
+      if (search?.repayment_id) {
+        let data: {
+          application: string;
+          date_paid: string;
+          amount: string;
+          payment_reference: string;
+          proof_of_payment?: Blob;
+        } = {
+          application: formik.values.application as string,
+          date_paid: formik.values.paymentDate,
+          amount: formik.values.amountPaid,
+          payment_reference: formik.values.paymentReference,
+        };
+        if (
+          typeof formik.values.doc === "string" &&
+          (formik.values.doc as string).includes("/assets/repayments/")
+        ) {
+          data = {
+            ...data,
+          };
+        } else {
+          data = {
+            ...data,
+            proof_of_payment: formik.values.doc as Blob,
+          };
+        }
+
+        const res = await updateRepayment({
+          repayment: search?.repayment_id,
+          ...data,
+        }).unwrap();
+
+        if (res?.id) {
+          toast(
+            JSON.stringify({
+              type: "success",
+              title:
+                res?.message ?? `Repayment Reconciliation updated successfully`,
+            })
+          );
+
+          formik.resetForm();
+
+          navigate({ to: ".." });
+        } else {
+          toast(
+            JSON.stringify({
+              type: "error",
+              title: "An error occurred",
+            })
+          );
+        }
+      } else {
+        try {
+          const formData = new FormData();
+          formData.append("application", formik.values.application as string);
+          formData.append("date_paid", formik.values.paymentDate);
+          formData.append("amount", formik.values.amountPaid);
+          formData.append("payment_reference", formik.values.paymentReference);
+          formData.append("proof_of_payment", formik.values.doc as Blob);
+
+          const res = await addRepayment(formData).unwrap();
+
+          if (res?.id) {
+            toast(
+              JSON.stringify({
+                type: "success",
+                title:
+                  res?.message ??
+                  `Repayment Reconciliation submitted successfully`,
+              })
+            );
+
+            formik.resetForm();
+
+            navigate({ to: ".." });
+          } else {
+            toast(
+              JSON.stringify({
+                type: "error",
+                title: "An error occurred",
+              })
+            );
+          }
+        } catch (error: any) {
+          console.log(error);
+          toast(
+            JSON.stringify({
+              type: "error",
+              title: error?.data?.error ?? "An error occurred",
+            })
+          );
+        }
+      }
+    },
+  });
+
+  // if (
+  //   typeof value === "string" &&
+  //   !value.includes("/assets/applications/")
+  // )
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      try {
-        // await uploadImage(file);
-      } catch (err) {
-        console.error("Upload failed:", err);
+      if (previewUrl) {
+        URL.revokeObjectURL(previewUrl);
       }
+      const objectUrl = URL.createObjectURL(file);
+      setPreviewUrl(objectUrl);
+      formik.setFieldValue("doc", file);
     }
+  };
+
+  // Clean up the object URL when the component unmounts
+  useEffect(() => {
+    return () => {
+      if (previewUrl) {
+        URL.revokeObjectURL(previewUrl);
+      }
+    };
+  }, [previewUrl]);
+
+  useEffect(() => {
+    if (search?.repayment_id) {
+      formik.setValues({
+        application: search?.application_id,
+        paymentDate: search?.date_paid,
+        amountPaid: search?.amount,
+        paymentReference: search?.payment_reference,
+        doc: search?.proof_of_payment,
+      });
+    }
+  }, [search]);
+
+  const {
+    values,
+    handleChange,
+    handleBlur,
+    errors,
+    touched,
+    handleSubmit,
+  }: FormikProps<any> = formik;
+
+  const input = (
+    label: string,
+    name: string,
+    type: string = "text",
+    disabled: boolean = false,
+    placeholder: string = ""
+  ) => {
+    return (
+      <div className="font-poppins mt-5">
+        <label htmlFor={name} className=" block text-lg font-medium text-black">
+          {label}
+        </label>
+        <input
+          disabled={disabled}
+          placeholder={placeholder}
+          type={type}
+          name={name}
+          id={name}
+          value={values[name] || ""}
+          onChange={handleChange}
+          onBlur={handleBlur}
+          className={`w-full px-4 py-3 mt-2 text-lg border border-[#71839B] placeholder:font-light disabled:bg-[#EFEFEF] rounded-md focus:outline-none focus:ring-1 focus:ring-primary focus:border-transparent`}
+        />
+        {errors[name] && touched[name] && typeof errors[name] === "string" && (
+          <p className="font-normal text-sm text-[#fc8181]">{errors[name]}</p>
+        )}
+      </div>
+    );
   };
 
   return (
@@ -54,7 +264,7 @@ const AddRepayment = () => {
             <div className="max-w-[241px] w-full border px-3 py-5 border-[#71839B] rounded-md">
               <p className="font-light text-sm text-black ">{loans.name}</p>
               <p className="font-medium text-2xl text-black mt-3">
-                {loans.value}
+                {index !== 3 && "GHS"} {loans.value}
               </p>
             </div>
           ))}
@@ -68,83 +278,154 @@ const AddRepayment = () => {
           </p>
         </div>
         <div className="mt-5">
-          <Select
-            label="Select Application"
-            options={options}
-            onChange={setSelectedProject}
+          <label
+            htmlFor="application"
+            className="block text-lg font-medium text-black"
+          >
+            Select Application
+          </label>
+          <SelectDropdown
+            options={applicationOptions}
+            value={formik.values.application || ""}
+            onChange={(value) => formik.setFieldValue("application", value)}
           />
+          {formik.touched.application &&
+            formik.errors.application &&
+            typeof formik.errors.application === "string" && (
+              <p className="font-normal text-sm text-[#fc8181]">
+                {formik.errors.application}
+              </p>
+            )}
         </div>
 
         {/* Input*/}
         <div className="mt-5">
-          <label className="font-medium text-lg text-black ">
-            Payment Date
-          </label>
-          <input
-            type="date"
-            className="flex justify-between items-center w-full border border-[#71839B] cursor-default rounded-md bg-white py-3 pr-2 pl-3 text-left text-gray-400  outline-gray-300 sm:text-sm"
-          />
-        </div>
-        <div className="mt-5">
-          <label className="font-medium text-lg text-black ">Amount Paid</label>
-          <input
-            type="text"
-            placeholder="Enter Amount "
-            className="flex justify-between items-center w-full border border-[#71839B] cursor-default rounded-md bg-white py-3 pr-2 pl-3 text-left text-gray-400  outline-gray-300 sm:text-sm"
-          />
+          {input(
+            "Payment Date",
+            "paymentDate",
+            "date",
+            false,
+            "Enter Payment Date"
+          )}
         </div>
 
+        {/* Input */}
         <div className="mt-5">
-          <label className="font-medium text-lg text-black ">
-            Payment Reference Number
-          </label>
-          <input
-            type="text"
-            placeholder="Enter reference  number"
-            className="flex justify-between items-center w-full border border-[#71839B] cursor-default rounded-md bg-white py-3 pr-2 pl-3 text-left text-gray-400  outline-gray-300 sm:text-sm"
-          />
+          {input(
+            "Amount Paid",
+            "amountPaid",
+            "text",
+            false,
+            "Enter Amount Paid"
+          )}
         </div>
 
-        {/* image input */}
-        <div className="flex flex-col mt-5">
-          <p className="font-medium text-lg text-black mb-2">
-            Upload Proof of Payment
-          </p>
-          <div className="w-full py-12 border border-[#71839B] relative group overflow-hidden rounded-xl transition-all duration-200 ease-in-out">
-            <div className="flex h-full justify-center items-center transition-all duration-200 ease-in-out">
-              <div className="flex flex-col items-center">
-                <FiUpload className="w-7 h-7 text-[#71839B] mb-3" />
-                <p className="font-light text-center text-[#71839B]">
-                  Drag and drop files here, or click to browse <br />
-                </p>
+        {/* Input */}
+        <div className="mt-5">
+          {input(
+            "Payment Reference",
+            "paymentReference",
+            "text",
+            false,
+            "Enter Payment Reference"
+          )}
+        </div>
+
+        {/* File Upload */}
+        <div className="mt-5">
+          <label className="font-medium text-lg text-black">
+            Upload Supporting Documents or Photos
+          </label>
+          <div className="mt-5">
+            <div className="w-full py-12 border border-dashed border-[#71839B] relative group overflow-hidden rounded-xl transition-all duration-200 ease-in-out mt-3">
+              <div className="flex h-full justify-center items-center transition-all duration-200 ease-in-out">
+                <div className="flex flex-col items-center mb-5">
+                  {formik.values.doc ? (
+                    formik.values.doc instanceof File &&
+                    formik.values.doc.type.startsWith("image/") ? (
+                      previewUrl ? (
+                        <img
+                          src={previewUrl}
+                          alt="Preview"
+                          className="w-40 h-40 object-cover"
+                        />
+                      ) : null
+                    ) : (
+                      // <p className="text-center">{formik.values.doc.name}</p>
+                      <p>
+                        {!formik.values.doc.name
+                          ? search?.proof_of_payment
+                            ? search?.proof_of_payment?.replace(
+                                "/assets/repayments/",
+                                ""
+                              )
+                            : formik.values.doc.name
+                          : formik.values.doc.name}
+                      </p>
+                    )
+                  ) : (
+                    <>
+                      <FiUpload className="w-7 h-7 text-[#71839B] mb-3" />
+                      <p className="font-light text-center text-[#71839B]">
+                        Drag and drop files here, or click to browse.
+                        <br />
+                        Supported formats: PDF, DOCX, XLSX, JPG, PNG (max 10MB
+                        per file)
+                      </p>
+                    </>
+                  )}
+                </div>
+              </div>
+              {/* Optional overlay loader */}
+              {false && (
+                <div className="absolute z-20 inset-0 flex justify-center items-center bg-black bg-opacity-40 transition-all duration-200 ease-in-out">
+                  <ButtonLoader title="" />
+                </div>
+              )}
+              {/* Browse Files Button */}
+              <div className="absolute bottom-4 w-full flex justify-center">
                 <label
-                  htmlFor="file"
-                  className="w-full flex justify-center items-center cursor-pointer"
+                  htmlFor="doc"
+                  className="cursor-pointer flex flex-col items-center"
                 >
-                  <div className="w-40 h-10 flex justify-center items-center border border-[#324054] rounded-md mt-5">
+                  <div className="w-40 h-10 flex justify-center items-center border border-[#324054] rounded-md">
                     Browse Files
                   </div>
                   <input
                     type="file"
-                    name="file"
-                    id="file"
-                    accept="image/*"
+                    name="doc"
+                    id="doc"
+                    accept="image/*,application/pdf,.doc,.docx,.xlsx"
                     className="hidden"
-                    onChange={handleImageChange}
+                    onChange={handleFileChange}
                   />
                 </label>
               </div>
             </div>
-            {false && (
-              <div className="absolute z-20 inset-0 flex justify-center items-center bg-black bg-opacity-40 transition-all duration-200 ease-in-out">
-                <ButtonLoader title="" />
-              </div>
+            {formik.touched.doc && formik.errors.doc && (
+              <p className="font-normal text-sm text-[#fc8181]">
+                {formik.errors.doc}
+              </p>
             )}
           </div>
         </div>
+
         <div className="flex items-center space-x-5 mt-6">
-          <button className="font-poppins font-light w-56 h-10 bg-primary text-[#F5F5F5] flex justify-center items-center border border-primary rounded-md  ">
-            Submit Repayment Data
+          <button
+            disabled={isLoading || updating}
+            onClick={() => handleSubmit()}
+            className="font-poppins font-light w-56 h-10 bg-primary text-[#F5F5F5] flex justify-center items-center border border-primary rounded-md
+            disabled:bg-opacity-80  "
+          >
+            {isLoading || updating ? (
+              <ButtonLoader
+                title={search?.repayment_id ? "Updating..." : "Submitting..."}
+              />
+            ) : (
+              <span>
+                {search?.repayment_id ? "Update" : "Submit"} Repayment Data
+              </span>
+            )}
           </button>
         </div>
       </div>

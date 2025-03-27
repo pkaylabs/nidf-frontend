@@ -5,7 +5,7 @@ import { LiaFileAltSolid } from "react-icons/lia";
 import { RxDownload } from "react-icons/rx";
 import { useNavigate } from "react-location";
 import { IoCheckmark } from "react-icons/io5";
-import PDFModal from "@/pages/client/applications/actions/components/pdf-modal";
+import PDFModal from "@/components/pdf/pdf-modal";
 
 const AdminProgressReportDetails = () => {
   const [openPDFModal, setOpenPDFModal] = React.useState(false);

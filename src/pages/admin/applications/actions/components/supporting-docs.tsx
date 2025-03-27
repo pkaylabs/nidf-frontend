@@ -1,6 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
-import PDFModal from "@/pages/client/applications/actions/components/pdf-modal";
+import PDFModal from "@/components/pdf/pdf-modal";
 
 const SupportingDocuments = () => {
   const [openPDFModal, setOpenPDFModal] = React.useState(false);

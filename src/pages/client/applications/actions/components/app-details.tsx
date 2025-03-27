@@ -1,7 +1,8 @@
 import React from "react";
 import { motion } from "framer-motion";
+import moment from "moment";
 
-const AppDetailsComponent = () => {
+const AppDetailsComponent = ({data}: any) => {
   return (
     <section className="font-poppins px-4 py-5">
       <h4 className="font-medium text-lg text-[#454545] mb-5">
@@ -20,14 +21,14 @@ const AppDetailsComponent = () => {
               Purpose of Aid
             </td>
             <td className="py-2 text-lg text-black">
-              Renovation of the church building
+              {data?.purpose ?? "Not Available"}
             </td>
           </tr>
           <tr className="border-b">
             <td className="py-3 font-medium text-lg text-black">
               Estimated Completion
             </td>
-            <td className="py-2 text-lg text-black">June 10, 2025</td>
+            <td className="py-2 text-lg text-black">{moment(data?.estimated).format("LL") ?? "Not Available"}</td>
           </tr>
           <tr className="border-b">
             <td className="py-3 font-medium text-lg text-black">

@@ -1,4 +1,4 @@
-import PDFModal from "@/pages/client/applications/actions/components/pdf-modal";
+import PDFModal from "@/components/pdf/pdf-modal";
 import { Edit2, Eye } from "iconsax-react";
 import React from "react";
 import { IoIosArrowRoundBack } from "react-icons/io";

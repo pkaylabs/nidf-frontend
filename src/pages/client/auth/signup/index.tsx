@@ -1,13 +1,25 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { Link, useNavigate } from "react-location";
-import { LOGIN } from "@/constants/page-path";
+import { LOGIN, OTP_VERIFICATION } from "@/constants/page-path";
 import ButtonLoader from "@/components/loaders/button";
+import { setCredentials } from "@/redux/features/auth/authSlice";
+import { useAppDispatch } from "@/redux";
+import toast from "react-hot-toast";
+import { useRegisterMutation } from "@/redux/features/auth/authApiSlice";
 
 const SignUp = () => {
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
+
+  const dispatch = useAppDispatch();
+
+  const [register, { isLoading }] = useRegisterMutation();
+
+  useEffect(() => {
+    document.title = "NIDF | Sign up";
+  }, []);
+
   const {
     values,
     handleSubmit,
@@ -22,6 +34,7 @@ const SignUp = () => {
       email: "",
       phone: "",
       password: "",
+      user_type: "CHURCH_USER",
     },
 
     validationSchema: Yup.object().shape({
@@ -43,14 +56,46 @@ const SignUp = () => {
         .required("Password is required"),
     }),
 
-    onSubmit: (values, actions) => {
-      setLoading(true);
-            setTimeout(() => {
-              navigate({ to: "/otp-verification", replace: true });
-              actions.resetForm();
-              setLoading(false);
-            }, 4000);
-      
+    onSubmit: async (values, actions) => {
+      try {
+        const res = await register(values).unwrap();
+
+        console.log(res, "res");
+
+        if (res?.token) {
+          dispatch(setCredentials({ token: res?.token }));
+
+          toast(
+            JSON.stringify({
+              type: "success",
+              title: `Account created successfully. Verify your OTP to continue`,
+            })
+          );
+
+          navigate({
+            to: OTP_VERIFICATION,
+            replace: true,
+            search: {
+              phone: values.phone,
+            },
+          });
+        } else {
+          toast(
+            JSON.stringify({
+              type: "error",
+              title: "Error creating account",
+            })
+          );
+        }
+      } catch (err: any) {
+        console.log(err);
+        toast(
+          JSON.stringify({
+            type: "error",
+            title: err?.data?.error_message ?? "Error creating account",
+          })
+        );
+      }
     },
   });
 
@@ -166,10 +211,10 @@ const SignUp = () => {
           disabled={isSubmitting}
           type="submit"
           className={`bg-[#17567E] w-36 h-12 flex justify-center items-center rounded-md text-white mx-auto mt-3 ${
-            isSubmitting ? "opacity-30" : ""
+            isSubmitting ? "opacity-80" : ""
           }`}
         >
-          {loading ? <ButtonLoader title="Registering" /> : "Register"}
+          {isLoading ? <ButtonLoader title="Registering" /> : "Register"}
         </button>
       </form>
     </div>
