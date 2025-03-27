@@ -125,6 +125,8 @@ const Applications = () => {
                 } `,
                 search: {
                   id: row.id as string,
+                  
+
                   status: (row.status as string) ?? "",
                   application_id: row.application_id as string,
                   support_type: (row.support_type as string) ?? "",

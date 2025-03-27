@@ -29,6 +29,7 @@ const ApplyForSupport = () => {
   // console.log("search oo", search.id);
 
   const { data } = useGetChurchesQuery({});
+  console.log("data church ", data);
 
   const formik = useFormik({
     initialValues: {
@@ -472,7 +473,7 @@ const ApplyForSupport = () => {
               title: res?.message ?? `Application submitted successfully`,
             })
           );
-          navigate({ to: ".." });
+          navigate({ to: APPLICATIONS });
         } else {
           toast(
             JSON.stringify({
@@ -501,23 +502,26 @@ const ApplyForSupport = () => {
     if (data) {
       formik.setValues({
         ...formik.values,
-        churchName: data?.[0]?.church_name,
-        churchAddress: data?.[0]?.church_address,
+        churchName: data?.[0]?.name,
+        churchAddress: data?.[0]?.address,
         pastorName: data?.[0]?.pastor_name,
         pastorEmail: data?.[0]?.pastor_email,
         pastorPhone: data?.[0]?.pastor_phone,
       });
+
+      // formik.setFieldValue("churchName", data?.[0]?.name);
 
       // search?.id
     }
     if (search?.id) {
       formik.setValues({
         ...formik.values,
-        // churchName: search?.church_name,
-        // churchAddress: search?.church_address,
-        // pastorName: search?.pastor_name,
-        // pastorEmail: search?.pastor_email,
-        // pastorPhone: search?.pastor_phone,
+        churchName: data?.[0]?.name,
+        churchAddress: data?.[0]?.address,
+        pastorName: data?.[0]?.pastor_name,
+        pastorEmail: data?.[0]?.pastor_email,
+        pastorPhone: data?.[0]?.pastor_phone,
+
         supportType: search?.support_type,
         typeOfChurchProject: search?.type_of_church_project,
         purposeForAid: search?.purpose,
