@@ -8,7 +8,10 @@ import { IoIosArrowRoundBack } from "react-icons/io";
 import toast from "react-hot-toast";
 import { FormikProps, useFormik } from "formik";
 import * as Yup from "yup";
-import { useCreateRepaymentMutation } from "@/redux/features/repayment/repaymentApiSlice";
+import {
+  useCreateRepaymentMutation,
+  useUpdateRepaymentMutation,
+} from "@/redux/features/repayment/repaymentApiSlice";
 import { useGetApplicationsQuery } from "@/redux/features/applications/applicationsApiSlice";
 import SelectDropdown from "../applications/support/components/select";
 import { useGetDashboardDataQuery } from "@/redux/features/dashbaord/dashbaordApiSlice";
@@ -21,6 +24,9 @@ const AddRepayment = () => {
   const [previewUrl, setPreviewUrl] = useState<string>("");
 
   const [addRepayment, { isLoading }] = useCreateRepaymentMutation();
+  const [updateRepayment, { isLoading: updating }] =
+    useUpdateRepaymentMutation();
+
   const {
     data,
     isLoading: fetchingApplications,
@@ -68,23 +74,44 @@ const AddRepayment = () => {
     onSubmit: async (values) => {
       console.log("Submitted values: ", values);
 
-      try {
-        const formData = new FormData();
-        formData.append("application", formik.values.application as string);
-        formData.append("date_paid", formik.values.paymentDate);
-        formData.append("amount", formik.values.amountPaid);
-        formData.append("payment_reference", formik.values.paymentReference);
-        formData.append("proof_of_payment", formik.values.doc as Blob);
+      if (search?.repayment_id) {
+        let data: {
+          application: string;
+          date_paid: string;
+          amount: string;
+          payment_reference: string;
+          proof_of_payment?: Blob;
+        } = {
+          application: formik.values.application as string,
+          date_paid: formik.values.paymentDate,
+          amount: formik.values.amountPaid,
+          payment_reference: formik.values.paymentReference,
+        };
+        if (
+          typeof formik.values.doc === "string" &&
+          (formik.values.doc as string).includes("/assets/repayments/")
+        ) {
+          data = {
+            ...data,
+          };
+        } else {
+          data = {
+            ...data,
+            proof_of_payment: formik.values.doc as Blob,
+          };
+        }
 
-        const res = await addRepayment(formData).unwrap();
+        const res = await updateRepayment({
+          repayment: search?.repayment_id,
+          ...data,
+        }).unwrap();
 
         if (res?.id) {
           toast(
             JSON.stringify({
               type: "success",
               title:
-                res?.message ??
-                `Repayment Reconciliation submitted successfully`,
+                res?.message ?? `Repayment Reconciliation updated successfully`,
             })
           );
 
@@ -99,17 +126,55 @@ const AddRepayment = () => {
             })
           );
         }
-      } catch (error: any) {
-        console.log(error);
-        toast(
-          JSON.stringify({
-            type: "error",
-            title: error?.data?.error ?? "An error occurred",
-          })
-        );
+      } else {
+        try {
+          const formData = new FormData();
+          formData.append("application", formik.values.application as string);
+          formData.append("date_paid", formik.values.paymentDate);
+          formData.append("amount", formik.values.amountPaid);
+          formData.append("payment_reference", formik.values.paymentReference);
+          formData.append("proof_of_payment", formik.values.doc as Blob);
+
+          const res = await addRepayment(formData).unwrap();
+
+          if (res?.id) {
+            toast(
+              JSON.stringify({
+                type: "success",
+                title:
+                  res?.message ??
+                  `Repayment Reconciliation submitted successfully`,
+              })
+            );
+
+            formik.resetForm();
+
+            navigate({ to: ".." });
+          } else {
+            toast(
+              JSON.stringify({
+                type: "error",
+                title: "An error occurred",
+              })
+            );
+          }
+        } catch (error: any) {
+          console.log(error);
+          toast(
+            JSON.stringify({
+              type: "error",
+              title: error?.data?.error ?? "An error occurred",
+            })
+          );
+        }
       }
     },
   });
+
+  // if (
+  //   typeof value === "string" &&
+  //   !value.includes("/assets/applications/")
+  // )
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -347,13 +412,19 @@ const AddRepayment = () => {
 
         <div className="flex items-center space-x-5 mt-6">
           <button
+            disabled={isLoading || updating}
             onClick={() => handleSubmit()}
-            className="font-poppins font-light w-56 h-10 bg-primary text-[#F5F5F5] flex justify-center items-center border border-primary rounded-md  "
+            className="font-poppins font-light w-56 h-10 bg-primary text-[#F5F5F5] flex justify-center items-center border border-primary rounded-md
+            disabled:bg-opacity-80  "
           >
-            {isLoading ? (
-              <ButtonLoader title="Submitting..." />
+            {isLoading || updating ? (
+              <ButtonLoader
+                title={search?.repayment_id ? "Updating..." : "Submitting..."}
+              />
             ) : (
-              <span>Submit Repayment Data</span>
+              <span>
+                {search?.repayment_id ? "Update" : "Submit"} Repayment Data
+              </span>
             )}
           </button>
         </div>
