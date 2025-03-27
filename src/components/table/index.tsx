@@ -4,6 +4,7 @@ import SearchBar from "./components/search-bar";
 import FilterDropdown from "./components/filter-dropdown";
 import TableLoader from "./components/loader";
 import { ArrowLeft2, ArrowRight2 } from "iconsax-react";
+import EmptyState from "./components/empty-state";
 
 interface Header {
   name: string;
@@ -127,6 +128,10 @@ const Table: React.FC<TableProps> = ({
       </div>
       {loading ? (
         <TableLoader headers={headers || []} rows={maxRows} />
+      ) : filteredRows.length === 0 ? (
+        <div className="bg-white py-10 px-6 mt-5 rounded-md">
+          <EmptyState onAdd={onAddButtonClick} />
+        </div>
       ) : (
         <div className="font-poppins bg-white py-10 px-6 mt-5 rounded-md">
           <table className="table-auto w-full text-left ">

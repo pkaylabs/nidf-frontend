@@ -1,4 +1,4 @@
-import React, { ReactNode } from "react";
+import React, { ReactNode, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Edit2, Eye, Trash } from "iconsax-react";
 import { useState } from "react";
@@ -6,70 +6,68 @@ import Table from "@/components/table";
 import { LiaFileAltSolid } from "react-icons/lia";
 import { ADD_REPAYMENT } from "@/constants/page-path";
 import { useNavigate } from "react-location";
-import { useGetRepaymentsQuery } from "@/redux/features/repayment/repaymentApiSlice";
+import {
+  useDeleteRepaymentMutation,
+  useGetRepaymentsQuery,
+} from "@/redux/features/repayment/repaymentApiSlice";
 import moment from "moment";
 import { isImageFileByExtension } from "@/helpers/image-checker";
 import { IoImageOutline } from "react-icons/io5";
+import Swal from "sweetalert2";
 
 const Repayment = () => {
   const navigate = useNavigate();
 
   const headers = [{ name: "Status", value: "status" }];
 
-  // const rows = [
-  //   {
-  //     "application id": "APP-12345",
-  //     category: "Emergency Support",
-  //     "submitted date": "Jan 15, 2025",
-  //     status: "Reconciled",
-  //   },
-  //   {
-  //     "application id": "BPP-12345",
-  //     category: "Aid",
-  //     "submitted date": "Jan 15, 2025",
-  //     status: "Pending",
-  //   },
-  //   {
-  //     "application id": "CPP-12345",
-  //     category: "Revolving Fund",
-  //     "submitted date": "Jan 15, 2025",
-  //     status: "Pending",
-  //   },
-  //   {
-  //     "application id": "DPP-12345",
-  //     category: "Emergency Support",
-  //     "submitted date": "Jan 15, 2025",
-  //     status: "Reconciled",
-  //   },
-  //   {
-  //     "application id": "APP-12345",
-  //     category: "Emergency Support",
-  //     "submitted date": "Jan 15, 2025",
-  //     status: "Reconciled",
-  //   },
-  //   {
-  //     "application id": "BPP-12345",
-  //     category: "Aid",
-  //     "submitted date": "Jan 15, 2025",
-  //     status: "Pending",
-  //   },
-  //   {
-  //     "application id": "CPP-12345",
-  //     category: "Revolving Fund",
-  //     "submitted date": "Jan 15, 2025",
-  //     status: "Pending",
-  //   },
-  //   {
-  //     "application id": "DPP-12345",
-  //     category: "Emergency Support",
-  //     "submitted date": "Jan 15, 2025",
-  //     status: "Pending",
-  //   },
-  // ];
-
   const { data, isLoading, refetch, isError } = useGetRepaymentsQuery({});
   console.log(data, "data");
   const rows = data ?? [];
+
+  const [deleteRepayment, { isLoading: isDeleting }] =
+    useDeleteRepaymentMutation();
+
+  const handleDelete = async (id: string) => {
+    try {
+      Swal.fire({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#17567E",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, delete it!",
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          try {
+            const res = await deleteRepayment({ repayment: id }).unwrap();
+            // console.log(res, "res deleting");
+
+            refetch();
+            Swal.fire({
+              title: "Deleted!",
+              text: "Your repayment reconciliation has been deleted.",
+              icon: "success",
+            });
+          } catch (error) {
+            console.error(error);
+            Swal.fire({
+              title: "Error!",
+              text: "An error occurred while deleting the reconciliation.",
+              icon: "error",
+            });
+          }
+        }
+      });
+    } catch (error) {
+      console.log(error);
+      Swal.fire({
+        title: "Error!",
+        text: "An error occurred. Please try again.",
+        icon: "error",
+      });
+    }
+  };
 
   interface RowData {
     application?: {
@@ -159,7 +157,11 @@ const Repayment = () => {
             >
               View Details
             </button>
-            <button className="font-poppins font-light w-40 h-10 flex justify-center items-center border border-[#CE5347] rounded-md text-[#CE5347] hover:bg-[#CE5347] hover:text-white transition-all duratioin-200 ease-in-out ">
+            <button
+              disabled={isDeleting}
+              onClick={() => handleDelete(row?.repayment_id)}
+              className="font-poppins font-light w-40 h-10 flex justify-center items-center border border-[#CE5347] rounded-md text-[#CE5347] hover:bg-[#CE5347] hover:text-white transition-all duratioin-200 ease-in-out "
+            >
               Delete
             </button>
           </div>
@@ -168,7 +170,10 @@ const Repayment = () => {
     </motion.tr>
   );
 
-  const [loading, setLoading] = useState(false);
+  useEffect(() => {
+    refetch();
+  }
+  , []);
 
   return (
     <div className="p-5">
@@ -182,7 +187,7 @@ const Repayment = () => {
         renderRow={customRowRenderer}
         footer={<div>Pagination goes here</div>}
         maxRows={5}
-        loading={loading}
+        loading={isLoading}
         searchable={false}
         searchableFields={["application id"]}
         filters={[

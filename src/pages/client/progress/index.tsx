@@ -5,7 +5,7 @@ import {
   useGetProgressReportsQuery,
 } from "@/redux/features/progress/progressApiSlice";
 import moment from "moment";
-import React from "react";
+import React, { useEffect } from "react";
 import { LiaFileAltSolid } from "react-icons/lia";
 import { useNavigate } from "react-location";
 import { IoImageOutline } from "react-icons/io5";
@@ -63,6 +63,10 @@ const ProgressReport = () => {
       });
     }
   };
+
+  useEffect(() => {
+    refetch();
+  }, []);
 
   return (
     <section className="font-poppins p-5 ">

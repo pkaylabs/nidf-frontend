@@ -233,9 +233,9 @@ const Applications = () => {
     </motion.tr>
   );
 
-  // useEffect(() => {
-
-  // }, []);
+  useEffect(() => {
+    refetch();
+  }, []);
 
   return (
     <div className="p-5">
