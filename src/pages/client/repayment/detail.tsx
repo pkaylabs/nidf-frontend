@@ -36,9 +36,9 @@ const RepaymentDetails = () => {
             <h4 className="font-semibold text-xl text-[#454545] ">
               Progress Summary
             </h4>
-            <p className="font-light text-[#545454] mt-6 mb-2">Project Name</p>
+            <p className="font-light text-[#545454] mt-6 mb-2">Project ID</p>
             <h2 className="font-semibold text-2xl text-[#252525] ">
-              {search?.purpose ?? "N/A"}
+              {search?.id ?? "N/A"}
             </h2>
             <p className="font-light text-[#545454] mt-6 mb-2">Payment Date</p>
             <h2 className="font-semibold text-2xl text-[#252525] ">
@@ -53,6 +53,12 @@ const RepaymentDetails = () => {
             </p>
             <h2 className="font-semibold text-2xl text-[#252525] ">
               {search?.payment_reference}
+            </h2>
+            <p className="font-light text-[#545454] mt-6 mb-2">
+              Project purpose
+            </p>
+            <h2 className="font-semibold text-2xl text-[#252525] ">
+              {search?.purpose ?? "N/A"}
             </h2>
           </div>
           <p

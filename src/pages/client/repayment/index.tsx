@@ -1,7 +1,5 @@
 import React, { ReactNode, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Edit2, Eye, Trash } from "iconsax-react";
-import { useState } from "react";
 import Table from "@/components/table";
 import { LiaFileAltSolid } from "react-icons/lia";
 import { ADD_REPAYMENT } from "@/constants/page-path";

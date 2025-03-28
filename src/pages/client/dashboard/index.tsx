@@ -128,7 +128,7 @@ const Dashboard = () => {
             )}
 
             <p className="font-light text-[#545454] mt-4">
-              Last payment: January 10, 2025
+              Last payment: {data?.last_payment ?? "None"}
             </p>
           </div>
         </section>

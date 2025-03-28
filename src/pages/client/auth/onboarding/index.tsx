@@ -25,24 +25,6 @@ import { useGetDivisionsQuery } from "@/redux/features/divisions/divisionApiSlic
 import toast from "react-hot-toast";
 import { useGetUserProfileQuery } from "@/redux/features/user/userApiSlice";
 
-// const regions = [
-//   { id: 1, name: "Greater Accra" },
-//   { id: 2, name: "Ashanti" },
-//   { id: 3, name: "Western" },
-//   { id: 4, name: "Eastern" },
-//   { id: 5, name: "Northern" },
-//   { id: 6, name: "Central" },
-//   { id: 7, name: "Upper East" },
-//   { id: 8, name: "Upper West" },
-//   { id: 9, name: "Volta" },
-//   { id: 10, name: "Oti" },
-//   { id: 11, name: "Bono" },
-//   { id: 12, name: "Bono East" },
-//   { id: 13, name: "Ahafo" },
-//   { id: 14, name: "Savannah" },
-//   { id: 15, name: "Western North" },
-// ];
-
 const Onboarding = () => {
   const [query, setQuery] = useState<any>("");
   const [selectedRegion, setSelectedRegion] = useState<any>(null);
@@ -151,10 +133,13 @@ const Onboarding = () => {
               title: res?.message ?? `Church profile created successfully`,
             })
           );
-
           refetch();
-
-          dispatch(setCredentials({ user: userData, token: token }));
+          dispatch(
+            setCredentials({
+              user: { ...userData, church_profile: res?.id },
+              token: token,
+            })
+          );
 
           navigate({ to: DASHBOARD, replace: true });
         } else {
@@ -165,9 +150,7 @@ const Onboarding = () => {
             })
           );
         }
-      } catch (err: any) {
-       
-      }
+      } catch (err: any) {}
     },
   });
 

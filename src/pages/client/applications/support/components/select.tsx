@@ -26,7 +26,7 @@ const SelectDropdown: React.FC<FilterDropdownProps> = ({
     <Listbox value={value} onChange={onChange}>
       <div className="relative flex-1 mt-2">
         <ListboxButton className="font-poppins font-light w-full cursor-default flex flex-1 justify-between items-center rounded-md bg-white py-3 pr-2 pl-3 text-left text-[#324054] border border-[#71839B] focus:outline-indigo-600 sm:text-sm md:text-base xl:text-lg">
-          <span className="truncate pr-6">
+          <span className="truncate pr-6  max-w-sm">
             {selectedOption ? selectedOption.label : "Select an option"}
           </span>
           <ChevronUpDownIcon
@@ -45,7 +45,7 @@ const SelectDropdown: React.FC<FilterDropdownProps> = ({
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: (idx + 1) * 0.05 }}
-                className="block truncate font-normal group-data-[selected]:font-semibold"
+                className="block truncate font-normal group-data-[selected]:font-semibold max-w-sm "
               >
                 {option.label ?? "No label"}
               </m.span>

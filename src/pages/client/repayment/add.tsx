@@ -38,7 +38,10 @@ const AddRepayment = () => {
   console.log(dashboardStat, "dashboardStat");
 
   const applicationOptions = data?.map((app: any) => {
-    return { label: app?.purpose, value: app?.id };
+    return {
+      label: `${app?.application_id} - ${app?.purpose}`,
+      value: app?.id,
+    };
   });
 
   const loan = [

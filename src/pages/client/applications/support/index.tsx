@@ -142,6 +142,11 @@ const ApplyForSupport = () => {
       ) {
         try {
           const formData = new FormData();
+
+          if (search?.application_id) {
+            formData.append("application_id", search?.application_id);
+          }
+
           formData.append("churchName", formik.values.churchName);
           formData.append("churchAddress", formik.values.churchAddress);
           formData.append("pastorName", formik.values.pastorName);
@@ -160,10 +165,24 @@ const ApplyForSupport = () => {
             //     title: res?.message ?? ``,
             //   })
             // );
-            navigate({
-              to: `.`,
-              search: { application_id: res?.application?.application_id },
-            });
+
+            if (search?.application_id) {
+              navigate({
+                to: ".",
+                search: {
+                  ...search,
+                  application_id: res?.application?.application_id,
+                },
+              });
+            } else {
+              navigate({
+                to: `.`,
+                search: {
+                  application_id: res?.application?.application_id,
+                },
+              });
+            }
+
             setActiveStep((prev) => prev + 1);
           } else {
             toast(
@@ -250,10 +269,23 @@ const ApplyForSupport = () => {
           if (res?.application) {
             setApplicationId(res?.application?.application_id);
 
-            navigate({
-              to: `.`,
-              search: { application_id: res?.application?.application_id },
-            });
+            if (search?.application_id) {
+              navigate({
+                to: ".",
+                search: {
+                  ...search,
+                  application_id: res?.application?.application_id,
+                },
+              });
+            } else {
+              navigate({
+                to: `.`,
+                search: {
+                  application_id: res?.application?.application_id,
+                },
+              });
+            }
+
             setActiveStep((prev) => prev + 1);
           } else {
             toast(
@@ -331,10 +363,22 @@ const ApplyForSupport = () => {
           console.log("res 3", res);
 
           if (res?.application) {
-            navigate({
-              to: ".",
-              search: { application_id: res?.application?.application_id },
-            });
+            if (search?.application_id) {
+              navigate({
+                to: ".",
+                search: {
+                  ...search,
+                  application_id: res?.application?.application_id,
+                },
+              });
+            } else {
+              navigate({
+                to: `.`,
+                search: {
+                  application_id: res?.application?.application_id,
+                },
+              });
+            }
             setActiveStep((prev) => prev + 1);
           } else {
             toast(
@@ -427,10 +471,22 @@ const ApplyForSupport = () => {
           console.log("res 4", res);
 
           if (res?.application) {
-            navigate({
-              to: ".",
-              search: { application_id: res?.application?.application_id },
-            });
+            if (search?.application_id) {
+              navigate({
+                to: ".",
+                search: {
+                  ...search,
+                  application_id: res?.application?.application_id,
+                },
+              });
+            } else {
+              navigate({
+                to: `.`,
+                search: {
+                  application_id: res?.application?.application_id,
+                },
+              });
+            }
             setActiveStep((prev) => prev + 1);
           } else {
             toast(
