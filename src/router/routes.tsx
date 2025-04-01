@@ -183,7 +183,7 @@ const routes: RouteProps[] = [
     path: ADMIN_LOGIN,
     element: <AdminAuth />,
     meta: {
-      layout: "Admin",
+      layout: "Auth",
     },
   },
   {

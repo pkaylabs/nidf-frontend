@@ -53,7 +53,12 @@ const Login = () => {
 
         console.log(res, "res");
 
-        if (res?.token && res?.user?.user_type === "CHURCH_USER") {
+        if (
+          res?.token &&
+          res?.user?.user_type === "CHURCH_USER" &&
+          !res?.user?.is_staff &&
+          !res?.user?.is_superuser
+        ) {
           if (!res?.user?.phone_verified) {
             return navigate({
               to: OTP_VERIFICATION,

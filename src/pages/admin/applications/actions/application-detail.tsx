@@ -28,24 +28,7 @@ const Tab = ({ label, active, onClick }: TabProps) => (
   </button>
 );
 
-const summery = [
-  {
-    title: "Application ID",
-    value: "APP-12345",
-  },
-  {
-    title: "Applicant Church",
-    value: "DLCF Legon",
-  },
-  {
-    title: "Amount Requested",
-    value: "GHS 40,000",
-  },
-  {
-    title: "Division/District",
-    value: "Accra",
-  },
-];
+
 
 const AdminApplicationDetails = () => {
   const [activeTab, setActiveTab] = useState(0);
@@ -61,6 +44,25 @@ const AdminApplicationDetails = () => {
   const navigate = useNavigate();
   const search = useSearch<any>();
   const status = search.status;
+
+  const summery = [
+    {
+      title: "Application ID",
+      value: search?.application_id ?? "N/A",
+    },
+    {
+      title: "Applicant Church",
+      value: "DLCF Legon",
+    },
+    {
+      title: "Amount Requested",
+      value: `GHS ${search?.amount ?? "0"}` ,
+    },
+    {
+      title: "Division/District",
+      value: "Accra",
+    },
+  ];
 
   const tabs = [
     { label: "Application Details", component: <ApplicationDetail /> },

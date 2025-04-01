@@ -1,6 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { Link, Outlet, useLocation, useNavigate } from "react-location";
+import {
+  Link,
+  Navigate,
+  Outlet,
+  useLocation,
+  useNavigate,
+} from "react-location";
 import { MdOutlineDashboard } from "react-icons/md";
 import { MdOutlineCalendarMonth } from "react-icons/md";
 import { AiOutlineClockCircle } from "react-icons/ai";
@@ -28,12 +34,14 @@ import {
   ADMIN_DASHBOARD,
   ADMIN_DIBURSEMENT,
   ADMIN_DISTRICTS,
+  ADMIN_LOGIN,
   ADMIN_NOTIFICATIONS,
   ADMIN_PROGRESS,
   ADMIN_REGIONS,
   ADMIN_REPAYMENT,
   ADMIN_USERS,
   APPLICATIONS,
+  BACKEND_BASE_URL,
   DASHBOARD,
   LOGIN,
   PROGRESS,
@@ -51,6 +59,12 @@ import { GiStarCycle } from "react-icons/gi";
 import { BiSolidIdCard } from "react-icons/bi";
 import { RiUserSettingsLine } from "react-icons/ri";
 import { HiBell } from "react-icons/hi2";
+import { useAppDispatch, useAppSelector } from "@/redux";
+import {
+  logout,
+  selectCurrentToken,
+  selectCurrentUser,
+} from "@/redux/features/auth/authSlice";
 
 const navigation = [
   {
@@ -116,9 +130,33 @@ const userNavigation = [
 
 export default function AdminLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const navigate = useNavigate();
 
   const currentPath = useLocation().current.pathname;
+  const currentHref = useLocation().current.href;
+  const navigate = useNavigate();
+
+  const dispatch = useAppDispatch();
+
+  const user = useAppSelector(selectCurrentUser);
+  const token = useAppSelector(selectCurrentToken);
+
+  const handleLogout = () => {
+    dispatch(logout());
+  };
+
+  const churchLogo = BACKEND_BASE_URL.replace("/api-v1/", "").concat(
+    user?.church_logo
+  );
+
+  if (!token || !user || !user?.is_staff || !user?.is_superuser)
+    return (
+      <Navigate
+        to={ADMIN_LOGIN}
+        // search={{ redirect: current === "/user-profile" ? "" : currentHref }}
+        search={{ redirect: currentHref }}
+        replace
+      />
+    );
 
   return (
     <>
@@ -329,16 +367,16 @@ export default function AdminLayout() {
                   </ul>
                 </li> */}
                 <li className="mt-auto">
-                  <Link
-                    to={LOGIN}
-                    className="font-poppins group -mx-2 flex gap-x-3 rounded-md p-2 font-medium text-gray-700 hover:bg-gray-50 hover:text-primary-600"
+                  <button
+                    onClick={handleLogout}
+                    className="font-poppins w-full group -mx-2 flex gap-x-3 rounded-md p-2 font-medium text-gray-700 hover:bg-gray-50 hover:text-primary-600"
                   >
                     <TbLogout2
                       aria-hidden="true"
                       className="size-6 shrink-0 text-gray-500 group-hover:text-primary-600"
                     />
                     Logout
-                  </Link>
+                  </button>
                 </li>
               </ul>
             </nav>
@@ -393,7 +431,7 @@ export default function AdminLayout() {
                     <span className="sr-only">Open user menu</span>
                     <img
                       alt=""
-                      src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                      src={churchLogo.includes("null") ? logo : churchLogo}
                       className="size-11 rounded-full bg-gray-50"
                     />
                     <span className="hidden lg:flex lg:items-start">
@@ -413,20 +451,26 @@ export default function AdminLayout() {
                       aria-hidden="true"
                       className="px-3 text-sm leading-none text-left font-semibold text-gray-900"
                     >
-                      Prince Kyeremateng <br />
+                      {user?.name} <br />
                     </span>
                     {userNavigation.map((item, idx) => (
                       <MenuItem key={item.name}>
-                        <Link
-                          to={item.href}
-                          className={`block px-3 py-1 text-sm/6 ${
+                        <button
+                          onClick={
+                            idx === userNavigation.length - 1
+                              ? handleLogout
+                              : () => {
+                                  navigate({ to: item.href });
+                                }
+                          }
+                          className={`block w-full text-left px-3 py-1 text-sm/6 ${
                             idx === userNavigation.length - 1
                               ? "text-red"
                               : "text-gray-900"
                           }  data-[focus]:bg-gray-50 data-[focus]:outline-none`}
                         >
                           {item.name}
-                        </Link>
+                        </button>
                       </MenuItem>
                     ))}
                   </MenuItems>
