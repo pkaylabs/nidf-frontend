@@ -14,6 +14,7 @@ const AdminApplications = () => {
     { name: "Application ID", value: "application id" },
     { name: "Applicants", value: "applicant" },
     { name: "Category", value: "category" },
+    { name: "Is Emergency", value: "is_emergency" },
     { name: "Submitted Date", value: "submitted date" },
     { name: "Status", value: "status" },
     { name: "Action", value: "action" },
@@ -23,35 +24,45 @@ const AdminApplications = () => {
   console.log(data, "data");
   const rows = data ?? [];
 
-  const customRowRenderer = (
-    row: { [key: string]: ReactNode },
-    index: number
-  ) => (
+  interface RowData {
+    church?: {
+      name?: string;
+      pastor_name: string;
+      district?: {
+        name?: string;
+      };
+    };
+    status?: string;
+    [key: string]: any;
+  }
+
+  const customRowRenderer = (row: RowData, index: number) => (
     <motion.tr
       key={index}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ delay: index * 0.05 }}
-      className="font-poppins border-b text-lg  text-black  border-gray-200 hover:bg-gray-100 transition-all duration-150 ease-in-out"
+      className="font-poppins border-b  text-black  border-gray-200 hover:bg-gray-100 transition-all duration-150 ease-in-out"
     >
-      <td className="px-4 py-3 ">{row?.application_id}</td>
-      <td className="px-4 py-3 ">{row?.church}</td>
-      <td className="px-4 py-3">{row?.support_type}</td>
-      <td className="px-4 py-3 ">
+      <td className="px-4 py-3 truncate">{row?.application_id}</td>
+      <td className="px-4 py-3 truncate">{row?.church?.name}</td>
+      <td className="px-4 py-3 truncate">{row?.support_type}</td>
+      <td className="px-4 py-3 truncate">{row?.is_emergency.toString()}</td>
+      <td className="px-4 py-3 truncate">
         {row?.created_at && typeof row.created_at === "string"
           ? moment(row.created_at).format("LL")
           : "N/A"}
       </td>
-      <td className="px-4 py-3 ">
+      <td className="px-4 py-3 truncate">
         <p
-          className={`text-[#F5F5F5] text-sm py-2 rounded-md text-center !capitalize ${
+          className={`text-[#F5F5F5] text-sm px-1.5 py-2 rounded-md text-center truncate max-w-36 !capitalize ${
             row.status === "APPROVED" ? "bg-[#2D9632]" : ""
           }
            
            ${row.status === "PENDING REVIEW" ? "bg-[#BAB21D]" : ""}
           ${row.status === "UNDER REVIEW" ? "bg-[#1da5ba]" : ""}
            ${row.status === "DRAFT" ? "bg-[#71839B]" : ""}
-           ${row.status === "WAITING NO`S APPROVAL" ? "bg-[#719b96]" : ""}
+           ${row.status === "WAITING NO'S APPROVAL" ? "bg-[#719b96]" : ""}
            ${row.status === "REJECTED" ? "bg-red" : ""}
             `}
         >
@@ -66,6 +77,11 @@ const AdminApplications = () => {
               search: {
                 id: row.id as string,
                 status: row.status as string,
+                church_name: row?.church?.name,
+                division: row?.church?.district?.name as string,
+                pastor: row?.church?.pastor_name as string,
+                project_location: row?.project_location as string,
+                project_phase: row?.phase as string,
                 application_id: row.application_id,
                 support_type: row.support_type as string,
                 created_at: row.created_at as string,
@@ -112,12 +128,12 @@ const AdminApplications = () => {
           {
             name: "status",
             fields: [
-              "APPROVED",
-              "PENDING REVIEW",
-              "UNDER REVIEW",
               "DRAFT",
+              "PENDING REVIEW",
+              "APPROVED",
               "REJECTED",
-              "WAITING NO`S APPROVAL",
+              "UNDER REVIEW",
+              "WAITING NO'S APPROVAL",
             ],
           },
           {

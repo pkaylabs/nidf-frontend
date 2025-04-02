@@ -74,3 +74,12 @@ export const tooltipStyle = {
   borderRadius: "8px",
   marginTop: "10px",
 };
+
+export const statuses = [
+  // { label: "DRAFT", value: "DRAFT" },
+  { label: "PENDING REVIEW", value: "PENDING REVIEW" },
+  { label: "APPROVED", value: "APPROVED" },
+  { label: "REJECTED", value: "REJECTED" },
+  { label: "UNDER REVIEW", value: "UNDER REVIEW" },
+  { label: "WAITING NO'S APPROVAL", value: "WAITING NO'S APPROVAL" },
+];

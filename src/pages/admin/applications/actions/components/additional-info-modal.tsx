@@ -10,16 +10,23 @@ import {
 import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import { useRequestApplicationInfoMutation } from "@/redux/features/applications/applicationsApiSlice";
+import toast from "react-hot-toast";
+import ButtonLoader from "@/components/loaders/button";
 
 interface AdditionalInfoModalProps {
+  appID: string;
   open: boolean;
   setOpen: (open: boolean) => void;
 }
 
 export default function AdditionalInfoModal({
+  appID,
   open,
   setOpen,
 }: AdditionalInfoModalProps) {
+  const [requestInfo, { isLoading }] = useRequestApplicationInfoMutation();
+
   const formik = useFormik({
     initialValues: {
       description: "",
@@ -27,8 +34,42 @@ export default function AdditionalInfoModal({
     validationSchema: Yup.object().shape({
       description: Yup.string().required("Description is required"),
     }),
-    onSubmit: (values) => {
+    onSubmit: async (values) => {
       console.log("Form Submitted: ", values);
+
+      try {
+        const res = await requestInfo({
+          application: appID,
+          message: values.description,
+        }).unwrap();
+
+        if (res) {
+          toast(
+            JSON.stringify({
+              type: "success",
+              title: "Message sent successfully",
+            })
+          );
+          formik.resetForm();
+          setOpen(false);
+        } else {
+          toast(
+            JSON.stringify({
+              type: "error",
+              title: "Failed to send Information",
+            })
+          );
+        }
+      } catch (error) {
+        console.log(error, "error");
+
+        toast(
+          JSON.stringify({
+            type: "error",
+            title: "Failed to send Information",
+          })
+        );
+      }
     },
   });
 
@@ -61,15 +102,15 @@ export default function AdditionalInfoModal({
                 </DialogTitle>
                 <div className="mt-5 w-full">
                   <label
-                    htmlFor="supportType"
+                    htmlFor="description"
                     className=" block text-lg font-medium text-black"
                   >
                     Description
                   </label>
                   <textarea
                     placeholder="Write a brief description of the current projects’ status..."
-                    name="progressDescription"
-                    id="progressDescription"
+                    name="description"
+                    id="description"
                     value={values.description || ""}
                     onChange={handleChange}
                     onBlur={handleBlur}
@@ -86,15 +127,18 @@ export default function AdditionalInfoModal({
             </div>
             <div className="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
               <button
+                disabled={isLoading}
                 type="button"
                 data-autofocus
                 onClick={() => {
                   formik.handleSubmit();
                   setOpen(false);
                 }}
-                className="mt-3 inline-flex w-full justify-center rounded-md bg-primary px-12 py-4 text-sm font-semibold text-white shadow-sm  ring-primary hover:bg-primary-100 transition-all duration-150 ease-in-out sm:mt-0 sm:w-auto"
+                className="mt-3 inline-flex w-full justify-center rounded-md bg-primary px-12 py-4 text-sm font-semibold
+                 text-white shadow-sm  disabled:bg-opacity-80
+                 ring-primary hover:bg-primary-100 transition-all duration-150 ease-in-out sm:mt-0 sm:w-auto"
               >
-                Submit
+                {isLoading ? <ButtonLoader title="Submitting " /> : "Submit"}
               </button>
             </div>
           </DialogPanel>
