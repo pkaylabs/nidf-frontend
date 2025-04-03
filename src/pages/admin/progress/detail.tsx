@@ -23,9 +23,12 @@ const AdminProgressReportDetails = () => {
 
   const [veryReport, { isLoading }] = useVerifyProgressReportMutation();
 
+  console.log(search?.id , "refefv");
+  
+
   const handleVerifyReport = async () => {
     try {
-      const res = await veryReport({ report: search?.report_id }).unwrap();
+      const res = await veryReport({ reportid: search?.id }).unwrap();
       console.log(res, "res verifying");
 
       if (res) {
@@ -34,6 +37,8 @@ const AdminProgressReportDetails = () => {
           icon: "success",
           draggable: true,
         });
+
+        navigate({ to: ".." });
       } else {
         Swal.fire({
           title: "Error!",
