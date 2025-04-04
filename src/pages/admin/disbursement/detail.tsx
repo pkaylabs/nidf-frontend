@@ -1,12 +1,14 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { IoIosArrowRoundBack } from "react-icons/io";
-import { useNavigate, useSearch } from "react-location";
+import { useMatch, useNavigate, useSearch } from "react-location";
 import { motion } from "framer-motion";
-import TransaactionDetails from "./components/transaction-detail";
 import BankingInfo from "./components/banking-info";
 import ApprovalLog from "./components/approval-log";
 import { IoCheckmark } from "react-icons/io5";
-
+import { computeSignature } from "@/helpers";
+import { useAppDispatch } from "@/redux";
+import { logout } from "@/redux/features/auth/authSlice";
+import TransactionDetails from "./components/transaction-detail";
 
 interface TabProps {
   label: string;
@@ -37,22 +39,68 @@ const DisbursementDetails = () => {
   };
 
   const navigate = useNavigate();
-  const search = useSearch<any>();
-  const reference = search.reference;
-  const status = search.status;
 
+  const dispatch = useAppDispatch();
+
+  const { params, search } = useMatch<any>();
+
+  const secretKey = import.meta.env.REACT_APP_URL_SECRET || "fallback-secret";
+
+  const { sig: providedSignature, ...rest } = search;
+
+  // Recompute the signature on the client side
+  const expectedKeys = [
+    "status",
+    "reference",
+    "project_name",
+    "amount",
+    "payment_date",
+    "account_name",
+    "account_num",
+    "trans_id",
+    "bank_name",
+  ];
+
+  const unsignedParams = expectedKeys.reduce((obj, key) => {
+    if (rest[key]) {
+      let value = rest[key].toString().trim();
+      if (key === "amount") {
+        // Ensure the amount is formatted as two decimals
+        value = parseFloat(value).toFixed(2);
+      }
+      obj[key] = value;
+    }
+    return obj;
+  }, {} as Record<string, string>);
+
+  // Compute signature using the same helper
+  const computedSignature = computeSignature(unsignedParams, secretKey);
+
+  
   const tabs = [
-    { label: "Transaction Details", component: <TransaactionDetails data={status} /> },
-    { label: "Banking Information", component: <BankingInfo /> },
+    {
+      label: "Transaction Details",
+      component: <TransactionDetails data={search} />,
+    },
+    { label: "Banking Information", component: <BankingInfo data={search}  /> },
     { label: "Approval Log", component: <ApprovalLog /> },
   ];
-  //
+
+  useEffect(() => {
+    console.log("Provided signature:", providedSignature);
+    console.log("Computed signature:", computedSignature);
+    if (providedSignature !== computedSignature) {
+      dispatch(logout());
+    }
+  }, [providedSignature, computedSignature, dispatch]);
+
   return (
     <main className="font-poppins p-5">
       <div className="flex items-center gap-x-4 mb-5">
         <button
           onClick={() => navigate({ to: ".." })}
-          className="font-light flex items-center space-x-2 border-[0.5px] border-[#545454] bg-white text-black py-2.5 px-4 rounded-md transition-all duration-150 ease-in-out "
+          className="font-light flex items-center space-x-2 border-[0.5px] border-[#545454]
+           bg-white text-black py-2.5 px-4 rounded-md transition-all duration-150 ease-in-out "
         >
           <IoIosArrowRoundBack className="size-5" aria-hidden="true" />{" "}
           <span>Back to Lists</span>
@@ -63,22 +111,29 @@ const DisbursementDetails = () => {
         <div className="flex justify-between items-center gap-5 ">
           <div className="">
             <h4 className="font-medium text-xl text-[#454545] ">
-              Church Hall Renovation
+              {search?.project_name}
             </h4>
             <p className="font-light text-lg text-[#545454] mt-5 ">
-              Reference: {reference}
+              Reference: {search.reference}
             </p>
           </div>
 
           <div className="">
-            <h4 className="font-bold text-3xl text-[#121212] ">GHS 5,000</h4>
+            <h4 className="font-bold text-3xl text-[#121212] ">GHS {search?.amount} </h4>
             <div className="flex gap-2 items-center bg-[#252525] rounded-md py-3 px-4 mt-2">
               <div
                 className={`w-6 h-6 rounded-sm flex justify-center items-center ${
-                  status === "Completed" ? "bg-[#2D9632] " : "bg-[#AD6915] "
+                  search?.status === "COMPLETED" ? "bg-[#2D9632] " : "bg-[#AD6915] "
                 } `}
-              > {status === "Completed" && (<IoCheckmark className="text-white size-4" />) } </div>
-              <p className="font-semibold text-base text-white">{status}</p>
+              >
+                {" "}
+                {search?.status === "COMPLETED" && (
+                  <IoCheckmark className="text-white size-4" />
+                )}{" "}
+              </div>
+              <p className="font-semibold text-base text-white">
+                {search?.status}
+              </p>
             </div>
           </div>
         </div>

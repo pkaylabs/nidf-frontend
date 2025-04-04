@@ -148,7 +148,8 @@ export default function AdminLayout() {
     user?.church_logo
   );
 
-  if (!token || !user || !user?.is_staff || !user?.is_superuser)
+
+  if (!token || !user ||  user?.user_type === "CHURCH_USER")
     return (
       <Navigate
         to={ADMIN_LOGIN}

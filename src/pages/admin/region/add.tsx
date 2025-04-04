@@ -1,35 +1,79 @@
-import React from 'react'
+import React from "react";
 import { FormikProps, useFormik } from "formik";
 import * as Yup from "yup";
-import { useNavigate } from 'react-location';
-import { IoIosArrowRoundBack } from 'react-icons/io';
-import SelectDropdown from '../applications/support/components/select';
-import { ghanaRegions } from '../district/add';
+import { useNavigate } from "react-location";
+import { IoIosArrowRoundBack } from "react-icons/io";
+import SelectDropdown from "../applications/support/components/select";
+import { ghanaRegions } from "../district/add";
+import toast from "react-hot-toast";
+import { useCreateRegionMutation } from "@/redux/features/regions/regionApiSlice";
+import ButtonLoader from "@/components/loaders/button";
 
 const AddRegion = () => {
   const navigate = useNavigate();
 
+  const [createRegion, { isLoading }] = useCreateRegionMutation();
+
   const formik: FormikProps<any> = useFormik({
     initialValues: {
-      districtName: "",
-      region: "",
-      districtHead: "",
+      name: "",
       email: "",
       phone: "",
+
+      overseer_name: "",
+      overseer_phone: "",
+      overseer_emai: "",
     },
     validationSchema: Yup.object().shape({
-      districtName: Yup.string().required("Division name is required"),
-      region: Yup.string().required("Region is required"),
-      districtHead: Yup.string().required("District head is required"),
+      name: Yup.string().required("Region name is required"),
       email: Yup.string()
         .email("Invalid email format")
         .required("Email is required"),
       phone: Yup.string()
         .matches(/^[0-9]{10}$/, "Phone number must be 10 digits")
         .required("Phone number is required"),
+      overseer_name: Yup.string().required("Overseer's name is required"),
+      overseer_email: Yup.string()
+        .email("Invalid email format")
+        .required("Overseer's Email is required"),
+      overseer_phone: Yup.string()
+        .matches(/^[0-9]{10}$/, "Phone number must be 10 digits")
+        .required("Overseer's Phone number is required"),
     }),
-    onSubmit: (values) => {
+    onSubmit: async (values) => {
       console.log("Form Submitted: ", values);
+
+      try {
+        const res = await createRegion(values).unwrap();
+
+        if (res) {
+          toast(
+            JSON.stringify({
+              type: "success",
+              title: res?.message ?? `Region created successfully`,
+            })
+          );
+
+          formik.resetForm();
+
+          navigate({ to: ".." });
+        } else {
+          toast(
+            JSON.stringify({
+              type: "error",
+              title: "An error occurred",
+            })
+          );
+        }
+      } catch (error: any) {
+        console.log(error);
+        toast(
+          JSON.stringify({
+            type: "error",
+            title: error?.data?.error ?? "An error occurred",
+          })
+        );
+      }
     },
   });
 
@@ -76,9 +120,7 @@ const AddRegion = () => {
           <IoIosArrowRoundBack className="size-5" aria-hidden="true" />{" "}
           <span>Back to List</span>
         </button>
-        <h4 className="font-medium text-2xl text-[#252525] ">
-          Add New Region
-        </h4>
+        <h4 className="font-medium text-2xl text-[#252525] ">Add New Region</h4>
       </div>
 
       <section className="p-5 rounded-md bg-white ">
@@ -87,60 +129,69 @@ const AddRegion = () => {
           Create a new region
         </p>
 
-        <div className="w-full my-5">
-          {input(
-            "Region Name",
-            "districtName",
-            "text",
-            false,
-            "Enter district name"
-          )}
-        </div>
-
         <div className="w-full">
           <label
-            htmlFor="region"
+            htmlFor="name"
             className=" block text-lg font-medium text-black"
           >
             Region
           </label>
           <SelectDropdown
             options={ghanaRegions}
-            onChange={(value) => formik.setFieldValue("region", value)}
+            onChange={(value) => formik.setFieldValue("name", value)}
           />
-          {errors.region && typeof errors.region === "string" && (
-            <p className="font-normal text-sm text-[#fc8181]">
-              {errors.region}
-            </p>
+          {errors.name && typeof errors.name === "string" && (
+            <p className="font-normal text-sm text-[#fc8181]">{errors.name}</p>
           )}
         </div>
 
-        <div className="w-full my-5">
-          {input(
-            "Regional Head",
-            "districtHead",
-            "text",
-            false,
-            "Enter regional head name"
-          )}
-        </div>
         <div className="w-full my-5">
           {input("Email", "email", "email", false, "Enter email address")}
         </div>
         <div className="w-full my-5">
           {input("Phone", "phone", "tel", false, "Enter phone Number")}
         </div>
+        <div className="w-full my-5">
+          {input(
+            "Overseer's Name",
+            "overseer_name",
+            "text",
+            false,
+            "Enter district name"
+          )}
+        </div>
+        <div className="w-full my-5">
+          {input(
+            "Overseer's Email",
+            "overseer_email",
+            "email",
+            false,
+            "Enter email address"
+          )}
+        </div>
+        <div className="w-full my-5">
+          {input(
+            "Overseer's Phone",
+            "overseer_phone",
+            "tel",
+            false,
+            "Enter phone Number"
+          )}
+        </div>
 
         <div className="flex justify-end items-center my-5">
           <button
+            disabled={isLoading}
             onClick={() => handleSubmit()}
-            className="bg-primary text-white w-44 h-[50px] flex justify-center items-center  rounded-md text-lg"
+            className="bg-primary text-white w-44 h-[50px]
+             flex justify-center items-center
+               rounded-md text-lg disabled:bg-opacity-80"
           >
-            Create Region
+            {isLoading ? <ButtonLoader title="Creating..." /> : "Create Region"}
           </button>
         </div>
       </section>
     </main>
   );
 };
-export default AddRegion
+export default AddRegion;

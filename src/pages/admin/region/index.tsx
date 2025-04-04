@@ -4,29 +4,17 @@ import { motion } from "framer-motion";
 import Table from "@/components/table";
 import { ADMIN_REGIONS } from "@/constants/page-path";
 import { Edit2, Trash } from "iconsax-react";
+import { useGetRegionsQuery } from "@/redux/features/regions/regionApiSlice";
 
 const Regions = () => {
   const navigate = useNavigate();
 
   const headers = [{ name: "Name", value: "name" }];
 
-  const rows = [
-    {
-      name: "Greater Accra Region",
-      districts: "20",
-      churches: "12",
-    },
-    {
-      name: "Central Region",
-      districts: "20",
-      churches: "12",
-    },
-    {
-      name: "Volta Region",
-      districts: "20",
-      churches: "12",
-    },
-  ];
+  const { data, isLoading, refetch, isError } = useGetRegionsQuery({});
+     console.log(data, "data");
+     const rows = data?.region ?? [];
+ 
 
   const customRowRenderer = (
     row: { [key: string]: ReactNode },

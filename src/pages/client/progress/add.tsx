@@ -10,14 +10,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useCreateProgressReportMutation } from "@/redux/features/progress/progressApiSlice";
 import SelectDropdown from "../applications/support/components/select";
-import { supportTypes } from "@/constants";
 import { useGetApplicationsQuery } from "@/redux/features/applications/applicationsApiSlice";
-
-const options = [
-  { name: "Option 1", value: "option1" },
-  { name: "Option 2", value: "option2" },
-  { name: "Option 3", value: "option3" },
-];
 
 const AddProgressReport = () => {
   const navigate = useNavigate();
@@ -130,10 +123,10 @@ const AddProgressReport = () => {
           <div>
             <div className="mt-5">
               <label
-                htmlFor="supportType"
+                htmlFor="application"
                 className="block text-lg font-medium text-black"
               >
-                Select Support Type
+                Select Application
               </label>
               <SelectDropdown
                 options={applicationOptions}
