@@ -1,4 +1,4 @@
-import React, { ReactNode, useState } from "react";
+import React, { ReactNode, useEffect, useState } from "react";
 import { useNavigate } from "react-location";
 import { motion } from "framer-motion";
 import Table from "@/components/table";
@@ -31,15 +31,15 @@ const Regions = () => {
         <div className="flex justify-between items-center space-x-4 border-[0.5px] border-[#71839B] rounded-md shadow-sm p-6 mb-5">
           <div className="">
             <h4 className="font-semibold text-xl text-[#454545] ">
-              {row.name}
+              {row?.name ?? "N/A"}
             </h4>
             <div className="flex gap-2 items-center">
               <p className="font-light text-[#545454] my-3">
-                {row.districts} Districts
+                {row?.districts ?? "0"} Districts
               </p>
               ·
               <p className="font-light text-[#545454] my-3">
-                {row.churches} Churches
+                {row?.churches ?? "0"} Churches
               </p>
             </div>
           </div>
@@ -50,8 +50,8 @@ const Regions = () => {
                   to: `/admin/regions/${row.name}`,
                   search: {
                     name: row.name,
-                    districts: row.districts,
-                    churches: row.churches
+                    districts: row?.districts,
+                    churches: row?.churches
                   },
                 })
               }
@@ -81,7 +81,12 @@ const Regions = () => {
     </motion.tr>
   );
 
-  const [loading, setLoading] = useState(false);
+  useEffect(() => {
+    if (data) {
+      refetch()
+    }
+  }, [data])
+
 
   return (
     <div className="p-5">
@@ -95,7 +100,7 @@ const Regions = () => {
         renderRow={customRowRenderer}
         footer={<div>Pagination goes here</div>}
         maxRows={5}
-        loading={loading}
+        loading={isLoading}
         searchable={true}
         searchableFields={["name"]}
         //   filters={[

@@ -4,9 +4,10 @@ import { useNavigate, useSearch } from "react-location";
 import { FormikProps, useFormik } from "formik";
 import * as Yup from "yup";
 import SelectDropdown from "../applications/support/components/select";
-import { ghanaRegions } from "../district/add";
+
 import { Switch } from "@headlessui/react";
 import { motion } from "framer-motion";
+import { ghanaRegions } from "@/constants";
 
 const AddUser = () => {
   const navigate = useNavigate();

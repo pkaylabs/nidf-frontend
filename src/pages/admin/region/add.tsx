@@ -4,10 +4,11 @@ import * as Yup from "yup";
 import { useNavigate } from "react-location";
 import { IoIosArrowRoundBack } from "react-icons/io";
 import SelectDropdown from "../applications/support/components/select";
-import { ghanaRegions } from "../district/add";
+
 import toast from "react-hot-toast";
 import { useCreateRegionMutation } from "@/redux/features/regions/regionApiSlice";
 import ButtonLoader from "@/components/loaders/button";
+import { ghanaRegions } from "@/constants";
 
 const AddRegion = () => {
   const navigate = useNavigate();
@@ -19,19 +20,22 @@ const AddRegion = () => {
       name: "",
       email: "",
       phone: "",
-
+      location: "",
       overseer_name: "",
       overseer_phone: "",
-      overseer_emai: "",
+      overseer_email: "",
     },
     validationSchema: Yup.object().shape({
       name: Yup.string().required("Region name is required"),
+
       email: Yup.string()
         .email("Invalid email format")
         .required("Email is required"),
+
       phone: Yup.string()
         .matches(/^[0-9]{10}$/, "Phone number must be 10 digits")
         .required("Phone number is required"),
+      location: Yup.string().required("Location is required"),
       overseer_name: Yup.string().required("Overseer's name is required"),
       overseer_email: Yup.string()
         .email("Invalid email format")
@@ -150,6 +154,9 @@ const AddRegion = () => {
         </div>
         <div className="w-full my-5">
           {input("Phone", "phone", "tel", false, "Enter phone Number")}
+        </div>
+        <div className="w-full my-5">
+          {input("Location", "location", "text", false, "Enter location")}
         </div>
         <div className="w-full my-5">
           {input(

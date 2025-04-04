@@ -4,6 +4,7 @@ import { Edit2, Eye, Trash } from "iconsax-react";
 import React, { ReactNode, useEffect, useState } from "react";
 import { useNavigate } from "react-location";
 import { motion } from "framer-motion";
+import { useGetDivisionsQuery } from "@/redux/features/divisions/divisionApiSlice";
 
 const Districts = () => {
   const navigate = useNavigate();
@@ -16,37 +17,18 @@ const Districts = () => {
     { name: "Action", value: "action" },
   ];
 
-  const rows = [
-    {
-      "division name": "Adenta District",
-      regions: "Greater Accra",
-      "number of churches": "25",
-      "division head": "Rev. John Mensah",
-    },
-    {
-      "division name": "Adenta District",
-      regions: "Northern",
-      "number of churches": "50",
-      "division head": "Rev. John Mensah",
-    },
-    {
-      "division name": "Adenta District",
-      regions: "Ashanti",
-      "number of churches": "89",
-      "division head": "Rev. John Mensah",
-    },
-    // {
-    //   "district name": "Adenta District",
-    //   region: "",
-    //   "number of churches": "566",
-    //   "district head": "Rev. John Mensah",
-    // },
-  ];
+  const { data, isLoading, refetch, isError } = useGetDivisionsQuery({});
+  console.log(data, "data div");
+  const rows = data?.divisions ?? [];
 
-  const customRowRenderer = (
-    row: { [key: string]: ReactNode },
-    index: number
-  ) => (
+  interface RowData {
+    region?: {
+      name?: string;
+    };
+    name?: string;
+    [key: string]: any;
+  }
+  const customRowRenderer = (row: RowData, index: number) => (
     <motion.tr
       key={index}
       initial={{ opacity: 0 }}
@@ -54,19 +36,19 @@ const Districts = () => {
       transition={{ delay: index * 0.05 }}
       className="font-poppins border-b text-lg  text-black  border-gray-200 hover:bg-gray-100 transition-all duration-150 ease-in-out"
     >
-      <td className="px-4 py-3 ">{row["division name"]}</td>
-      <td className="px-4 py-3 ">{row.regions}</td>
-      <td className="px-4 py-3">{row["number of churches"]}</td>
-      <td className="px-4 py-3 ">{row["division head"]}</td>
+      <td className="px-4 py-3 ">{row?.name ?? "N/A"}</td>
+      <td className="px-4 py-3 ">4</td>
+      <td className="px-4 py-3">5</td>
+      <td className="px-4 py-3 ">{row?.overseer_name ?? "N/A"}</td>
 
       <td className="px-4 py-4 ">
         <div className="flex items-center gap-3">
           <button
             onClick={() =>
               navigate({
-                to: `${ADMIN_DISTRICTS}/${row["division name"]}`,
+                to: `${ADMIN_DISTRICTS}/${row?.name}`,
                 search: {
-                  status: row.status as string,
+                  name: row.name as string,
                 },
               })
             }
@@ -77,11 +59,12 @@ const Districts = () => {
           <button
             onClick={() =>
               navigate({
-                to: `${ADMIN_DISTRICTS}/${row["division name"]}`,
+                to: `${ADMIN_DISTRICTS}/${row?.name}`,
                 search: {
-                  name: row["division name"] as string,
-                  region: row.regions as string,
-                  churches: row["number of churches"] as string,
+                  name: row.name as string,
+                  region: row?.region?.name as string,
+                  churches: row?.churches as string,
+                  head: row?.overseer_name as string,
                 },
               })
             }
@@ -97,12 +80,11 @@ const Districts = () => {
     </motion.tr>
   );
 
-  const [loading, setLoading] = useState(true);
-
   useEffect(() => {
-    const timeout = setTimeout(() => setLoading(false), 3000); // Simulating a 3-second data load
-    return () => clearTimeout(timeout);
-  }, []);
+    if (data) {
+      refetch();
+    }
+  }, [data]);
 
   return (
     <div className="p-5 h-full ">
@@ -115,7 +97,7 @@ const Districts = () => {
         renderRow={customRowRenderer}
         footer={<div>Pagination goes here</div>}
         maxRows={5}
-        loading={loading}
+        loading={isLoading}
         searchableFields={["district name"]}
         filters={[
           {
