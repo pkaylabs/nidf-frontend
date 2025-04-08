@@ -1,8 +1,8 @@
 import { FormikProps, useFormik } from "formik";
 import * as Yup from "yup";
-import React from "react";
+import React, { useEffect } from "react";
 import { IoIosArrowRoundBack } from "react-icons/io";
-import { useNavigate } from "react-location";
+import { useNavigate, useSearch } from "react-location";
 import toast from "react-hot-toast";
 import { useCreateDivisionMutation } from "@/redux/features/divisions/divisionApiSlice";
 import { useGetRegionsQuery } from "@/redux/features/regions/regionApiSlice";
@@ -11,6 +11,7 @@ import ButtonLoader from "@/components/loaders/button";
 
 const AddDistrict = () => {
   const navigate = useNavigate();
+  const search = useSearch();
 
   const [createDivision, { isLoading }] = useCreateDivisionMutation();
 
@@ -60,9 +61,14 @@ const AddDistrict = () => {
     }),
     onSubmit: async (values) => {
       console.log("Form Submitted: ", values);
-
+      let finalData;
       try {
-        const res = await createDivision(values).unwrap();
+        if (search?.id) {
+          finalData = { division: search?.id, ...values };
+        } else {
+          finalData = values;
+        }
+        const res = await createDivision(finalData).unwrap();
 
         if (res) {
           toast(
@@ -127,6 +133,21 @@ const AddDistrict = () => {
       </div>
     );
   };
+
+  useEffect(() => {
+    if (search?.id) {
+      formik.setValues({
+        name: search?.name,
+        email: search?.email,
+        phone: search?.phone,
+        location: search?.location,
+        overseer_name: search?.overseer_name,
+        overseer_phone: search?.overseer_phone,
+        overseer_email: search?.overseer_email,
+        region: search?.region
+      });
+    }
+  }, [search]);
 
   return (
     <main className="font-poppins p-5">
@@ -222,7 +243,11 @@ const AddDistrict = () => {
             flex justify-center items-center rounded-md text-lg disabled:bg-opacity-80"
           >
             {isLoading ? (
-              <ButtonLoader title="Creating..." />
+              <ButtonLoader
+                title={search?.id ? "Updating..." : "Creating..."}
+              />
+            ) : search?.id ? (
+              "Update Division"
             ) : (
               "Create Division"
             )}

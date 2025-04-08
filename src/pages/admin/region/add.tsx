@@ -1,7 +1,7 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { FormikProps, useFormik } from "formik";
 import * as Yup from "yup";
-import { useNavigate } from "react-location";
+import { useNavigate, useSearch } from "react-location";
 import { IoIosArrowRoundBack } from "react-icons/io";
 import SelectDropdown from "../applications/support/components/select";
 
@@ -12,6 +12,8 @@ import { ghanaRegions } from "@/constants";
 
 const AddRegion = () => {
   const navigate = useNavigate();
+
+  const search = useSearch();
 
   const [createRegion, { isLoading }] = useCreateRegionMutation();
 
@@ -46,9 +48,16 @@ const AddRegion = () => {
     }),
     onSubmit: async (values) => {
       console.log("Form Submitted: ", values);
+      let finalData;
 
       try {
-        const res = await createRegion(values).unwrap();
+        if (search?.id) {
+          finalData = { region: search?.id, ...values };
+        } else {
+          finalData = values;
+        }
+
+        const res = await createRegion(finalData).unwrap();
 
         if (res) {
           toast(
@@ -114,6 +123,20 @@ const AddRegion = () => {
     );
   };
 
+  useEffect(() => {
+    if (search?.id) {
+      formik.setValues({
+        name: search?.name,
+        email: search?.email,
+        phone: search?.phone,
+        location: search?.location,
+        overseer_name: search?.overseer_name,
+        overseer_phone: search?.overseer_phone,
+        overseer_email: search?.overseer_email,
+      });
+    }
+  }, [search]);
+
   return (
     <main className="font-poppins p-5">
       <div className="flex items-center gap-x-4 mb-5">
@@ -133,20 +156,8 @@ const AddRegion = () => {
           Create a new region
         </p>
 
-        <div className="w-full">
-          <label
-            htmlFor="name"
-            className=" block text-lg font-medium text-black"
-          >
-            Region
-          </label>
-          <SelectDropdown
-            options={ghanaRegions}
-            onChange={(value) => formik.setFieldValue("name", value)}
-          />
-          {errors.name && typeof errors.name === "string" && (
-            <p className="font-normal text-sm text-[#fc8181]">{errors.name}</p>
-          )}
+        <div className="w-full my-5">
+          {input("Region name", "name", "text", false, "Enter region")}
         </div>
 
         <div className="w-full my-5">
@@ -194,7 +205,15 @@ const AddRegion = () => {
              flex justify-center items-center
                rounded-md text-lg disabled:bg-opacity-80"
           >
-            {isLoading ? <ButtonLoader title="Creating..." /> : "Create Region"}
+            {isLoading ? (
+              <ButtonLoader
+                title={search?.id ? "Updating..." : "Creating..."}
+              />
+            ) : search?.id ? (
+              "Update Region"
+            ) : (
+              "Create Region"
+            )}
           </button>
         </div>
       </section>

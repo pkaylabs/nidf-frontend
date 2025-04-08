@@ -60,7 +60,7 @@ const RegionDetails = () => {
     },
     {
         label: "Created By",
-        value: "Admin Sarah",
+        value: search?.created_by ?? "N/A",
     
     },
   ]

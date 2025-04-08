@@ -99,7 +99,6 @@ const Repayment = () => {
             <h6
               className={`font-semibold text-lg 
                 ${row?.status === "APPROVED" ? "text-[#2D9632]" : ""}
-         
          ${row?.status === "PENDING REVIEW" ? "text-[#BAB21D]" : ""}
         ${row?.status === "UNDER REVIEW" ? "text-[#1da5ba]" : ""}
          ${row?.status === "DRAFT" ? "text-[#71839B]" : ""}
@@ -129,7 +128,7 @@ const Repayment = () => {
               </div>
             </div>
             <p className="font-light text-[#545454] mt-3">
-              Ref: {row?.payment_reference}
+              Ref: {row?.payment_reference ?? "N/A"}
             </p>
           </div>
           <div className="flex items-center space-x-3">

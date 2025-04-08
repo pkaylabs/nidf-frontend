@@ -46,7 +46,7 @@ const RepaymentDetails = () => {
             </h2>
             <p className="font-light text-[#545454] mt-6 mb-2">Amount Paid</p>
             <h2 className="font-semibold text-2xl text-[#252525] ">
-              GHS {search?.amount}
+              GHS {search?.amount ?? "0.00"}
             </h2>
             <p className="font-light text-[#545454] mt-6 mb-2">
               Payment Reference
@@ -62,8 +62,14 @@ const RepaymentDetails = () => {
             </h2>
           </div>
           <p
-            className={`font-semibold text-xl ${
-              status === "Reconciled" ? "text-[#2D9632]" : "text-[#AD6915]"
+            className={`font-semibold text-xl $ ${
+              status === "APPROVED" ? "text-[#2D9632]" : ""
+            }
+         ${status === "PENDING REVIEW" ? "text-[#BAB21D]" : ""}
+        ${status === "UNDER REVIEW" ? "text-[#1da5ba]" : ""}
+         ${status === "DRAFT" ? "text-[#71839B]" : ""}
+         ${status === "WAITING NO`S APPROVAL" ? "text-[#719b96]" : ""}
+         ${status === "REJECTED" ? "text-red" : ""}
             }  `}
           >
             {" "}

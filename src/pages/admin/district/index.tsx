@@ -4,7 +4,11 @@ import { Edit2, Eye, Trash } from "iconsax-react";
 import React, { ReactNode, useEffect, useState } from "react";
 import { useNavigate } from "react-location";
 import { motion } from "framer-motion";
-import { useGetDivisionsQuery } from "@/redux/features/divisions/divisionApiSlice";
+import {
+  useDeleteDivisionMutation,
+  useGetDivisionsQuery,
+} from "@/redux/features/divisions/divisionApiSlice";
+import Swal from "sweetalert2";
 
 const Districts = () => {
   const navigate = useNavigate();
@@ -18,12 +22,55 @@ const Districts = () => {
   ];
 
   const { data, isLoading, refetch, isError } = useGetDivisionsQuery({});
-  console.log(data, "data div");
   const rows = data?.divisions ?? [];
+
+  const [deleteDivision, { isLoading: isDeleting }] =
+    useDeleteDivisionMutation();
+
+  const handleDelete = async (id: string) => {
+    try {
+      Swal.fire({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#17567E",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, delete it!",
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          try {
+            const res = await deleteDivision({ division: id }).unwrap();
+            refetch();
+            Swal.fire({
+              title: "Deleted!",
+              text: "Division successfully deleted!",
+              icon: "success",
+            });
+          } catch (error: any) {
+            Swal.fire({
+              title: "Error!",
+              text:
+                error?.data?.message ??
+                "An error occurred while deleting the division.",
+              icon: "error",
+            });
+          }
+        }
+      });
+    } catch (error: any) {
+      Swal.fire({
+        title: "Error!",
+        text: error?.data?.message ?? "An error occurred. Please try again.",
+        icon: "error",
+      });
+    }
+  };
 
   interface RowData {
     region?: {
       name?: string;
+      id?: any;
     };
     name?: string;
     [key: string]: any;
@@ -37,8 +84,8 @@ const Districts = () => {
       className="font-poppins border-b text-lg  text-black  border-gray-200 hover:bg-gray-100 transition-all duration-150 ease-in-out"
     >
       <td className="px-4 py-3 ">{row?.name ?? "N/A"}</td>
-      <td className="px-4 py-3 ">4</td>
-      <td className="px-4 py-3">5</td>
+      <td className="px-4 py-3 ">{row?.regions ?? "0"}</td>
+      <td className="px-4 py-3">{row?.churches ?? "0"}</td>
       <td className="px-4 py-3 ">{row?.overseer_name ?? "N/A"}</td>
 
       <td className="px-4 py-4 ">
@@ -46,9 +93,17 @@ const Districts = () => {
           <button
             onClick={() =>
               navigate({
-                to: `${ADMIN_DISTRICTS}/${row?.name}`,
+                to: `/${ADMIN_DISTRICTS}/add`,
                 search: {
-                  name: row.name as string,
+                  id: row?.id,
+                  name: row.name,
+                  email: row?.email,
+                  phone: row?.phone,
+                  location: row?.location,
+                  overseer_name: row?.overseer_name,
+                  overseer_email: row?.overseer_email,
+                  overseer_phone: row?.overseer_phone,
+                  region: row?.region?.id,
                 },
               })
             }
@@ -72,7 +127,11 @@ const Districts = () => {
           >
             <Eye size="20" color="#545454" />
           </button>
-          <button onClick={() => {}} className={` `}>
+          <button
+            disabled={isDeleting}
+            onClick={() => handleDelete(row?.id)}
+            className={` `}
+          >
             <Trash size="20" color="#CE5347" />
           </button>
         </div>

@@ -4,17 +4,59 @@ import { motion } from "framer-motion";
 import Table from "@/components/table";
 import { ADMIN_REGIONS } from "@/constants/page-path";
 import { Edit2, Trash } from "iconsax-react";
-import { useGetRegionsQuery } from "@/redux/features/regions/regionApiSlice";
+import {
+  useDeleteRegionMutation,
+  useGetRegionsQuery,
+} from "@/redux/features/regions/regionApiSlice";
+import Swal from "sweetalert2";
+import ButtonLoader from "@/components/loaders/button";
 
 const Regions = () => {
   const navigate = useNavigate();
-
   const headers = [{ name: "Name", value: "name" }];
 
   const { data, isLoading, refetch, isError } = useGetRegionsQuery({});
-     console.log(data, "data");
-     const rows = data?.region ?? [];
- 
+  const rows = data?.region ?? [];
+
+  const [deleteRegion, { isLoading: isDeleting }] = useDeleteRegionMutation();
+
+  const handleDelete = async (id: any) => {
+    try {
+      Swal.fire({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#17567E",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, delete it!",
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          try {
+            const res = await deleteRegion({ region: id }).unwrap();
+            refetch();
+            Swal.fire({
+              title: "Deleted!",
+              text: "Region successfully deleted!",
+              icon: "success",
+            });
+          } catch (error: any) {
+            Swal.fire({
+              title: "Error!",
+              text: error?.data?.message ?? "An error occurred while deleting the region.",
+              icon: "error",
+            });
+          }
+        }
+      });
+    } catch (error: any) {
+      Swal.fire({
+        title: "Error!",
+        text: error?.data?.message ?? "An error occurred. Please try again.",
+        icon: "error",
+      });
+    }
+  };
 
   const customRowRenderer = (
     row: { [key: string]: ReactNode },
@@ -49,9 +91,11 @@ const Regions = () => {
                 navigate({
                   to: `/admin/regions/${row.name}`,
                   search: {
+                    id: row?.id,
                     name: row.name,
                     districts: row?.districts,
-                    churches: row?.churches
+                    churches: row?.churches,
+                    created_by: row?.created_by_user,
                   },
                 })
               }
@@ -61,19 +105,35 @@ const Regions = () => {
             </button>
             <button
               onClick={() =>
-                navigate({})
+                navigate({
+                  to: `${ADMIN_REGIONS}/add`,
+                  search: {
+                    id: row?.id,
+                    name: row.name,
+                    email: row?.email,
+                    phone: row?.phone,
+                    location: row?.location,
+                    overseer_name: row?.overseer_name,
+                    overseer_email: row?.overseer_email,
+                    overseer_phone: row?.overseer_phone,
+                  },
+                })
               }
               className="font-poppins font-light w-12 h-12 flex justify-center items-center border border-[#324054] rounded-md text-[#324054] hover:text-white transition-all duration-200 ease-in-out "
             >
               <Edit2 size="24" color="#324054" />
             </button>
             <button
-              onClick={() =>
-                navigate({})
-              }
-              className="font-poppins font-light w-12 h-12 flex justify-center text-white items-center border border-[#CE5347] bg-[#CE5347] rounded-md   transition-all duration-200 ease-in-out "
+              disabled={isDeleting}
+              onClick={() => handleDelete(row?.id)}
+              className="font-poppins font-light w-12 h-12 flex justify-center text-white items-center border
+               border-[#CE5347] bg-[#CE5347] rounded-md transition-all duration-200 ease-in-out disabled:bg-opacity-80 "
             >
-              <Trash size="24" color="#FFF" />
+              {isDeleting ? (
+                <ButtonLoader title="" />
+              ) : (
+                <Trash size="24" color="#FFF" />
+              )}
             </button>
           </div>
         </div>
@@ -83,10 +143,9 @@ const Regions = () => {
 
   useEffect(() => {
     if (data) {
-      refetch()
+      refetch();
     }
-  }, [data])
-
+  }, [data]);
 
   return (
     <div className="p-5">

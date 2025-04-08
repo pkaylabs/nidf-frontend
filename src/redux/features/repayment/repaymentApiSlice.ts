@@ -10,6 +10,13 @@ export const repaymentApiSlice = api.injectEndpoints({
         body: formData,
       }),
     }),
+    verifyRepayment: builder.mutation({
+      query: (credentials) => ({
+        url: "verifyrepayments/",
+        method: "POST",
+        body: { ...credentials },
+      }),
+    }),
     updateRepayment: builder.mutation({
       query: (credentials) => ({
         url: "repayments/",
@@ -32,6 +39,7 @@ export const repaymentApiSlice = api.injectEndpoints({
 
 export const {
   useCreateRepaymentMutation,
+  useVerifyRepaymentMutation,
   useUpdateRepaymentMutation,
   useDeleteRepaymentMutation,
   useGetRepaymentsQuery,
