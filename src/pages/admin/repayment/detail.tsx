@@ -31,7 +31,7 @@ const AdminRepaymentDetails = () => {
         status: status,
       }).unwrap();
 
-      if (res?.id) {
+      if (res) {
         toast(
           JSON.stringify({
             type: "success",

@@ -1,31 +1,68 @@
 import Table from "@/components/table";
 import { ADMIN_NOTIFICATIONS } from "@/constants/page-path";
-import React, { ReactNode, useState } from "react";
+import { ReactNode, useEffect } from "react";
 import { useNavigate } from "react-location";
 import { motion } from "framer-motion";
+import {
+  useDeleteNotificationMutation,
+  useGetNotificationsQuery,
+} from "@/redux/features/notifications/notificationApiSlice";
+import moment from "moment";
+import ButtonLoader from "@/components/loaders/button";
+import { Edit2, Trash } from "iconsax-react";
+import Swal from "sweetalert2";
 
 const Notifications = () => {
   const navigate = useNavigate();
 
   const headers = [{ name: "Name", value: "name" }];
 
-  const rows = [
-    {
-      name: "Aid Application Open",
-      description:
-        "Applications for church aid are now open. Please submit before the deadline.",
-      target: "All Applicants",
-      status: "Sent",
-      schedule: "Immediate",
-    },
-    {
-      name: "Repayment Reminder",
-      description: "This is your weekly reminder to submit your repayment.",
-      target: "Approved Churches",
-      status: "Scheduled",
-      schedule: "Weekly",
-    },
-  ];
+  const { data, isLoading, refetch, isError } = useGetNotificationsQuery({});
+  // console.log(data, "data");
+  const rows = data ?? [];
+
+  const [deleteNotification, { isLoading: isDeleting }] =
+    useDeleteNotificationMutation();
+
+  const handleDelete = async (id: any) => {
+    try {
+      Swal.fire({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#17567E",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, delete it!",
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          try {
+            const res = await deleteNotification({ notification: id }).unwrap();
+            refetch();
+            Swal.fire({
+              title: "Deleted!",
+              text: "Notification successfully deleted!",
+              icon: "success",
+            });
+          } catch (error: any) {
+            Swal.fire({
+              title: "Error!",
+              text:
+                error?.data?.message ??
+                "An error occurred while deleting the notification.",
+              icon: "error",
+            });
+          }
+        }
+      });
+    } catch (error: any) {
+      Swal.fire({
+        title: "Error!",
+        text: error?.data?.message ?? "An error occurred. Please try again.",
+        icon: "error",
+      });
+    }
+  };
 
   const customRowRenderer = (
     row: { [key: string]: ReactNode },
@@ -42,33 +79,59 @@ const Notifications = () => {
         <div className="flex justify-between items-center space-x-4 border-[0.5px] border-[#71839B] rounded-md shadow-sm p-6 mb-5">
           <div className="">
             <h4 className="font-semibold text-xl text-[#454545] ">
-              {row.name}
+              {row.title}
             </h4>
 
-            <p className=" text-[#545454] text-lg my-3">{row.description}</p>
+            <p className=" text-[#545454] text-lg my-3">{row?.message}</p>
 
             <p className="font-light text-[#545454] my-3">
-              Recipients: {row.target} Schedule: {row.schedule}
+              Recipients: <span className="font-semibold">{row?.target}</span>
+              {"  "}
+              {row?.is_scheduled ? (
+                <>
+                  Schedule:{" "}
+                  <span className="font-semibold">
+                    {typeof row?.schedule_start_date === "string" ||
+                    typeof row?.schedule_start_date === "number" ||
+                    row?.schedule_start_date instanceof Date
+                      ? moment(row.schedule_start_date).format("LL")
+                      : "No date"}{" "}
+                    -{" "}
+                    {typeof row?.schedule_start_end === "string" ||
+                    typeof row?.schedule_start_end === "number" ||
+                    row?.schedule_start_end instanceof Date
+                      ? moment(row.schedule_start_end).format("LL")
+                      : "No date"}{" "}
+                    ({row?.schedule_frequency})
+                  </span>
+                </>
+              ) : (
+                ", Not Scheduled"
+              )}
             </p>
           </div>
           <div className="flex flex-col items-end  space-x-3">
             <p
               className={`font-semibold text-lg  ${
-                row.status === "Sent" ? "text-[#2D9632]" : "text-[#AD6915] "
+                !row?.is_scheduled ? "text-[#2D9632]" : "text-[#AD6915] "
               } my-3`}
             >
-              {row.status}
+              {row.is_scheduled ? "Scheduled" : "Sent"}
             </p>
             <button
               onClick={() =>
                 navigate({
-                  to: `/admin/notifications/${row.name}`,
+                  to: `/admin/notifications/${row?.id}`,
                   search: {
-                    name: row.name,
-                    description: row.description,
-                    target: row.target,
-                    status: row.status,
-                    schedule: row.schedule,
+                    title: row?.title,
+                    message: row?.message,
+                    target: row?.target,
+                    scheduled: row?.is_scheduled,
+                    schedule_start_date: row?.schedule_start_date,
+                    schedule_start_end: row?.schedule_start_end,
+                    schedule_frequency: row?.schedule_frequency,
+                    id: row?.id,
+                    attachment: row?.attachment,
                   },
                 })
               }
@@ -76,13 +139,51 @@ const Notifications = () => {
             >
               View Details
             </button>
+            <div className="flex items-center gap-3 mt-3">
+              <button
+                onClick={() =>
+                  navigate({
+                    to: `${ADMIN_NOTIFICATIONS}/add`,
+                    search: {
+                      title: row?.title,
+                      message: row?.message,
+                      target: row?.target,
+                      scheduled: row?.is_scheduled,
+                      schedule_start_date: row?.schedule_start_date,
+                      schedule_start_end: row?.schedule_start_end,
+                      schedule_frequency: row?.schedule_frequency,
+                      id: row?.id,
+                      attachment: row?.attachment,
+                    },
+                  })
+                }
+                className="font-poppins font-light w-12 h-12 flex justify-center items-center border border-[#324054] rounded-md text-[#324054] hover:text-white transition-all duration-200 ease-in-out "
+              >
+                <Edit2 size="24" color="#324054" />
+              </button>
+              <button
+                disabled={isDeleting}
+                onClick={() => handleDelete(row?.id)}
+                className="font-poppins font-light w-12 h-12 flex justify-center text-white items-center border
+                             border-[#CE5347] bg-[#CE5347] rounded-md transition-all duration-200 ease-in-out disabled:bg-opacity-80 "
+              >
+                {isDeleting ? (
+                  <ButtonLoader title="" />
+                ) : (
+                  <Trash size="24" color="#FFF" />
+                )}
+              </button>
+            </div>
           </div>
         </div>
       </td>
     </motion.tr>
   );
-
-  const [loading, setLoading] = useState(false);
+  useEffect(() => {
+    if (data) {
+      refetch();
+    }
+  }, [data]);
 
   return (
     <div className="p-5">
@@ -96,7 +197,7 @@ const Notifications = () => {
         renderRow={customRowRenderer}
         footer={<div>Pagination goes here</div>}
         maxRows={5}
-        loading={loading}
+        loading={isLoading}
         searchable={true}
         searchableFields={["name"]}
         //   filters={[

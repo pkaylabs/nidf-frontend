@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { IoIosArrowRoundBack, IoIosArrowRoundForward } from "react-icons/io";
 import { useNavigate, useSearch } from "react-location";
 import { motion } from "framer-motion";
-import _, { set } from "lodash";
+import _ from "lodash";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useAppSelector } from "@/redux";
@@ -26,10 +26,7 @@ const ApplyForSupport = () => {
 
   const user = useAppSelector(selectCurrentUser);
 
-  // console.log("search oo", search.id);
-
   const { data } = useGetChurchesQuery({});
-  console.log("data church ", data);
 
   const formik = useFormik({
     initialValues: {
@@ -117,7 +114,7 @@ const ApplyForSupport = () => {
       invoices: Yup.mixed().required("Invoices are required"),
     }),
     onSubmit: (values) => {
-      console.log("values ", values);
+      // console.log("values ", values);
     },
   });
 
@@ -565,18 +562,15 @@ const ApplyForSupport = () => {
         pastorPhone: data?.[0]?.pastor_phone,
       });
 
-      // formik.setFieldValue("churchName", data?.[0]?.name);
-
-      // search?.id
     }
     if (search?.id) {
       formik.setValues({
         ...formik.values,
-        churchName: data?.[0]?.name,
-        churchAddress: data?.[0]?.address,
-        pastorName: data?.[0]?.pastor_name,
-        pastorEmail: data?.[0]?.pastor_email,
-        pastorPhone: data?.[0]?.pastor_phone,
+        churchName: search?.churchName ?? data?.[0]?.name,
+        churchAddress: search?.churchAddress ?? data?.[0]?.address,
+        pastorName: search?.pastorName ?? data?.[0]?.pastor_name,
+        pastorEmail: search?.pastorEmail ?? data?.[0]?.pastor_email,
+        pastorPhone: search?.pastorPhone ?? data?.[0]?.pastor_phone,
 
         supportType: search?.support_type,
         typeOfChurchProject: search?.type_of_church_project,
@@ -601,50 +595,6 @@ const ApplyForSupport = () => {
       });
     }
   }, [data, search]);
-
-  // formik.setFieldValue("supportType", search?.support_type);
-  //       formik.setFieldValue(
-  //         "typeOfChurchProject",
-  //         search?.type_of_church_project
-  //       );
-  //       formik.setFieldValue("purposeForAid", search?.purpose);
-  //       formik.setFieldValue("isEmergency", search?.is_emergency);
-  //       formik.setFieldValue("progressDescription", search?.description);
-  //       formik.setFieldValue("amountRequested", search?.amount);
-  //       formik.setFieldValue("amountInWords", search?.amount_in_words);
-  //       formik.setFieldValue(
-  //         "estimatedProjectCost",
-  //         search?.estimated_project_cost
-  //       );
-  //       formik.setFieldValue("projectLocation", search?.project_location);
-  //       formik.setFieldValue("phase", search?.phase);
-  //       formik.setFieldValue(
-  //         "expectedCompletionDate",
-  //         search?.expected_completion_date
-  //       );
-  //       formik.setFieldValue(
-  //         "avgServiceAttendance",
-  //         search?.avg_service_attendance
-  //       );
-  //       formik.setFieldValue("avgMonthlyIncome", search?.avg_monthly_income);
-  //       formik.setFieldValue(
-  //         "avgMonthlyContributions",
-  //         search?.avg_monthly_contributions
-  //       );
-  //       formik.setFieldValue(
-  //         "avgMonthlyExpenses",
-  //         search?.avg_monthly_expenses
-  //       );
-  //       formik.setFieldValue(
-  //         "availableFundsForProject",
-  //         search?.available_funds_for_project
-  //       );
-  //       formik.setFieldValue("currentStatePic", search?.current_stage);
-  //       formik.setFieldValue("costEstimateFIle", search?.cost_estimate);
-  //       formik.setFieldValue("ownershipDoc", search?.land_ownership);
-  //       formik.setFieldValue("invoices", search?.invoices);
-
-  // console.log("data ", data?.[0]);
 
   const CurrentComponent = supportApplicationSteps[activeStep].content;
   const title = supportApplicationSteps[activeStep].title;
@@ -736,6 +686,7 @@ const ApplyForSupport = () => {
               )}
             </button>
           </div>
+          
         </div>
       </section>
     </main>

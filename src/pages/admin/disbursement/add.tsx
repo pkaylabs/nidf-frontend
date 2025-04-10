@@ -18,9 +18,6 @@ const AddDisbursement = () => {
 
   const {
     data,
-    isLoading: fetchingApplications,
-    refetch,
-    isError,
   } = useGetApplicationsQuery({});
 
   const applicationOptions = data?.map((app: any) => {

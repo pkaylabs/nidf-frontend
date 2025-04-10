@@ -8,17 +8,23 @@ import SelectDropdown from "../applications/support/components/select";
 import { Switch } from "@headlessui/react";
 import { motion } from "framer-motion";
 import { ghanaRegions } from "@/constants";
+import { useCreateUserMutation } from "@/redux/features/user/userApiSlice";
+import toast from "react-hot-toast";
+import ButtonLoader from "@/components/loaders/button";
 
 const AddUser = () => {
   const navigate = useNavigate();
   const [enabled, setEnabled] = useState(false);
   const search = useSearch<any>();
 
+  const [createUser, { isLoading }] = useCreateUserMutation();
+
   const formik: FormikProps<any> = useFormik({
     initialValues: {
       firstName: search?.name?.split(" ")[0] ?? "",
       lastName: search?.name?.split(" ")[1] ?? "",
       emailAddress: search?.email ?? "",
+      password: "",
       phoneNumber: search?.phone ?? "",
       region: "",
       role: "",
@@ -27,6 +33,7 @@ const AddUser = () => {
     validationSchema: Yup.object().shape({
       firstName: Yup.string().required("First Name is required"),
       lastName: Yup.string().required("Last Name is required"),
+      password: Yup.string().required("Password is required"),
       emailAddress: Yup.string()
         .email("Invalid Email Address")
         .required("Email Address is required"),
@@ -35,8 +42,44 @@ const AddUser = () => {
       role: Yup.string().required("Role is required"),
       church: Yup.string(),
     }),
-    onSubmit: (values) => {
+    onSubmit: async (values) => {
       console.log("Form Submitted: ", values);
+      try {
+        const res = await createUser({
+          email: values?.emailAddress,
+          password: values?.password,
+          name: `${values?.firstName} ${values?.lastName}`,
+          phone: values?.phoneNumber,
+          user_type: values?.role,
+        }).unwrap();
+
+        if (res) {
+          toast(
+            JSON.stringify({
+              type: "success",
+              title:
+                res?.message ??
+                `User created successfully`,
+            })
+          );
+          navigate({ to: ".." });
+        } else {
+          toast(
+            JSON.stringify({
+              type: "error",
+              title: "An error occurred",
+            })
+          );
+        }
+      } catch (error: any) {
+        console.log(error);
+        toast(
+          JSON.stringify({
+            type: "error",
+            title: error?.data?.error ?? "An error occurred",
+          })
+        );
+      }
     },
   });
 
@@ -110,13 +153,26 @@ const AddUser = () => {
             </div>
           </div>
 
-          {input(
-            "Email Address",
-            "emailAddress",
-            "email",
-            false,
-            "Enter Email Address"
-          )}
+          <div className="w-full flex items-center gap-4 my-5">
+            <div className="flex-1 ">
+              {input(
+                "Email Address",
+                "emailAddress",
+                "email",
+                false,
+                "Enter Email Address"
+              )}
+            </div>
+            <div className="flex-1 ">
+              {input(
+                "Password",
+                "password",
+                "password",
+                false,
+                "Enter Password"
+              )}
+            </div>
+          </div>
 
           <div className="w-full flex items-center gap-4 my-5">
             <div className="flex-1 ">
@@ -235,10 +291,17 @@ const AddUser = () => {
 
           <div className="flex justify-end items-center">
             <button
-              onClick={() => navigate({ to: ".." })}
-              className="bg-primary-700 text-white py-3 px-12 rounded-md mt-5"
+              onClick={() => handleSubmit()}
+              disabled={isLoading}
+              className="w-44 bg-primary-700 text-white py-3  rounded-md mt-5 disabled:bg-opacity-80"
             >
-              {search.name ? "Save Changes" : "Add User"}
+              {isLoading ? (
+                <ButtonLoader title="Creating..." />
+              ) : search.name ? (
+                "Save Changes"
+              ) : (
+                "Add User"
+              )}
             </button>
           </div>
         </div>

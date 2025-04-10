@@ -10,6 +10,13 @@ export const notificationApiSlice = api.injectEndpoints({
         body: { ...credentials },
       }),
     }),
+    updateNotification: builder.mutation({
+      query: (credentials) => ({
+        url: "notifications/",
+        method: "PUT",
+        body: { ...credentials },
+      }),
+    }),
     deleteNotification: builder.mutation({
       query: (credentials) => ({
         url: "notifications/",
@@ -25,6 +32,7 @@ export const notificationApiSlice = api.injectEndpoints({
 
 export const {
   useCreateNotificationMutation,
+  useUpdateNotificationMutation,
   useDeleteNotificationMutation,
   useGetNotificationsQuery,
 } = notificationApiSlice;

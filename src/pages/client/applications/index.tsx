@@ -29,7 +29,7 @@ const Applications = () => {
   ];
 
   const { data, isLoading, refetch, isError } = useGetApplicationsQuery({});
-  // console.log(data, "data");
+  console.log(data, "data application");
   const rows = data ?? [];
 
   const [deleteApplication, { isLoading: isDeleting }] =
@@ -77,10 +77,19 @@ const Applications = () => {
     }
   };
 
-  const customRowRenderer = (
-    row: { [key: string]: ReactNode },
-    index: number
-  ) => (
+  interface RowData {
+    church?: {
+      name?: string;
+      address?: string;
+      pastor_name?: string;
+      pastor_email?: string;
+      pastor_phone?: string;
+    };
+
+    [key: string]: any;
+  }
+
+  const customRowRenderer = (row: RowData, index: number) => (
     <motion.tr
       key={index}
       initial={{ opacity: 0 }}
@@ -125,6 +134,11 @@ const Applications = () => {
                 } `,
                 search: {
                   id: row.id as string,
+                  churchName: row?.church?.name as string,
+                  churchAddress: row?.church?.address as string,
+                  pastorName: row?.church?.pastor_name as string,
+                  pastorEmail: row?.church?.pastor_email as string,
+                  pastorPhone: row?.church?.pastor_phone as string,
 
                   status: (row.status as string) ?? "",
                   application_id: row.application_id as string,

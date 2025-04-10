@@ -1,24 +1,11 @@
-// import React from 'react'
-
-// const Users = () => {
-//   return (
-//     <div>Users</div>
-//   )
-// }
-
-// export default Users
-
-import React, { ReactNode, useEffect, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import { useNavigate } from "react-location";
 import { motion } from "framer-motion";
 import { Edit2, Eye, Trash } from "iconsax-react";
 import Table from "@/components/table";
-import {
-  ADMIN_APPLICATIONS,
-  ADMIN_USERS,
-  CREATE_APPLICATIONS,
-} from "@/constants/page-path";
+import { ADMIN_USERS } from "@/constants/page-path";
 import ViewUserModal from "./components/view-modal";
+import { useGetUsersQuery } from "@/redux/features/user/userApiSlice";
 
 const Users = () => {
   const navigate = useNavigate();
@@ -32,88 +19,9 @@ const Users = () => {
     { name: "Action", value: "action" },
   ];
 
-  const rows = [
-    {
-      "user id": "APP-12345",
-      name: "Prince Kay",
-      email: "prince@gmail.com",
-      phone: "024567890",
-      type: "Admin User",
-      status: "Active",
-    },
-    {
-      "user id": "APP-12346",
-      name: "Kwame Mensah",
-      email: "kwame.mensah@gmail.com",
-      phone: "024567891",
-      type: "Church User",
-      status: "Inactive",
-    },
-    {
-      "user id": "APP-12347",
-      name: "Abena Boateng",
-      email: "abena.boateng@gmail.com",
-      phone: "024567892",
-      type: "Finance User",
-      status: "Active",
-    },
-    {
-      "user id": "APP-12348",
-      name: "Kofi Asante",
-      email: "kofi.asante@gmail.com",
-      phone: "024567893",
-      type: "Admin User",
-      status: "Inactive",
-    },
-    {
-      "user id": "APP-12349",
-      name: "Ama Agyemang",
-      email: "ama.agyemang@gmail.com",
-      phone: "024567894",
-      type: "Super User",
-      status: "Active",
-    },
-    {
-      "user id": "APP-12350",
-      name: "Yaw Owusu",
-      email: "yaw.owusu@gmail.com",
-      phone: "024567895",
-      type: "Church User",
-      status: "Inactive",
-    },
-    {
-      "user id": "APP-12351",
-      name: "Adwoa Opoku",
-      email: "adwoa.opoku@gmail.com",
-      phone: "024567896",
-      type: "Finance User",
-      status: "Active",
-    },
-    {
-      "user id": "APP-12352",
-      name: "Kojo Addo",
-      email: "kojo.addo@gmail.com",
-      phone: "024567897",
-      type: "Admin User",
-      status: "Inactive",
-    },
-    {
-      "user id": "APP-12353",
-      name: "Esi Adjei",
-      email: "esi.adjei@gmail.com",
-      phone: "024567898",
-      type: "Church User",
-      status: "Active",
-    },
-    {
-      "user id": "APP-12354",
-      name: "Mensah Agyapong",
-      email: "mensah.agyapong@gmail.com",
-      phone: "024567899",
-      type: "Finance User",
-      status: "Inactive",
-    },
-  ];
+  const { data, isLoading, refetch, isError } = useGetUsersQuery({});
+  // console.log("dataaaaa", data);
+  const rows = data ?? [];
 
   const customRowRenderer = (
     row: { [key: string]: ReactNode },
@@ -126,23 +34,19 @@ const Users = () => {
       transition={{ delay: index * 0.05 }}
       className="font-poppins border-b text-lg  text-black  border-gray-200 hover:bg-gray-100 transition-all duration-150 ease-in-out"
     >
-      <td className="px-4 py-3 ">{row.name}</td>
-      <td className="px-4 py-3 ">{row.type}</td>
-      <td className="px-4 py-3">{row.email}</td>
-      <td className="px-4 py-3 ">{row.phone}</td>
+      <td className="px-4 py-3 ">{row?.name}</td>
+      <td className="px-4 py-3 ">{row?.user_type}</td>
+      <td className="px-4 py-3">{row?.email}</td>
+      <td className="px-4 py-3 ">{row?.phone}</td>
       <td className="px-4 py-3 ">
         <p
           className={` text-base py-1 rounded-md text-center ${
-            row.status === "Active"
+            row.is_active
               ? "bg-[#2D9632] bg-opacity-40 text-[#2D9632] "
-              : ""
-          } ${
-            row.status === "Inactive"
-              ? "bg-[#CE5347] bg-opacity-40 text-[#CE5347] "
-              : ""
-          }  `}
+              : "bg-[#CE5347] bg-opacity-40 text-[#CE5347]"
+          } `}
         >
-          {row.status}
+          {row.is_active ? "Active" : "Inactive"}
         </p>
       </td>
       <td className="px-4 py-4 ">
@@ -152,11 +56,11 @@ const Users = () => {
               navigate({
                 to: `${ADMIN_USERS}/add`,
                 search: {
-                  name: row.name,
-                  type: row.type,
-                  email: row.email,
-                  phone: row.phone,
-                  status: row.status,
+                  name: row?.name,
+                  type: row?.user_type,
+                  email: row?.email,
+                  phone: row?.phone,
+                  status: row?.is_active,
                 },
               })
             }
@@ -171,11 +75,12 @@ const Users = () => {
               navigate({
                 to: `.`,
                 search: {
-                  name: row.name,
-                  type: row.type,
-                  email: row.email,
-                  phone: row.phone,
-                  status: row.status,
+                  name: row?.name,
+                  type: row?.user_type,
+                  email: row?.email,
+                  phone: row?.phone,
+                  status: row?.is_active,
+                  last_login: row?.last_login,
                 },
               });
             }}
@@ -190,14 +95,13 @@ const Users = () => {
       </td>
     </motion.tr>
   );
-
-  const [loading, setLoading] = useState(true);
   const [openUserModal, setOpenUserModal] = useState(false);
 
   useEffect(() => {
-    const timeout = setTimeout(() => setLoading(false), 3000); // Simulating a 3-second data load
-    return () => clearTimeout(timeout);
-  }, []);
+    if (data) {
+      refetch();
+    }
+  }, [data]);
 
   return (
     <div className="p-5">
@@ -210,7 +114,7 @@ const Users = () => {
         renderRow={customRowRenderer}
         footer={<div>Pagination goes here</div>}
         maxRows={5}
-        loading={loading}
+        loading={isLoading}
         searchableFields={["user id", "name", "email", "phone"]}
         filters={[
           {

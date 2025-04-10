@@ -21,7 +21,7 @@ const AdminApplications = () => {
   ];
 
   const { data, isLoading, refetch, isError } = useGetApplicationsQuery({});
-  console.log(data, "data");
+  // console.log(data, "data");
   const rows = data ?? [];
 
   interface RowData {
@@ -47,7 +47,7 @@ const AdminApplications = () => {
       <td className="px-4 py-3 truncate">{row?.application_id}</td>
       <td className="px-4 py-3 truncate">{row?.church?.name}</td>
       <td className="px-4 py-3 truncate">{row?.support_type}</td>
-      <td className="px-4 py-3 truncate">{row?.is_emergency.toString()}</td>
+      <td className="px-4 py-3 truncate capitalize">{row?.is_emergency.toString()}</td>
       <td className="px-4 py-3 truncate">
         {row?.created_at && typeof row.created_at === "string"
           ? moment(row.created_at).format("LL")
