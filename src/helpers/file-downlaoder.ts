@@ -1,3 +1,5 @@
+import toast from "react-hot-toast";
+
 export function downloadFileFromURL(url: string, filename?: string): void {
   const link = document.createElement("a");
   link.href = url;
@@ -15,6 +17,12 @@ export async function downloadFile(
     const response = await fetch(url);
 
     if (!response.ok) {
+      toast(
+        JSON.stringify({
+          type: "error",
+          title: `Failed to download ${filename}: ${response.statusText}`,
+        })
+      );
       throw new Error(`Failed to download ${filename}: ${response.statusText}`);
     }
 
@@ -31,5 +39,11 @@ export async function downloadFile(
     URL.revokeObjectURL(blobUrl);
   } catch (error) {
     console.error("Download error:", error);
+    toast(
+      JSON.stringify({
+        type: "error",
+        title: `Failed to download ${filename}: ${error}`,
+      })
+    );
   }
 }

@@ -111,9 +111,7 @@ const CreateApplication = () => {
       ownershipDoc: Yup.mixed().required("Ownership document is required"),
       invoices: Yup.mixed().required("Invoices are required"),
     }),
-    onSubmit: (values) => {
-      // console.log("values ", values);
-    },
+    onSubmit: () => {},
   });
 
   const [createApplication, { isLoading }] = useCreateApplicationMutation();
@@ -124,6 +122,8 @@ const CreateApplication = () => {
     if (activeStep === 0) {
       // Validate fields for step 0
       if (
+        _.isEmpty(formik.errors.church) &&
+        !_.isEmpty(formik.values.church) &&
         _.isEmpty(formik.errors.churchName) &&
         !_.isEmpty(formik.values.churchName) &&
         _.isEmpty(formik.errors.churchAddress) &&
@@ -140,7 +140,6 @@ const CreateApplication = () => {
           if (search?.application_id) {
             formData.append("application_id", search?.application_id);
           }
-
           formData.append("churchName", formik.values.churchName);
           formData.append("churchAddress", formik.values.churchAddress);
           formData.append("pastorName", formik.values.pastorName);
@@ -153,13 +152,6 @@ const CreateApplication = () => {
 
           if (res?.application) {
             setApplicationId(res?.application?.application_id);
-            // toast(
-            //   JSON.stringify({
-            //     type: "success",
-            //     title: res?.message ?? ``,
-            //   })
-            // );
-
             if (search?.application_id) {
               navigate({
                 to: ".",
@@ -197,6 +189,7 @@ const CreateApplication = () => {
         }
       } else {
         formik.setTouched({
+          church: true,
           churchName: true,
           churchAddress: true,
           pastorName: true,
@@ -634,7 +627,6 @@ const CreateApplication = () => {
               )}
             </button>
           </div>
-
         </div>
       </section>
     </main>

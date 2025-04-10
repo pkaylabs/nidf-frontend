@@ -22,10 +22,7 @@ const AdminProgressReportDetails = () => {
   const search = useSearch<any>();
 
   const [veryReport, { isLoading }] = useVerifyProgressReportMutation();
-
-  console.log(search?.id , "refefv");
   
-
   const handleVerifyReport = async () => {
     try {
       const res = await veryReport({ reportid: search?.id }).unwrap();

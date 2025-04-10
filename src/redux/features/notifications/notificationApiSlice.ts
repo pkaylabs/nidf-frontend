@@ -4,17 +4,17 @@ import { api } from "@/app/api/auth";
 export const notificationApiSlice = api.injectEndpoints({
   endpoints: (builder) => ({
     createNotification: builder.mutation({
-      query: (credentials) => ({
+      query: (formData: FormData) => ({
         url: "notifications/",
         method: "POST",
-        body: { ...credentials },
+        body: formData,
       }),
     }),
     updateNotification: builder.mutation({
-      query: (credentials) => ({
+      query: (formData: FormData) => ({
         url: "notifications/",
         method: "PUT",
-        body: { ...credentials },
+        body: formData,
       }),
     }),
     deleteNotification: builder.mutation({

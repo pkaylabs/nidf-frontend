@@ -62,7 +62,6 @@ const AddNotification = () => {
         const [enabled] = values as [boolean];
         return enabled ? schema.required("Frequency is required") : schema;
       }),
-
       fileAttachment: Yup.mixed().required("Payment proof is required"),
     }),
     onSubmit: async (values) => {
@@ -72,14 +71,14 @@ const AddNotification = () => {
         const formData = new FormData();
         formData.append("title", values.title as string);
         formData.append("message", values.message as string);
-        formData.append("is_scheduled", values.enabled.toString());
+        // formData.append("is_scheduled", values.enabled.toString());
         formData.append("target", values.recipients as string);
-        if (values.fileAttachment) {
-          formData.append("attachment", values.fileAttachment as Blob);
-        }
         formData.append("schedule_start_date", values.startDate as string);
         formData.append("schedule_start_end", values.endDate as string);
         formData.append("schedule_frequency", values.frequency as string);
+        if (values.fileAttachment) {
+          formData.append("attachment", values.fileAttachment as Blob);
+        }
         if (id) {
           formData.append("notification", id);
         }
@@ -150,27 +149,37 @@ const AddNotification = () => {
     type: string = "text",
     disabled: boolean = false,
     placeholder: string = ""
-  ) => (
-    <div className="font-poppins">
-      <label htmlFor={name} className="block text-lg font-medium text-black">
-        {label}
-      </label>
-      <input
-        disabled={disabled}
-        placeholder={placeholder}
-        type={type}
-        name={name}
-        id={name}
-        value={values[name] || ""}
-        onChange={handleChange}
-        onBlur={handleBlur}
-        className={`w-full px-4 py-3 mt-2 text-lg border border-[#71839B] placeholder:font-light disabled:bg-[#EFEFEF] rounded-md focus:outline-none focus:ring-1 focus:ring-primary focus:border-transparent`}
-      />
-      {errors[name] && touched[name] && typeof errors[name] === "string" && (
-        <p className="font-normal text-sm text-[#fc8181]">{errors[name]}</p>
-      )}
-    </div>
-  );
+  ) => {
+    const isFile = type === "file";
+
+    return (
+      <div className="font-poppins">
+        <label htmlFor={name} className="block text-lg font-medium text-black">
+          {label}
+        </label>
+        <input
+          disabled={disabled}
+          placeholder={placeholder}
+          type={type}
+          name={name}
+          id={name}
+          value={isFile ? undefined : values[name] || ""}
+          onChange={(e) => {
+            if (isFile) {
+              formik.setFieldValue(name, e.currentTarget.files?.[0] ?? null);
+            } else {
+              handleChange(e);
+            }
+          }}
+          onBlur={handleBlur}
+          className={`w-full px-4 py-3 mt-2 text-lg border border-[#71839B] placeholder:font-light disabled:bg-[#EFEFEF] rounded-md focus:outline-none focus:ring-1 focus:ring-primary focus:border-transparent`}
+        />
+        {errors[name] && touched[name] && typeof errors[name] === "string" && (
+          <p className="font-normal text-sm text-[#fc8181]">{errors[name]}</p>
+        )}
+      </div>
+    );
+  };
 
   useEffect(() => {
     if (id) {

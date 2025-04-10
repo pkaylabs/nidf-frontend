@@ -8,6 +8,8 @@ import { Tab } from "../region/details";
 import { motion } from "framer-motion";
 import { RxDownload } from "react-icons/rx";
 import moment from "moment";
+import { downloadFile } from "@/helpers/file-downlaoder";
+import { BACKEND_BASE_URL } from "@/constants/page-path";
 
 const NotificationDetails = () => {
   const [activeTab, setActiveTab] = useState(0);
@@ -28,6 +30,7 @@ const NotificationDetails = () => {
     schedule_start_date,
     schedule_start_end,
     schedule_frequency,
+    attachment,
   } = search;
 
   const tabs = [
@@ -89,9 +92,17 @@ const NotificationDetails = () => {
               </div>
             </div>
 
-            <button className="flex items-center gap-2 border border-[#71839B] text-[#545454] text-lg px-4 py-1.5 mt-8  rounded-md hover:shadow-md transition-all duration-150 ease-in-out">
+            <button
+              onClick={() => {
+                downloadFile(
+                  BACKEND_BASE_URL.replace("/api-v1/", "").concat(attachment),
+                  attachment?.replace("/assets/notifications/", "")
+                );
+              }}
+              className="flex items-center gap-2 border border-[#71839B] text-[#545454] text-lg px-4 py-1.5 mt-8  rounded-md hover:shadow-md transition-all duration-150 ease-in-out"
+            >
               <RxDownload className="size-5" aria-hidden="true" />
-              <span>Download guidelines.pdf</span>
+              <span>{attachment?.replace("/assets/notifications/", "")}</span>
             </button>
           </div>
 
@@ -99,14 +110,16 @@ const NotificationDetails = () => {
             <div className="flex gap-2 items-center bg-[#252525] rounded-md py-3 px-4 mt-2">
               <div
                 className={`w-6 h-6 rounded-sm flex justify-center items-center ${
-                  !status ? "bg-[#2D9632] " : "bg-[#AD6915] "
+                  !scheduled ? "bg-[#2D9632] " : "bg-[#AD6915] "
                 } `}
               >
                 {" "}
-                {!status && <IoCheckmark className="text-white size-4" />}{" "}
+                {!scheduled && (
+                  <IoCheckmark className="text-white size-4" />
+                )}{" "}
               </div>
               <p className="font-semibold text-base text-white">
-                {status ? "Scheduled" : "Sent"}
+                {scheduled ? "Scheduled" : "Sent"}
               </p>
             </div>
           </div>
