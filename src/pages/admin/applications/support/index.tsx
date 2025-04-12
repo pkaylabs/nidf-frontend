@@ -122,8 +122,6 @@ const CreateApplication = () => {
     if (activeStep === 0) {
       // Validate fields for step 0
       if (
-        _.isEmpty(formik.errors.church) &&
-        !_.isEmpty(formik.values.church) &&
         _.isEmpty(formik.errors.churchName) &&
         !_.isEmpty(formik.values.churchName) &&
         _.isEmpty(formik.errors.churchAddress) &&

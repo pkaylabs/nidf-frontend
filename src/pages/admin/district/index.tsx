@@ -15,7 +15,7 @@ const Districts = () => {
 
   const headers = [
     { name: "Division Name", value: "division name" },
-    { name: "Region", value: "regions" },
+    { name: "Region", value: "region" },
     { name: "Number of Churches", value: "number of churches" },
     { name: "Division Head", value: "division head" },
     { name: "Action", value: "action" },
@@ -84,7 +84,7 @@ const Districts = () => {
       className="font-poppins border-b text-lg  text-black  border-gray-200 hover:bg-gray-100 transition-all duration-150 ease-in-out"
     >
       <td className="px-4 py-3 ">{row?.name ?? "N/A"}</td>
-      <td className="px-4 py-3 ">{row?.regions ?? "0"}</td>
+      <td className="px-4 py-3 ">{row?.region?.name ?? "0"}</td>
       <td className="px-4 py-3">{row?.churches ?? "0"}</td>
       <td className="px-4 py-3 ">{row?.overseer_name ?? "N/A"}</td>
 
@@ -157,10 +157,10 @@ const Districts = () => {
         footer={<div>Pagination goes here</div>}
         maxRows={5}
         loading={isLoading}
-        searchableFields={["district name"]}
+        searchableFields={["division name"]}
         filters={[
           {
-            name: "regions",
+            name: "region",
             fields: [
               "Greater Accra",
               "Ashanti",

@@ -20,8 +20,6 @@ const ChurchInfo: React.FC<ChurchInfoProps> = ({
 
   const { data } = useGetChurchesQuery({});
 
-  console.log("Churches data", data);
-
   const churchOptions = data?.map((app: any) => {
     return { label: app?.name, value: app?.id };
   });
@@ -62,7 +60,6 @@ const ChurchInfo: React.FC<ChurchInfoProps> = ({
     <div className="font-poppins">
       <h4 className="font-semibold text-lg text-black">{title} </h4>
       <p className="font-light text-lg text-[#71839B]">{description}</p>
-
       <div className="mt-8">
         {currentPath.includes("admin") && (
           <div className="">
@@ -104,21 +101,21 @@ const ChurchInfo: React.FC<ChurchInfoProps> = ({
           "Pastor's Name",
           "pastorName",
           "text",
-          false,
+          (currentPath.includes("admin") ? true : false),
           "Enter Pastor's Name"
         )}
         {input(
           "Pastor's Email",
           "pastorEmail",
           "email",
-          false,
+          (currentPath.includes("admin") ? true : false),
           "Enter Pastor's Email"
         )}
         {input(
           "Pastor's Phone",
           "pastorPhone",
           "tel",
-          false,
+          (currentPath.includes("admin") ? true : false),
           "+233 XX XXX XXXX"
         )}
       </div>

@@ -23,6 +23,7 @@ const Applications = () => {
   const headers = [
     { name: "Application ID", value: "application id" },
     { name: "Category", value: "category" },
+    { name: "Is Emergency", value: "is_emergency" },
     { name: "Submitted Date", value: "submitted date" },
     { name: "Status", value: "status" },
     { name: "Action", value: "action" },
@@ -99,6 +100,7 @@ const Applications = () => {
     >
       <td className="px-4 py-3 ">{row?.application_id}</td>
       <td className="px-4 py-3">{row?.support_type}</td>
+      <td className="px-4 py-3 capitalize">{row?.is_emergency.toString()}</td>
       <td className="px-4 py-3 ">
         {row?.created_at && typeof row.created_at === "string"
           ? moment(row.created_at).format("LL")
@@ -106,14 +108,14 @@ const Applications = () => {
       </td>
       <td className="px-4 py-3 select-none">
         <p
-          className={`text-[#F5F5F5] text-sm py-2 rounded-md text-center !capitalize ${
+          className={`text-[#F5F5F5] text-sm py-2 px-2 rounded-md text-center !capitalize truncate max-w-full ${
             row.status === "APPROVED" ? "bg-[#2D9632]" : ""
           }
            
            ${row.status === "PENDING REVIEW" ? "bg-[#BAB21D]" : ""}
           ${row.status === "UNDER REVIEW" ? "bg-[#1da5ba]" : ""}
            ${row.status === "DRAFT" ? "bg-[#71839B]" : ""}
-           ${row.status === "WAITING NO`S APPROVAL" ? "bg-[#719b96]" : ""}
+           ${row.status === "WAITING NO'S APPROVAL" ? "bg-[#719b96]" : ""}
            ${row.status === "REJECTED" ? "bg-red" : ""}
             `}
         >
@@ -274,7 +276,7 @@ const Applications = () => {
               "UNDER REVIEW",
               "DRAFT",
               "REJECTED",
-              "WAITING NO`S APPROVAL",
+              "WAITING NO'S APPROVAL",
             ],
           },
           {

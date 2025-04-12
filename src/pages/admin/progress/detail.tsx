@@ -22,7 +22,7 @@ const AdminProgressReportDetails = () => {
   const search = useSearch<any>();
 
   const [veryReport, { isLoading }] = useVerifyProgressReportMutation();
-  
+
   const handleVerifyReport = async () => {
     try {
       const res = await veryReport({ reportid: search?.id }).unwrap();
@@ -82,9 +82,9 @@ const AdminProgressReportDetails = () => {
           </div>
           <p
             className={`font-semibold text-xl 
-          ${search?.status === "APPROVED" ? "text-[#2D9632]" : ""}
+          ${search?.status === "VERIFIED" ? "text-[#2D9632]" : ""}
          
-         ${search?.status === "PENDING REVIEW" ? "text-[#BAB21D]" : ""}
+         ${search?.status === "PENDING" ? "text-[#BAB21D]" : ""}
         ${search?.status === "UNDER REVIEW" ? "text-[#1da5ba]" : ""}
          ${search?.status === "DRAFT" ? "text-[#71839B]" : ""}
          ${search?.status === "WAITING NO`S APPROVAL" ? "text-[#719b96]" : ""}
@@ -164,22 +164,24 @@ const AdminProgressReportDetails = () => {
           </div>
         </div>
 
-        <div className="flex justify-end ">
-          <button
-            disabled={isLoading}
-            onClick={handleVerifyReport}
-            className="w-48 h-14 rounded-md bg-primary-50 flex justify-center items-center gap-3 text-white font-medium hover:bg-primary-100 transition-all duration-150 ease-in-out "
-          >
-            {isLoading ? (
-              <ButtonLoader title="Verifying" />
-            ) : (
-              <>
-                <IoCheckmark className="size-6" aria-hidden="true" />
-                <span>Verify Report</span>
-              </>
-            )}
-          </button>
-        </div>
+        {search?.status !== "VERIFIED" && (
+          <div className="flex justify-end ">
+            <button
+              disabled={isLoading}
+              onClick={handleVerifyReport}
+              className="w-48 h-14 rounded-md bg-primary-50 flex justify-center items-center gap-3 text-white font-medium hover:bg-primary-100 transition-all duration-150 ease-in-out "
+            >
+              {isLoading ? (
+                <ButtonLoader title="Verifying" />
+              ) : (
+                <>
+                  <IoCheckmark className="size-6" aria-hidden="true" />
+                  <span>Verify Report</span>
+                </>
+              )}
+            </button>
+          </div>
+        )}
       </section>
       <PDFModal
         open={openPDFModal}

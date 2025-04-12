@@ -75,7 +75,6 @@ const Disbursement = () => {
                   trans_id: row?.disbursement_id?.toString().trim(),
                   bank_name: row?.bank_name?.toString().trim(),
                 };
-                
 
                 // Use an environment variable or other secure means to store your secret
                 const secretKey =
@@ -126,7 +125,7 @@ const Disbursement = () => {
           { name: "project", fields: [] },
           {
             name: "status",
-            fields: ["Completed", "Pending"],
+            fields: ["PENDING REVIEW", "APPROVED", "REJECTED"],
           },
         ]}
       />

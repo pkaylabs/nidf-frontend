@@ -19,7 +19,6 @@ const Login = () => {
   const navigate = useNavigate();
 
   const search = useSearch<LocationGenerics>();
-
   const dispatch = useAppDispatch();
 
   const [login, { isLoading }] = useLoginMutation();

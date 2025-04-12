@@ -161,7 +161,7 @@ export default function ViewUserModal({
                   <IoIosArrowRoundBack className="size-5" />
                   <span>Back to List</span>
                 </button>
-                <button
+                {/* <button
                   type="button"
                   onClick={() => {
                     setOpen(false);
@@ -180,7 +180,7 @@ export default function ViewUserModal({
                 >
                   <Edit2 size="20" color="#545454" />
                   <span>Edit User</span>
-                </button>
+                </button> */}
               </div>
             </div>
           </DialogPanel>

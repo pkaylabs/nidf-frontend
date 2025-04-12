@@ -10,6 +10,13 @@ export const regionApiSlice = api.injectEndpoints({
         body: { ...credentials },
       }),
     }),
+    updateRegion: builder.mutation({
+      query: (credentials) => ({
+        url: "regions/",
+        method: "PUT",
+        body: { ...credentials },
+      }),
+    }),
     deleteRegion: builder.mutation({
       query: (credentials) => ({
         url: "regions/",
@@ -25,6 +32,7 @@ export const regionApiSlice = api.injectEndpoints({
 
 export const {
   useCreateRegionMutation,
+  useUpdateRegionMutation,
   useDeleteRegionMutation,
   useGetRegionsQuery,
 } = regionApiSlice;

@@ -6,7 +6,10 @@ import { IoIosArrowRoundBack } from "react-icons/io";
 import SelectDropdown from "../applications/support/components/select";
 
 import toast from "react-hot-toast";
-import { useCreateRegionMutation } from "@/redux/features/regions/regionApiSlice";
+import {
+  useCreateRegionMutation,
+  useUpdateRegionMutation,
+} from "@/redux/features/regions/regionApiSlice";
 import ButtonLoader from "@/components/loaders/button";
 import { ghanaRegions } from "@/constants";
 
@@ -16,6 +19,7 @@ const AddRegion = () => {
   const search = useSearch();
 
   const [createRegion, { isLoading }] = useCreateRegionMutation();
+  const [updateRegion, { isLoading: updating }] = useUpdateRegionMutation();
 
   const formik: FormikProps<any> = useFormik({
     initialValues: {
@@ -53,30 +57,48 @@ const AddRegion = () => {
       try {
         if (search?.id) {
           finalData = { region: search?.id, ...values };
+          const res = await updateRegion(finalData).unwrap();
+          if (res) {
+            toast(
+              JSON.stringify({
+                type: "success",
+                title: res?.message ?? `Region updated successfully`,
+              })
+            );
+
+            formik.resetForm();
+
+            navigate({ to: ".." });
+          } else {
+            toast(
+              JSON.stringify({
+                type: "error",
+                title: "An error occurred",
+              })
+            );
+          }
         } else {
           finalData = values;
-        }
+          const res = await createRegion(finalData).unwrap();
+          if (res) {
+            toast(
+              JSON.stringify({
+                type: "success",
+                title: res?.message ?? `Region created successfully`,
+              })
+            );
 
-        const res = await createRegion(finalData).unwrap();
+            formik.resetForm();
 
-        if (res) {
-          toast(
-            JSON.stringify({
-              type: "success",
-              title: res?.message ?? `Region created successfully`,
-            })
-          );
-
-          formik.resetForm();
-
-          navigate({ to: ".." });
-        } else {
-          toast(
-            JSON.stringify({
-              type: "error",
-              title: "An error occurred",
-            })
-          );
+            navigate({ to: ".." });
+          } else {
+            toast(
+              JSON.stringify({
+                type: "error",
+                title: "An error occurred",
+              })
+            );
+          }
         }
       } catch (error: any) {
         console.log(error);
@@ -199,13 +221,13 @@ const AddRegion = () => {
 
         <div className="flex justify-end items-center my-5">
           <button
-            disabled={isLoading}
+            disabled={isLoading || updating}
             onClick={() => handleSubmit()}
             className="bg-primary text-white w-44 h-[50px]
              flex justify-center items-center
                rounded-md text-lg disabled:bg-opacity-80"
           >
-            {isLoading ? (
+            {isLoading || updating ? (
               <ButtonLoader
                 title={search?.id ? "Updating..." : "Creating..."}
               />

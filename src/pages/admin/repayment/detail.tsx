@@ -54,7 +54,7 @@ const AdminRepaymentDetails = () => {
       toast(
         JSON.stringify({
           type: "error",
-          title: error?.data?.error ?? "An error occurred",
+          title: error?.data?.message ?? "An error occurred",
         })
       );
     }
@@ -116,27 +116,32 @@ const AdminRepaymentDetails = () => {
               {" "}
               {status}{" "}
             </p>
-            <div className="">
-              <>
-                <button
-                  onClick={() => handleVerify("APPROVED")}
-                  disabled={isLoading}
-                  className="w-64 h-11 flex justify-center items-center space-x-3 bg-[#2D9632] rounded-md  text-[#FEFEFE] text-lg mb-5 disabled:bg-opacity-75 "
-                >
-                  <IoCheckmark className="size-5" aria-hidden="true" />
-                  <span>Approve Appication</span>
-                </button>
 
-                <button
-                  onClick={() => handleVerify("REJECTED")}
-                  disabled={isLoading}
-                  className="w-64 h-11 flex justify-center items-center space-x-3 bg-[#F75656] rounded-md  text-[#FEFEFE] text-lg disabled:bg-opacity-75 "
-                >
-                  <MdClose className="size-5" aria-hidden="true" />
-                  <span>Reject Appication</span>
-                </button>
-              </>
-            </div>
+            {status !== "APPROVED" && (
+              <div className="">
+                <>
+                  <button
+                    onClick={() => handleVerify("APPROVED")}
+                    disabled={isLoading}
+                    className="w-64 h-11 flex justify-center items-center space-x-3 bg-[#2D9632] rounded-md  text-[#FEFEFE] text-lg mb-5 disabled:bg-opacity-75 "
+                  >
+                    <IoCheckmark className="size-5" aria-hidden="true" />
+                    <span>Approve Application</span>
+                  </button>
+
+                  {status !== "REJECTED" && (
+                    <button
+                      onClick={() => handleVerify("REJECTED")}
+                      disabled={isLoading}
+                      className="w-64 h-11 flex justify-center items-center space-x-3 bg-[#F75656] rounded-md  text-[#FEFEFE] text-lg disabled:bg-opacity-75 "
+                    >
+                      <MdClose className="size-5" aria-hidden="true" />
+                      <span>Reject Application</span>
+                    </button>
+                  )}
+                </>
+              </div>
+            )}
           </div>
         </div>
 
@@ -201,15 +206,6 @@ const AdminRepaymentDetails = () => {
               </button>
             </div>
           </div>
-        </div>
-
-        <div className="flex justify-end ">
-          {status !== "APPROVED" && (
-            <button className="font-medium bg-[#E0E0E0] flex items-center gap-2 px-12 py-3 rounded-md text-[#737373] text-lg hover:bg-primary-100 transition-all duration-150 ease-in-out">
-              <IoCheckmark size="22" color="#737373" />
-              <span className="">Reconcile</span>
-            </button>
-          )}
         </div>
       </section>
       <PDFModal

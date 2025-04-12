@@ -35,7 +35,7 @@ const FilterDropdown: React.FC<FilterDropdownProps> = ({
          outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm md:text-base xl:text-lg"
         >
           <span className="col-start-1 row-start-1 truncate pr-6 capitalize">
-            {selectedOption?.endsWith("s")
+            {/* {selectedOption?.endsWith("s")
               ? selectedOption
                   ?.toString()
                   ?.replace("_", " ")
@@ -45,7 +45,8 @@ const FilterDropdown: React.FC<FilterDropdownProps> = ({
                   ?.toString()
                   ?.replace("_", " ")
                   ?.concat("s")
-                  ?.toLowerCase()}
+                  ?.toLowerCase()} */}
+                  {selectedOption}
           </span>
           <ChevronUpDownIcon
             aria-hidden="true"

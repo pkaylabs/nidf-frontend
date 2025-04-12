@@ -39,7 +39,7 @@ const AddNotification = () => {
       title: "",
       message: "",
       recipients: "",
-      fileAttachment: null as File | null,
+      fileAttachment: null as File | null | string,
       startDate: "",
       endDate: "",
       frequency: "",
@@ -71,7 +71,7 @@ const AddNotification = () => {
         const formData = new FormData();
         formData.append("title", values.title as string);
         formData.append("message", values.message as string);
-        // formData.append("is_scheduled", values.enabled.toString());
+        formData.append("is_scheduled", values.enabled.toString());
         formData.append("target", values.recipients as string);
         formData.append("schedule_start_date", values.startDate as string);
         formData.append("schedule_start_end", values.endDate as string);
@@ -82,10 +82,10 @@ const AddNotification = () => {
         if (id) {
           formData.append("notification", id);
         }
-        // for (const [key, value] of formData.entries()) {
-        //   console.log(`${key}:`, value);
-        // }
-        // console.log("FormData: ", formData);
+
+        if (typeof(values.fileAttachment) === "string") {
+          formData.delete("attachment");
+        }
 
         if (id) {
           const res = await updateNotification(formData).unwrap();
@@ -260,9 +260,9 @@ const AddNotification = () => {
               <SelectDropdown
                 options={[
                   { label: "All Users", value: "ALL" },
-                  { label: "All Churches", value: "churches" },
-                  { label: "Regional Overseers", value: "region" },
-                  { label: "District Overseers", value: "district" },
+                  { label: "All Churches", value: "CHURCH" },
+                  { label: "Regional Overseers", value: "REGION" },
+                  { label: "District Overseers", value: "DISTRICT" },
                 ]}
                 onChange={(value) => formik.setFieldValue("recipients", value)}
                 value={values.recipients}

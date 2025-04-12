@@ -135,9 +135,6 @@ const AdminRepayment = () => {
             fields: [
               "APPROVED",
               "PENDING REVIEW",
-              "UNDER REVIEW",
-              "DRAFT",
-              "WAITING NO`S APPROVAL",
               "REJECTED",
             ],
           },

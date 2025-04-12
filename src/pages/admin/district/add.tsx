@@ -4,7 +4,10 @@ import React, { useEffect } from "react";
 import { IoIosArrowRoundBack } from "react-icons/io";
 import { useNavigate, useSearch } from "react-location";
 import toast from "react-hot-toast";
-import { useCreateDivisionMutation } from "@/redux/features/divisions/divisionApiSlice";
+import {
+  useCreateDivisionMutation,
+  useUpdateDivisionMutation,
+} from "@/redux/features/divisions/divisionApiSlice";
 import { useGetRegionsQuery } from "@/redux/features/regions/regionApiSlice";
 import SelectDropdown from "@/pages/client/applications/support/components/select";
 import ButtonLoader from "@/components/loaders/button";
@@ -14,6 +17,7 @@ const AddDistrict = () => {
   const search = useSearch();
 
   const [createDivision, { isLoading }] = useCreateDivisionMutation();
+  const [updateDivision, { isLoading: updating }] = useUpdateDivisionMutation();
 
   const {
     data,
@@ -65,29 +69,48 @@ const AddDistrict = () => {
       try {
         if (search?.id) {
           finalData = { division: search?.id, ...values };
+          const res = await updateDivision(finalData).unwrap();
+          if (res) {
+            toast(
+              JSON.stringify({
+                type: "success",
+                title: res?.message ?? `Division updated successfully`,
+              })
+            );
+
+            formik.resetForm();
+
+            navigate({ to: ".." });
+          } else {
+            toast(
+              JSON.stringify({
+                type: "error",
+                title: "An error occurred",
+              })
+            );
+          }
         } else {
           finalData = values;
-        }
-        const res = await createDivision(finalData).unwrap();
+          const res = await createDivision(finalData).unwrap();
+          if (res) {
+            toast(
+              JSON.stringify({
+                type: "success",
+                title: res?.message ?? `Division created successfully`,
+              })
+            );
 
-        if (res) {
-          toast(
-            JSON.stringify({
-              type: "success",
-              title: res?.message ?? `Division created successfully`,
-            })
-          );
+            formik.resetForm();
 
-          formik.resetForm();
-
-          navigate({ to: ".." });
-        } else {
-          toast(
-            JSON.stringify({
-              type: "error",
-              title: "An error occurred",
-            })
-          );
+            navigate({ to: ".." });
+          } else {
+            toast(
+              JSON.stringify({
+                type: "error",
+                title: "An error occurred",
+              })
+            );
+          }
         }
       } catch (error: any) {
         console.log(error);
@@ -144,7 +167,7 @@ const AddDistrict = () => {
         overseer_name: search?.overseer_name,
         overseer_phone: search?.overseer_phone,
         overseer_email: search?.overseer_email,
-        region: search?.region
+        region: search?.region,
       });
     }
   }, [search]);
@@ -237,12 +260,12 @@ const AddDistrict = () => {
 
         <div className="flex justify-end items-center my-5">
           <button
-            disabled={isLoading}
+            disabled={isLoading || updating}
             onClick={() => handleSubmit()}
             className="bg-primary text-white w-44 h-[50px] 
             flex justify-center items-center rounded-md text-lg disabled:bg-opacity-80"
           >
-            {isLoading ? (
+            {isLoading || updating ? (
               <ButtonLoader
                 title={search?.id ? "Updating..." : "Creating..."}
               />

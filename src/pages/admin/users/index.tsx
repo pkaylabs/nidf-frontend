@@ -12,7 +12,7 @@ const Users = () => {
 
   const headers = [
     { name: "Name", value: "name" },
-    { name: "Type", value: "type" },
+    { name: "Type", value: "user_type" },
     { name: "Email", value: "email" },
     { name: "Phone", value: "phone" },
     { name: "Status", value: "status" },
@@ -35,7 +35,7 @@ const Users = () => {
       className="font-poppins border-b text-lg  text-black  border-gray-200 hover:bg-gray-100 transition-all duration-150 ease-in-out"
     >
       <td className="px-4 py-3 ">{row?.name}</td>
-      <td className="px-4 py-3 ">{row?.user_type}</td>
+      <td className="px-4 py-3 capitalize">{row?.user_type}</td>
       <td className="px-4 py-3">{row?.email}</td>
       <td className="px-4 py-3 ">{row?.phone}</td>
       <td className="px-4 py-3 ">
@@ -50,8 +50,8 @@ const Users = () => {
         </p>
       </td>
       <td className="px-4 py-4 ">
-        <div className="flex items-center gap-3">
-          <button
+        <div className="flex justify-center items-center gap-3">
+          {/* <button
             onClick={() =>
               navigate({
                 to: `${ADMIN_USERS}/add`,
@@ -67,7 +67,7 @@ const Users = () => {
             className={` `}
           >
             <Edit2 size="20" color="#545454" />
-          </button>
+          </button> */}
           <button
             onClick={() => {
               setOpenUserModal(true);
@@ -113,13 +113,13 @@ const Users = () => {
         rows={rows}
         renderRow={customRowRenderer}
         footer={<div>Pagination goes here</div>}
-        maxRows={5}
+        maxRows={10}
         loading={isLoading}
         searchableFields={["user id", "name", "email", "phone"]}
         filters={[
           {
-            name: "type",
-            fields: ["Church User", "Admin User", "Finance User", "Super User"],
+            name: "user_type",
+            fields: ["CHURCH_USER", "ADMIN", "FINANCE_OFFICER"],
           },
         ]}
       />
