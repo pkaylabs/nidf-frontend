@@ -53,6 +53,7 @@
     "react-topbar-progress-indicator": "^4.1.1",
     "redux-persist": "^6.0.0",
     "sweetalert2": "^11.17.2",
+    "tailwind-merge": "^3.2.0",
     "tailwind-scrollbar-hide": "^2.0.0",
     "yup": "^1.6.1"
   },
