@@ -1,0 +1,4 @@
+notifications for church users
+alert upon login when users have arrease 
+display name of churches 
+creating user

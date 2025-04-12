@@ -11,13 +11,14 @@ const Dashboard = () => {
   const navigate = useNavigate();
 
   const { data, isLoading } = useGetDashboardDataQuery({});
+  console.log(data, "dataaaaaaaaaa");
 
   return (
     <main className="font-poppins">
       <Show if={true}>
         <div className="bg-[#A0D1EF] py-4 px-8 flex justify-between items-center ">
           <p className="text-[#324054] text-lg ">
-            Your Aid Application <span>(APP-12345)</span> is pending review.
+            {data?.pending_application ?? "No Pending Application"}
           </p>
           <button
             onClick={() => navigate({ to: APPLICATIONS })}
@@ -128,7 +129,7 @@ const Dashboard = () => {
             )}
 
             <p className="font-light text-[#545454] mt-4">
-              Last payment: January 10, 2025
+              Last payment: {data?.last_payment ?? "None"}
             </p>
           </div>
         </section>

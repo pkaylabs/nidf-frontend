@@ -1,32 +1,62 @@
-import React, { ReactNode, useState } from "react";
+import React, { ReactNode, useEffect, useState } from "react";
 import { useNavigate } from "react-location";
 import { motion } from "framer-motion";
 import Table from "@/components/table";
 import { ADMIN_REGIONS } from "@/constants/page-path";
 import { Edit2, Trash } from "iconsax-react";
+import {
+  useDeleteRegionMutation,
+  useGetRegionsQuery,
+} from "@/redux/features/regions/regionApiSlice";
+import Swal from "sweetalert2";
+import ButtonLoader from "@/components/loaders/button";
 
 const Regions = () => {
   const navigate = useNavigate();
-
   const headers = [{ name: "Name", value: "name" }];
 
-  const rows = [
-    {
-      name: "Greater Accra Region",
-      districts: "20",
-      churches: "12",
-    },
-    {
-      name: "Central Region",
-      districts: "20",
-      churches: "12",
-    },
-    {
-      name: "Volta Region",
-      districts: "20",
-      churches: "12",
-    },
-  ];
+  const { data, isLoading, refetch, isError } = useGetRegionsQuery({});
+  const rows = data?.region ?? [];
+
+  const [deleteRegion, { isLoading: isDeleting }] = useDeleteRegionMutation();
+
+  const handleDelete = async (id: any) => {
+    try {
+      Swal.fire({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#17567E",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, delete it!",
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          try {
+            const res = await deleteRegion({ region: id }).unwrap();
+            refetch();
+            Swal.fire({
+              title: "Deleted!",
+              text: "Region successfully deleted!",
+              icon: "success",
+            });
+          } catch (error: any) {
+            Swal.fire({
+              title: "Error!",
+              text: error?.data?.message ?? "An error occurred while deleting the region.",
+              icon: "error",
+            });
+          }
+        }
+      });
+    } catch (error: any) {
+      Swal.fire({
+        title: "Error!",
+        text: error?.data?.message ?? "An error occurred. Please try again.",
+        icon: "error",
+      });
+    }
+  };
 
   const customRowRenderer = (
     row: { [key: string]: ReactNode },
@@ -43,15 +73,15 @@ const Regions = () => {
         <div className="flex justify-between items-center space-x-4 border-[0.5px] border-[#71839B] rounded-md shadow-sm p-6 mb-5">
           <div className="">
             <h4 className="font-semibold text-xl text-[#454545] ">
-              {row.name}
+              {row?.name ?? "N/A"}
             </h4>
             <div className="flex gap-2 items-center">
               <p className="font-light text-[#545454] my-3">
-                {row.districts} Districts
+                {row?.districts ?? "0"} Districts
               </p>
               ·
               <p className="font-light text-[#545454] my-3">
-                {row.churches} Churches
+                {row?.churches ?? "0"} Churches
               </p>
             </div>
           </div>
@@ -61,9 +91,11 @@ const Regions = () => {
                 navigate({
                   to: `/admin/regions/${row.name}`,
                   search: {
+                    id: row?.id,
                     name: row.name,
-                    districts: row.districts,
-                    churches: row.churches
+                    districts: row?.districts,
+                    churches: row?.churches,
+                    created_by: row?.created_by_user,
                   },
                 })
               }
@@ -73,19 +105,35 @@ const Regions = () => {
             </button>
             <button
               onClick={() =>
-                navigate({})
+                navigate({
+                  to: `${ADMIN_REGIONS}/add`,
+                  search: {
+                    id: row?.id,
+                    name: row.name,
+                    email: row?.email,
+                    phone: row?.phone,
+                    location: row?.location,
+                    overseer_name: row?.overseer_name,
+                    overseer_email: row?.overseer_email,
+                    overseer_phone: row?.overseer_phone,
+                  },
+                })
               }
               className="font-poppins font-light w-12 h-12 flex justify-center items-center border border-[#324054] rounded-md text-[#324054] hover:text-white transition-all duration-200 ease-in-out "
             >
               <Edit2 size="24" color="#324054" />
             </button>
             <button
-              onClick={() =>
-                navigate({})
-              }
-              className="font-poppins font-light w-12 h-12 flex justify-center text-white items-center border border-[#CE5347] bg-[#CE5347] rounded-md   transition-all duration-200 ease-in-out "
+              disabled={isDeleting}
+              onClick={() => handleDelete(row?.id)}
+              className="font-poppins font-light w-12 h-12 flex justify-center text-white items-center border
+               border-[#CE5347] bg-[#CE5347] rounded-md transition-all duration-200 ease-in-out disabled:bg-opacity-80 "
             >
-              <Trash size="24" color="#FFF" />
+              {isDeleting ? (
+                <ButtonLoader title="" />
+              ) : (
+                <Trash size="24" color="#FFF" />
+              )}
             </button>
           </div>
         </div>
@@ -93,7 +141,11 @@ const Regions = () => {
     </motion.tr>
   );
 
-  const [loading, setLoading] = useState(false);
+  useEffect(() => {
+    if (data) {
+      refetch();
+    }
+  }, [data]);
 
   return (
     <div className="p-5">
@@ -107,7 +159,7 @@ const Regions = () => {
         renderRow={customRowRenderer}
         footer={<div>Pagination goes here</div>}
         maxRows={5}
-        loading={loading}
+        loading={isLoading}
         searchable={true}
         searchableFields={["name"]}
         //   filters={[

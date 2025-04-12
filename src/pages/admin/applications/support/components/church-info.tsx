@@ -17,17 +17,14 @@ const ChurchInfo: React.FC<ChurchInfoProps> = ({
 
   const input = (
     label: string,
-    name: string, 
+    name: string,
     type: string = "text",
     disabled: boolean = false,
-    placeholder: string = "",
+    placeholder: string = ""
   ) => {
     return (
       <div className="font-poppins mt-5">
-        <label
-          htmlFor={name}
-          className=" block text-lg font-medium text-black"
-        >
+        <label htmlFor={name} className=" block text-lg font-medium text-black">
           {label}
         </label>
         <input
@@ -56,9 +53,9 @@ const ChurchInfo: React.FC<ChurchInfoProps> = ({
       <div className="mt-8">
         {input("Church Name", "churchName", "text", true)}
         {input("Church Address", "churchAddress", "text", true)}
-        {input("Pastor's Name", "pastorName", "text", false, "Enter Pastor's Name")}
-        {input("Pastor's Email", "pastorEmail", "email", false, "Enter Pastor's Email")}
-        {input("Pastor's Phone", "pastorPhone", "tel", false, "+233 XX XXX XXXX")}
+        {input("Pastor's Name", "pastorName", "text", true)}
+        {input("Pastor's Email", "pastorEmail", "email", true)}
+        {input("Pastor's Phone", "pastorPhone", "tel", true)}
       </div>
     </div>
   );

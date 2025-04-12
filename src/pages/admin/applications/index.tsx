@@ -4,6 +4,8 @@ import { motion } from "framer-motion";
 import { Edit2, Eye, Trash } from "iconsax-react";
 import Table from "@/components/table";
 import { ADMIN_APPLICATIONS, CREATE_APPLICATIONS } from "@/constants/page-path";
+import { useGetApplicationsQuery } from "@/redux/features/applications/applicationsApiSlice";
+import moment from "moment";
 
 const AdminApplications = () => {
   const navigate = useNavigate();
@@ -12,92 +14,57 @@ const AdminApplications = () => {
     { name: "Application ID", value: "application id" },
     { name: "Applicants", value: "applicant" },
     { name: "Category", value: "category" },
+    { name: "Is Emergency", value: "is_emergency" },
     { name: "Submitted Date", value: "submitted date" },
     { name: "Status", value: "status" },
     { name: "Action", value: "action" },
   ];
 
-  const rows = [
-    {
-      "application id": "APP-12345",
-      applicant: "DLCF Legon",
-      category: "Emergency Support",
-      "submitted date": "Jan 15, 2025",
-      status: "Rejected",
-    },
-    {
-      "application id": "BPP-12345",
-      applicant: "DLCF Legon",
-      category: "Aid",
-      "submitted date": "Jan 15, 2025",
-      status: "Approved",
-    },
-    {
-      "application id": "CPP-12345",
-      applicant: "DLCF Legon",
-      category: "Revolving Fund",
-      "submitted date": "Jan 15, 2025",
-      status: "Pending",
-    },
-    {
-      "application id": "DPP-12345",
-      applicant: "DLCF Legon",
-      category: "Emergency Support",
-      "submitted date": "Jan 15, 2025",
-      status: "Pending",
-    },
-    {
-      "application id": "APP-12345",
-      applicant: "DLCF Legon",
-      category: "Emergency Support",
-      "submitted date": "Jan 15, 2025",
-      status: "Pending",
-    },
-    {
-      "application id": "BPP-12345",
-      applicant: "DLCF Legon",
-      category: "Aid",
-      "submitted date": "Jan 15, 2025",
-      status: "Approved",
-    },
-    {
-      "application id": "CPP-12345",
-      applicant: "DLCF Legon",
-      category: "Revolving Fund",
-      "submitted date": "Jan 15, 2025",
-      status: "Pending",
-    },
-    {
-      "application id": "DPP-12345",
-      applicant: "DLCF Legon",
-      category: "Emergency Support",
-      "submitted date": "Jan 15, 2025",
-      status: "Rejected",
-    },
-  ];
+  const { data, isLoading, refetch, isError } = useGetApplicationsQuery({});
+  // console.log(data, "data");
+  const rows = data ?? [];
 
-  const customRowRenderer = (
-    row: { [key: string]: ReactNode },
-    index: number
-  ) => (
+  interface RowData {
+    church?: {
+      name?: string;
+      pastor_name: string;
+      district?: {
+        name?: string;
+      };
+    };
+    status?: string;
+    [key: string]: any;
+  }
+
+  const customRowRenderer = (row: RowData, index: number) => (
     <motion.tr
       key={index}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ delay: index * 0.05 }}
-      className="font-poppins border-b text-lg  text-black  border-gray-200 hover:bg-gray-100 transition-all duration-150 ease-in-out"
+      className="font-poppins border-b  text-black  border-gray-200 hover:bg-gray-100 transition-all duration-150 ease-in-out"
     >
-      <td className="px-4 py-3 ">{row["application id"]}</td>
-      <td className="px-4 py-3 ">{row.applicant}</td>
-      <td className="px-4 py-3">{row.category}</td>
-      <td className="px-4 py-3 ">{row["submitted date"]}</td>
-      <td className="px-4 py-3 ">
+      <td className="px-4 py-3 truncate">{row?.application_id}</td>
+      <td className="px-4 py-3 truncate">{row?.church?.name}</td>
+      <td className="px-4 py-3 truncate">{row?.support_type}</td>
+      <td className="px-4 py-3 truncate capitalize">{row?.is_emergency.toString()}</td>
+      <td className="px-4 py-3 truncate">
+        {row?.created_at && typeof row.created_at === "string"
+          ? moment(row.created_at).format("LL")
+          : "N/A"}
+      </td>
+      <td className="px-4 py-3 truncate">
         <p
-          className={`text-[#F5F5F5] text-base py-1 rounded-md text-center ${
-            row.status === "Approved" ? "bg-[#2D9632]" : ""
-          } ${row.status === "Pending" ? "bg-[#71839B]" : ""} ${
-            row.status === "Rejected" ? "bg-[#F75656]" : ""
-          } `}
+          className={`text-[#F5F5F5] text-sm px-1.5 py-2 rounded-md text-center truncate max-w-36 !capitalize ${
+            row.status === "APPROVED" ? "bg-[#2D9632]" : ""
+          }
+           
+           ${row.status === "PENDING REVIEW" ? "bg-[#BAB21D]" : ""}
+          ${row.status === "UNDER REVIEW" ? "bg-[#1da5ba]" : ""}
+           ${row.status === "DRAFT" ? "bg-[#71839B]" : ""}
+           ${row.status === "WAITING NO'S APPROVAL" ? "bg-[#719b96]" : ""}
+           ${row.status === "REJECTED" ? "bg-red" : ""}
+            `}
         >
           {row.status}
         </p>
@@ -106,26 +73,42 @@ const AdminApplications = () => {
         <button
           onClick={() =>
             navigate({
-              to: `${ADMIN_APPLICATIONS}/${row["application id"]}`,
+              to: `${ADMIN_APPLICATIONS}/${row?.application_id}`,
               search: {
+                id: row.id as string,
                 status: row.status as string,
+                church_name: row?.church?.name,
+                division: row?.church?.district?.name as string,
+                pastor: row?.church?.pastor_name as string,
+                project_location: row?.project_location as string,
+                project_phase: row?.phase as string,
+                application_id: row.application_id,
+                support_type: row.support_type as string,
+                created_at: row.created_at as string,
+                category: row.category as string,
+                amount: row.amount as string,
+                description: row.description as string,
+                purpose: row.purpose as string,
+                expected_completion_date:
+                  row.expected_completion_date as string,
+                current_stage: row.current_stage as string,
+                cost_estimate: row.cost_estimate as string,
+                land_ownership: row.land_ownership as string,
+                invoices: row.invoices as string,
               },
             })
           }
-          className={`w-full text-[#71839B] text-base py-1 rounded-md text-center border border-[#71839B]  `}
+          className={`w-full text-[#71839B] text-base py-1 rounded-md text-center border border-[#71839B]
+            hover:bg-primary-100 hover:text-white transition-all duration-150 ease-in-out `}
         >
           View
         </button>
-       
       </td>
     </motion.tr>
   );
 
-  const [loading, setLoading] = useState(true);
-
   useEffect(() => {
-    const timeout = setTimeout(() => setLoading(false), 3000); // Simulating a 3-second data load
-    return () => clearTimeout(timeout);
+    refetch();
   }, []);
 
   return (
@@ -139,13 +122,23 @@ const AdminApplications = () => {
         renderRow={customRowRenderer}
         footer={<div>Pagination goes here</div>}
         maxRows={5}
-        loading={loading}
-        searchableFields={["application id"]}
+        loading={isLoading}
+        searchableFields={["application_id"]}
         filters={[
-          { name: "status", fields: ["Rejected", "Approved", "Pending"] },
           {
-            name: "category",
-            fields: ["Emergency Support", "Aid", "Revolving Fund"],
+            name: "status",
+            fields: [
+              "DRAFT",
+              "PENDING REVIEW",
+              "APPROVED",
+              "REJECTED",
+              "UNDER REVIEW",
+              "WAITING NO'S APPROVAL",
+            ],
+          },
+          {
+            name: "support_type",
+            fields: ["AID", "REVOLVING_FUND"],
           },
         ]}
       />

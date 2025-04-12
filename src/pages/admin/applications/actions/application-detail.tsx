@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { IoIosArrowRoundBack } from "react-icons/io";
 import { useNavigate, useSearch } from "react-location";
 import ApplicationDetail from "./components/application-detail";
@@ -8,6 +8,15 @@ import { motion } from "framer-motion";
 import { IoCheckmark } from "react-icons/io5";
 import { MdClose } from "react-icons/md";
 import AdditionalInfoModal from "./components/additional-info-modal";
+import { useProcessApplicationMutation } from "@/redux/features/applications/applicationsApiSlice";
+import Swal from "sweetalert2";
+
+import { statuses } from "@/constants";
+import ButtonLoader from "@/components/loaders/button";
+import { BACKEND_BASE_URL } from "@/constants/page-path";
+import moment from "moment";
+import { documentsDataProps } from "@/pages/client/applications/actions/view";
+import SelectDropdown from "@/pages/client/applications/support/components/select";
 
 interface TabProps {
   label: string;
@@ -28,28 +37,11 @@ const Tab = ({ label, active, onClick }: TabProps) => (
   </button>
 );
 
-const summery = [
-  {
-    title: "Application ID",
-    value: "APP-12345",
-  },
-  {
-    title: "Applicant Church",
-    value: "DLCF Legon",
-  },
-  {
-    title: "Amount Requested",
-    value: "GHS 40,000",
-  },
-  {
-    title: "Division/District",
-    value: "Accra",
-  },
-];
-
 const AdminApplicationDetails = () => {
   const [activeTab, setActiveTab] = useState(0);
   const [direction, setDirection] = useState(1);
+
+  const search = useSearch<any>();
 
   const [openAdditionalInfoModal, setOpenAdditionalIfoModal] = useState(false);
 
@@ -59,15 +51,152 @@ const AdminApplicationDetails = () => {
   };
 
   const navigate = useNavigate();
-  const search = useSearch<any>();
+
   const status = search.status;
 
+  const [statusValue, setStatusValue] = useState("");
+
+  const summery = [
+    {
+      title: "Application ID",
+      value: search?.application_id ?? "N/A",
+    },
+    {
+      title: "Applicant Church",
+      value: search?.church_name ?? "N/A",
+    },
+    {
+      title: "Amount Requested",
+      value: `GHS ${search?.amount ?? "0"}`,
+    },
+    {
+      title: "Division/District",
+      value: search?.division ?? "N/A",
+    },
+  ];
+
+  const applicationDetailData = [
+    { name: "Category", value: search?.support_type },
+    { name: "Purpose of Aid", value: search?.purpose },
+    { name: "Estimated Completion", value: search?.expected_completion_date },
+    { name: "Pastor’s Name", value: search?.pastor },
+    { name: "Project Location", value: search?.project_location },
+    { name: "Project Phase", value: search?.project_phase },
+  ];
+
+  const documentsData: documentsDataProps[] = [
+    {
+      name:
+        search?.cost_estimate?.replace(
+          "/assets/applications/cost_estimate/",
+          ""
+        ) ?? "Cost Estimate Document",
+      date: moment(search.created_at).format("LL") ?? "N/A",
+      status: search.status,
+      url:
+        BACKEND_BASE_URL.replace("/api-v1/", "").concat(
+          search?.cost_estimate
+        ) ?? "",
+    },
+    {
+      name:
+        search?.current_stage?.replace(
+          "/assets/applications/current_stage/",
+          ""
+        ) ?? "Current Stage Document",
+      date: moment(search.created_at).format("LL") ?? "N/A",
+      status: search.status,
+      url:
+        BACKEND_BASE_URL.replace("/api-v1/", "").concat(
+          search?.current_stage
+        ) ?? "",
+    },
+    {
+      name:
+        search?.land_ownership?.replace(
+          "/assets/applications/land_ownership/",
+          ""
+        ) ?? "Land Ownership Document",
+      date: moment(search.created_at).format("LL") ?? "N/A",
+      status: search.status,
+      url:
+        BACKEND_BASE_URL.replace("/api-v1/", "").concat(
+          search?.land_ownership
+        ) ?? "",
+    },
+    {
+      name:
+        search?.invoices?.replace("/assets/applications/invoices/", "") ??
+        "Invoices",
+      date: moment(search.created_at).format("LL") ?? "N/A",
+      status: search.status,
+      url:
+        BACKEND_BASE_URL.replace("/api-v1/", "").concat(search?.invoices) ?? "",
+    },
+  ];
+
+  const [processApplication, { isLoading }] = useProcessApplicationMutation();
+
+  const handleApplicationProcess = async () => {
+    if (!statusValue) return alert("Make sure you have selected a status");
+
+    try {
+      const res = await processApplication({
+        application: search?.application_id,
+        status: statusValue,
+      }).unwrap();
+
+      console.log(res, "res PROCESSINg");
+
+      if (res) {
+        Swal.fire({
+          title: "Application status successfully updated!",
+          icon: "success",
+          draggable: true,
+        });
+
+        navigate({ to: ".." });
+      } else {
+        Swal.fire({
+          title: "Error!",
+          text: "An error occurred. Please try again.",
+          icon: "error",
+        });
+      }
+    } catch (error) {
+      console.log(error);
+      Swal.fire({
+        title: "Error!",
+        text: "An error occurred. Please try again.",
+        icon: "error",
+      });
+    }
+  };
+
   const tabs = [
-    { label: "Application Details", component: <ApplicationDetail /> },
-    { label: "Supporting Document", component: <SupportingDocuments /> },
+    {
+      label: "Application Details",
+      component: <ApplicationDetail data={applicationDetailData} />,
+    },
+    {
+      label: "Supporting Document",
+      component: <SupportingDocuments data={documentsData} />,
+    },
     { label: "Approval Log", component: <ApprovalLog /> },
   ];
-  //
+ 
+
+  const handleStatusChange = (val: string) => {
+    setStatusValue(val);
+  };
+
+  useEffect(() => {
+    const validStatus = statuses.find((s) => s.value === status);
+    if (validStatus) {
+      handleStatusChange(validStatus.value);
+    }
+  }, [status]);
+
   return (
     <main className="font-poppins p-5">
       <div className="flex items-center gap-x-4 mb-5">
@@ -88,10 +217,14 @@ const AdminApplicationDetails = () => {
 
           <p
             className={`text-[#F5F5F5] text-base py-1.5 px-4 rounded-md text-center ${
-              status === "Approved" ? "bg-[#2D9632]" : ""
-            } ${status === "Pending" ? "bg-[#71839B]" : ""} ${
-              status === "Rejected" ? "bg-[#F75656]" : ""
-            } `}
+              search.status === "APPROVED" ? "bg-[#2D9632]" : ""
+            }
+             
+             ${search.status === "PENDING REVIEW" ? "bg-[#BAB21D]" : ""}
+            ${search.status === "UNDER REVIEW" ? "bg-[#1da5ba]" : ""}
+             ${search.status === "DRAFT" ? "bg-[#71839B]" : ""}
+             ${search.status === "WAITING NO'S APPROVAL" ? "bg-[#719b96]" : ""}
+             ${search.status === "REJECTED" ? "bg-red" : ""} `}
           >
             {status}
           </p>
@@ -109,24 +242,52 @@ const AdminApplicationDetails = () => {
             ))}
           </div>
           <div className="flex-1 pl-8">
-            {status === "Pending" && (
-              <>
-                <button className="w-full h-11 flex justify-center items-center space-x-3 bg-[#2D9632] rounded-md  text-[#FEFEFE] text-lg mb-5 ">
-                  <IoCheckmark className="size-5" aria-hidden="true" />
-                  <span>Approve Appication</span>
-                </button>
-                <button
-                  onClick={() => setOpenAdditionalIfoModal(true)}
-                  className="w-full h-11 flex justify-center items-center space-x-3 border border-[#71839B] rounded-md  text-[#71839B] text-lg mb-5 "
-                >
-                  <span>Request Additional Info</span>
-                </button>
-                <button className="w-full h-11 flex justify-center items-center space-x-3 bg-[#F75656] rounded-md  text-[#FEFEFE] text-lg  ">
-                  <MdClose className="size-5" aria-hidden="true" />
-                  <span>Reject Appication</span>
-                </button>
-              </>
-            )}
+            {status !== "DRAFT" &&
+              status !== "APPROVED" &&
+              status !== "REJECTED" && (
+                <>
+                  {/* <button
+                    disabled={isLoading}
+                    onClick={() => handleApplicationProcess("APPROVED")}
+                    className="w-full h-11 flex justify-center items-center space-x-3 bg-[#2D9632] rounded-md  text-[#FEFEFE] text-lg mb-5 "
+                  >
+                    <IoCheckmark className="size-5" aria-hidden="true" />
+                    <span>Approve Application</span>
+                  </button> */}
+                  <div className="mb-5">
+                    <label
+                      htmlFor="typeOfChurchProject"
+                      className="block text-lg font-medium text-black"
+                    >
+                      Select Application Status
+                    </label>
+                    <SelectDropdown
+                      options={statuses}
+                      value={statusValue}
+                      onChange={handleStatusChange}
+                    />
+                  </div>
+                  <button
+                    disabled={isLoading}
+                    onClick={() => setOpenAdditionalIfoModal(true)}
+                    className="w-full h-11 flex justify-center items-center space-x-3 border border-[#71839B] 
+                    rounded-md  text-[#71839B] text-lg mb-5 disabled:bg-opacity-80 "
+                  >
+                    <span>Request Additional Info</span>
+                  </button>
+                  <button
+                    disabled={isLoading}
+                    onClick={handleApplicationProcess}
+                    className="w-full h-11 flex justify-center items-center space-x-3 bg-primary rounded-md  text-[#FEFEFE] text-lg  "
+                  >
+                    {isLoading ? (
+                      <ButtonLoader title="Updating..." />
+                    ) : (
+                      "Update Application Status"
+                    )}
+                  </button>
+                </>
+              )}
           </div>
         </div>
 
@@ -159,6 +320,7 @@ const AdminApplicationDetails = () => {
         </motion.div>
       </div>
       <AdditionalInfoModal
+        appID={search?.application_id}
         open={openAdditionalInfoModal}
         setOpen={setOpenAdditionalIfoModal}
       />

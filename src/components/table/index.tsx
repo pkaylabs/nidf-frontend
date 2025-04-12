@@ -142,7 +142,7 @@ const Table: React.FC<TableProps> = ({
                   {headers?.map((header) => (
                     <th
                       key={header.value}
-                      className="font-semibold px-4 py-2.5 bg-primary text-lg text-white"
+                      className="font-semibold px-4 py-2.5 bg-primary text-lg text-white truncate"
                     >
                       {header.name}
                     </th>
@@ -163,7 +163,7 @@ const Table: React.FC<TableProps> = ({
                     transition={{ delay: index * 0.05 }}
                   >
                     {headers?.map((header) => (
-                      <td key={header.value} className="px-4 py-2">
+                      <td key={header.value} className="px-4 py-2 truncate">
                         {row[header.value]}
                       </td>
                     ))}

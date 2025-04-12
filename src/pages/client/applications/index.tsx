@@ -23,13 +23,14 @@ const Applications = () => {
   const headers = [
     { name: "Application ID", value: "application id" },
     { name: "Category", value: "category" },
+    { name: "Is Emergency", value: "is_emergency" },
     { name: "Submitted Date", value: "submitted date" },
     { name: "Status", value: "status" },
     { name: "Action", value: "action" },
   ];
 
   const { data, isLoading, refetch, isError } = useGetApplicationsQuery({});
-  // console.log(data, "data");
+  console.log(data, "data application");
   const rows = data ?? [];
 
   const [deleteApplication, { isLoading: isDeleting }] =
@@ -77,10 +78,19 @@ const Applications = () => {
     }
   };
 
-  const customRowRenderer = (
-    row: { [key: string]: ReactNode },
-    index: number
-  ) => (
+  interface RowData {
+    church?: {
+      name?: string;
+      address?: string;
+      pastor_name?: string;
+      pastor_email?: string;
+      pastor_phone?: string;
+    };
+
+    [key: string]: any;
+  }
+
+  const customRowRenderer = (row: RowData, index: number) => (
     <motion.tr
       key={index}
       initial={{ opacity: 0 }}
@@ -90,6 +100,7 @@ const Applications = () => {
     >
       <td className="px-4 py-3 ">{row?.application_id}</td>
       <td className="px-4 py-3">{row?.support_type}</td>
+      <td className="px-4 py-3 capitalize">{row?.is_emergency.toString()}</td>
       <td className="px-4 py-3 ">
         {row?.created_at && typeof row.created_at === "string"
           ? moment(row.created_at).format("LL")
@@ -97,14 +108,14 @@ const Applications = () => {
       </td>
       <td className="px-4 py-3 select-none">
         <p
-          className={`text-[#F5F5F5] text-sm py-2 rounded-md text-center !capitalize ${
+          className={`text-[#F5F5F5] text-sm py-2 px-2 rounded-md text-center !capitalize truncate max-w-full ${
             row.status === "APPROVED" ? "bg-[#2D9632]" : ""
           }
            
            ${row.status === "PENDING REVIEW" ? "bg-[#BAB21D]" : ""}
           ${row.status === "UNDER REVIEW" ? "bg-[#1da5ba]" : ""}
            ${row.status === "DRAFT" ? "bg-[#71839B]" : ""}
-           ${row.status === "WAITING NO`S APPROVAL" ? "bg-[#719b96]" : ""}
+           ${row.status === "WAITING NO'S APPROVAL" ? "bg-[#719b96]" : ""}
            ${row.status === "REJECTED" ? "bg-red" : ""}
             `}
         >
@@ -125,7 +136,11 @@ const Applications = () => {
                 } `,
                 search: {
                   id: row.id as string,
-                  
+                  churchName: row?.church?.name as string,
+                  churchAddress: row?.church?.address as string,
+                  pastorName: row?.church?.pastor_name as string,
+                  pastorEmail: row?.church?.pastor_email as string,
+                  pastorPhone: row?.church?.pastor_phone as string,
 
                   status: (row.status as string) ?? "",
                   application_id: row.application_id as string,
@@ -261,7 +276,7 @@ const Applications = () => {
               "UNDER REVIEW",
               "DRAFT",
               "REJECTED",
-              "WAITING NO`S APPROVAL",
+              "WAITING NO'S APPROVAL",
             ],
           },
           {

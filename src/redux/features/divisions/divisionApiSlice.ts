@@ -10,11 +10,29 @@ export const divisionApiSlice = api.injectEndpoints({
         body: { ...credentials },
       }),
     }),
+    updateDivision: builder.mutation({
+      query: (credentials) => ({
+        url: "divisions/",
+        method: "PUT",
+        body: { ...credentials },
+      }),
+    }),
+    deleteDivision: builder.mutation({
+      query: (credentials) => ({
+        url: "divisions/",
+        method: "DELETE",
+        body: { ...credentials },
+      }),
+    }),
     getDivisions: builder.query({
       query: () => "divisions/",
     }),
   }),
 });
 
-export const { useCreateDivisionMutation, useGetDivisionsQuery } =
-  divisionApiSlice;
+export const {
+  useCreateDivisionMutation,
+  useUpdateDivisionMutation,
+  useDeleteDivisionMutation,
+  useGetDivisionsQuery,
+} = divisionApiSlice;

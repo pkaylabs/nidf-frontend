@@ -7,6 +7,9 @@ import { IoIosArrowRoundBack } from "react-icons/io";
 import { Tab } from "../region/details";
 import { motion } from "framer-motion";
 import { RxDownload } from "react-icons/rx";
+import moment from "moment";
+import { downloadFile } from "@/helpers/file-downlaoder";
+import { BACKEND_BASE_URL } from "@/constants/page-path";
 
 const NotificationDetails = () => {
   const [activeTab, setActiveTab] = useState(0);
@@ -19,11 +22,20 @@ const NotificationDetails = () => {
 
   const navigate = useNavigate();
   const search = useSearch<any>();
-  const { name, description, target, status, schedule } = search;
+  const {
+    title,
+    message,
+    target,
+    scheduled,
+    schedule_start_date,
+    schedule_start_end,
+    schedule_frequency,
+    attachment,
+  } = search;
 
   const tabs = [
-    { label: "Send Hstorys", component: <SendHistory /> },
-    { label: "Recipients", component: <Recipeints /> },
+    { label: "Send Histories", component: <SendHistory /> },
+    { label: "Recipients", component: <Recipeints data={target} /> },
   ];
   //
   return (
@@ -41,10 +53,8 @@ const NotificationDetails = () => {
       <section className="p-8 bg-white rounded-md ">
         <div className="flex justify-between items-start gap-5 ">
           <div className="flex-1">
-            <h4 className="font-medium text-2xl text-[#252525] ">{name}</h4>
-            <p className="font-light text-lg text-[#545454] mt-5 ">
-              {description}
-            </p>
+            <h4 className="font-medium text-2xl text-[#252525] ">{title}</h4>
+            <p className="font-light text-lg text-[#545454] mt-5 ">{message}</p>
             <div className=" mt-5 flex w-full">
               <div className="flex-1">
                 <p className="font-light text-base text-[#545454] ">
@@ -57,14 +67,42 @@ const NotificationDetails = () => {
               <div className="flex-1">
                 <p className="font-light text-base text-[#545454] ">Schedule</p>
                 <h2 className="font-semibold text-2xl text-[#454545] mt-2">
-                  {schedule}
+                  {scheduled ? (
+                    <>
+                      Schedule:{" "}
+                      <span className="font-semibold">
+                        {typeof schedule_start_date === "string" ||
+                        typeof schedule_start_date === "number" ||
+                        schedule_start_date instanceof Date
+                          ? moment(schedule_start_date).format("LL")
+                          : "No date"}{" "}
+                        -{" "}
+                        {typeof schedule_start_end === "string" ||
+                        typeof schedule_start_end === "number" ||
+                        schedule_start_end instanceof Date
+                          ? moment(schedule_start_end).format("LL")
+                          : "No date"}{" "}
+                        ({schedule_frequency})
+                      </span>
+                    </>
+                  ) : (
+                    "Not Scheduled"
+                  )}
                 </h2>
               </div>
             </div>
 
-            <button className="flex items-center gap-2 border border-[#71839B] text-[#545454] text-lg px-4 py-1.5 mt-8  rounded-md hover:shadow-md transition-all duration-150 ease-in-out">
+            <button
+              onClick={() => {
+                downloadFile(
+                  BACKEND_BASE_URL.replace("/api-v1/", "").concat(attachment),
+                  attachment?.replace("/assets/notifications/", "")
+                );
+              }}
+              className="flex items-center gap-2 border border-[#71839B] text-[#545454] text-lg px-4 py-1.5 mt-8  rounded-md hover:shadow-md transition-all duration-150 ease-in-out"
+            >
               <RxDownload className="size-5" aria-hidden="true" />
-              <span>Download guidelines.pdf</span>
+              <span>{attachment?.replace("/assets/notifications/", "")}</span>
             </button>
           </div>
 
@@ -72,15 +110,17 @@ const NotificationDetails = () => {
             <div className="flex gap-2 items-center bg-[#252525] rounded-md py-3 px-4 mt-2">
               <div
                 className={`w-6 h-6 rounded-sm flex justify-center items-center ${
-                  status === "Sent" ? "bg-[#2D9632] " : "bg-[#AD6915] "
+                  !scheduled ? "bg-[#2D9632] " : "bg-[#AD6915] "
                 } `}
               >
                 {" "}
-                {status === "Sent" && (
+                {!scheduled && (
                   <IoCheckmark className="text-white size-4" />
                 )}{" "}
               </div>
-              <p className="font-semibold text-base text-white">{status}</p>
+              <p className="font-semibold text-base text-white">
+                {scheduled ? "Scheduled" : "Sent"}
+              </p>
             </div>
           </div>
         </div>

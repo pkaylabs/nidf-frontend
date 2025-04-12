@@ -1,8 +1,7 @@
-import React from 'react'
 
-const Recipeints = () => {
+const Recipeints = ({data} : {data:string}) => {
   return (
-    <div>recipeints</div>
+    <div>{data}</div>
   )
 }
 

@@ -13,6 +13,7 @@ import { useNavigate, useSearch } from "react-location";
 import { IoIosArrowRoundBack } from "react-icons/io";
 import { Edit2 } from "iconsax-react";
 import { ADMIN_USERS } from "@/constants/page-path";
+import moment from "moment";
 
 interface ViewUserModalProps {
   open: boolean;
@@ -51,7 +52,7 @@ export default function ViewUserModal({
     },
     {
       name: "Last Login:",
-      value: "Jan 9, 2025, 3:45 PM",
+      value: `${moment(search?.last_login).format("LL") ?? "N/A"}`,
     },
     {
       name: "Status:",
@@ -115,7 +116,7 @@ export default function ViewUserModal({
                         className={`text-lg w-fit  flex-[1.5]
                         ${
                           idx === data.length - 1
-                            ? item.value === "Active"
+                            ? item.value
                               ? " text-[#2D9632] "
                               : " text-[#CE5347] "
                             : "text-[#737373]"
@@ -125,7 +126,7 @@ export default function ViewUserModal({
                           className={`
                              ${
                                idx === data.length - 1
-                                 ? item.value === "Active"
+                                 ? item.value
                                    ? "bg-[#2D9632] bg-opacity-40 p-1 px-4 rounded-md"
                                    : "bg-[#CE5347] bg-opacity-40 p-1 px-4 rounded-md "
                                  : "text-[#737373]"
@@ -133,7 +134,11 @@ export default function ViewUserModal({
 
                             `}
                         >
-                          {item.value}
+                          {idx === data.length - 1
+                            ? item.value
+                              ? "Active"
+                              : "Inactive"
+                            : item.value}
                         </span>
                       </p>
                     </div>
@@ -156,26 +161,26 @@ export default function ViewUserModal({
                   <IoIosArrowRoundBack className="size-5" />
                   <span>Back to List</span>
                 </button>
-                <button
+                {/* <button
                   type="button"
                   onClick={() => {
                     setOpen(false);
                     navigate({
                       to: `${ADMIN_USERS}/add`,
-                        search: {
-                            name: search?.name,
-                            email: search?.email,
-                            phone: search?.phone,
-                            type: search?.type,
-                            status: search?.status,
-                        },
+                      search: {
+                        name: search?.name,
+                        email: search?.email,
+                        phone: search?.phone,
+                        type: search?.user_type,
+                        status: search?.status,
+                      },
                     });
                   }}
                   className="font-light flex items-center space-x-2 border-[0.5px] border-[#545454] bg-white text-black py-2 px-4 rounded-md transition-all"
                 >
                   <Edit2 size="20" color="#545454" />
                   <span>Edit User</span>
-                </button>
+                </button> */}
               </div>
             </div>
           </DialogPanel>

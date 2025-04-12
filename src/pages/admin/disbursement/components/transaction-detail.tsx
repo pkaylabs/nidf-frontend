@@ -1,34 +1,35 @@
+import moment from "moment";
 import React from "react";
 
 interface Trans {
   data: any;
 }
 
-const TransaactionDetails = ({ data }: Trans) => {
+const TransactionDetails = ({ data }: Trans) => {
   const menu = [
     {
       title: "Project Name",
-      value: "Church Hall Renovation",
+      value: data?.project_name ?? "N/A",
     },
     {
       title: "Amount",
-      value: "GHS 5,000",
+      value: `GHS ${data?.amount ?? "0"}`,
     },
     {
       title: "Payment Date",
-      value: "Jan 15, 2025",
+      value: moment(data?.payment_date).format('DDD MMM, YYYY') ?? "N/A",
     },
     {
       title: "Bank Account",
-      value: "Church Bank - 0234XXXXXX",
+      value: `${data?.account_name ?? "N/A"} - ${data?.account_num ?? "N/A"}`,
     },
     {
       title: "Transaction ID",
-      value: "TXN-98765",
+      value: data?.trans_id ?? "N/A",
     },
     {
       title: "Status",
-      value: data,
+      value: data.status,
     },
   ];
 
@@ -62,4 +63,4 @@ const TransaactionDetails = ({ data }: Trans) => {
   );
 };
 
-export default TransaactionDetails;
+export default TransactionDetails;

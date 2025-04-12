@@ -4,7 +4,7 @@ import { Eye, Trash } from "iconsax-react";
 import PDFModal from "../../../../../components/pdf/pdf-modal";
 import { documentsDataProps } from "../view";
 
-interface DocumentsProps {
+export interface DocumentsProps {
   data: documentsDataProps[];
 }
 

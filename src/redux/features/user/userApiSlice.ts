@@ -6,6 +6,9 @@ export const userApiSlice = api.injectEndpoints({
     getUserProfile: builder.query({
       query: () => "userprofile/",
     }),
+    getUsers: builder.query({
+      query: () => "users/",
+    }),
     updateUserProfile: builder.mutation({
       query: (credentials) => ({
         url: "userprofile/",
@@ -13,8 +16,27 @@ export const userApiSlice = api.injectEndpoints({
         body: { ...credentials },
       }),
     }),
+    createUser: builder.mutation({
+      query: (credentials) => ({
+        url: "users/",
+        method: "POST",
+        body: { ...credentials },
+      }),
+    }),
+    deleteUser: builder.mutation({
+      query: (credentials) => ({
+        url: "users/",
+        method: "DELETE",
+        body: { ...credentials },
+      }),
+    }),
   }),
 });
 
-export const { useGetUserProfileQuery, useUpdateUserProfileMutation } =
-  userApiSlice;
+export const {
+  useGetUserProfileQuery,
+  useUpdateUserProfileMutation,
+  useGetUsersQuery,
+  useCreateUserMutation,
+  useDeleteUserMutation,
+} = userApiSlice;

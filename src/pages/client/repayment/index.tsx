@@ -1,7 +1,5 @@
 import React, { ReactNode, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Edit2, Eye, Trash } from "iconsax-react";
-import { useState } from "react";
 import Table from "@/components/table";
 import { LiaFileAltSolid } from "react-icons/lia";
 import { ADD_REPAYMENT } from "@/constants/page-path";
@@ -49,21 +47,21 @@ const Repayment = () => {
               text: "Your repayment reconciliation has been deleted.",
               icon: "success",
             });
-          } catch (error) {
+          } catch (error: any) {
             console.error(error);
             Swal.fire({
               title: "Error!",
-              text: "An error occurred while deleting the reconciliation.",
+              text:  error?.data?.message ?? "An error occurred while deleting the reconciliation.",
               icon: "error",
             });
           }
         }
       });
-    } catch (error) {
+    } catch (error: any) {
       console.log(error);
       Swal.fire({
         title: "Error!",
-        text: "An error occurred. Please try again.",
+        text: error?.data?.message ?? "An error occurred. Please try again.",
         icon: "error",
       });
     }
@@ -101,7 +99,6 @@ const Repayment = () => {
             <h6
               className={`font-semibold text-lg 
                 ${row?.status === "APPROVED" ? "text-[#2D9632]" : ""}
-         
          ${row?.status === "PENDING REVIEW" ? "text-[#BAB21D]" : ""}
         ${row?.status === "UNDER REVIEW" ? "text-[#1da5ba]" : ""}
          ${row?.status === "DRAFT" ? "text-[#71839B]" : ""}
@@ -131,7 +128,7 @@ const Repayment = () => {
               </div>
             </div>
             <p className="font-light text-[#545454] mt-3">
-              Ref: {row?.payment_reference}
+              Ref: {row?.payment_reference ?? "N/A"}
             </p>
           </div>
           <div className="flex items-center space-x-3">
@@ -140,16 +137,16 @@ const Repayment = () => {
                 navigate({
                   to: `/repayment/${row?.repayment_id}`,
                   search: {
-                    id: row.repayment_id,
+                    id: row?.repayment_id,
                     purpose: row?.application?.purpose,
-                    status: row.status,
-                    amount: row.amount,
-                    date_paid: row.date_paid,
-                    proof_of_payment: row.proof_of_payment,
-                    repayment_id: row.repayment_id,
+                    status: row?.status,
+                    amount: row?.amount,
+                    date_paid: row?.date_paid,
+                    proof_of_payment: row?.proof_of_payment,
+                    repayment_id: row?.repayment_id,
                     application_id: row?.application?.id,
-                    created_at: row.created_at,
-                    payment_reference: row.payment_reference,
+                    created_at: row?.created_at,
+                    payment_reference: row?.payment_reference,
                   },
                 })
               }
@@ -172,8 +169,7 @@ const Repayment = () => {
 
   useEffect(() => {
     refetch();
-  }
-  , []);
+  }, []);
 
   return (
     <div className="p-5">

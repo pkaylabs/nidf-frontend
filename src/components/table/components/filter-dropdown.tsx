@@ -34,8 +34,19 @@ const FilterDropdown: React.FC<FilterDropdownProps> = ({
          pl-3 text-left text-[#324054] outline-1 -outline-offset-1 border border-[#71839B]
          outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm md:text-base xl:text-lg"
         >
-          <span className="col-start-1 row-start-1 truncate pr-6">
-            {selectedOption}
+          <span className="col-start-1 row-start-1 truncate pr-6 capitalize">
+            {/* {selectedOption?.endsWith("s")
+              ? selectedOption
+                  ?.toString()
+                  ?.replace("_", " ")
+                  ?.concat("es")
+                  ?.toLowerCase()
+              : selectedOption
+                  ?.toString()
+                  ?.replace("_", " ")
+                  ?.concat("s")
+                  ?.toLowerCase()} */}
+                  {selectedOption}
           </span>
           <ChevronUpDownIcon
             aria-hidden="true"
@@ -57,9 +68,20 @@ const FilterDropdown: React.FC<FilterDropdownProps> = ({
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0 }}
-              className="block truncate font-normal group-data-selected:font-semibold"
+              className="block truncate font-normal group-data-selected:font-semibold capitalize"
             >
-              All {name}
+              All{" "}
+              {name?.endsWith("s")
+                ? name
+                    ?.toString()
+                    ?.replace("_", " ")
+                    ?.concat("es")
+                    ?.toLowerCase()
+                : name
+                    ?.toString()
+                    ?.replace("_", " ")
+                    ?.concat("s")
+                    ?.toLowerCase()}
             </m.span>
           </ListboxOption>
 
@@ -68,15 +90,16 @@ const FilterDropdown: React.FC<FilterDropdownProps> = ({
             <ListboxOption
               key={idx}
               value={option}
-              className="group relative cursor-default py-2 pr-9 pl-3 text-gray-900 select-none data-focus:bg-indigo-600 data-focus:text-white data-focus:outline-none"
+              className="group relative cursor-default py-2 pr-9 pl-3
+               text-gray-900 select-none data-focus:bg-indigo-600 data-focus:text-white data-focus:outline-none"
             >
               <m.span
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: (idx + 1) * 0.05 }}
-                className="block truncate font-normal group-data-selected:font-semibold"
+                className="block truncate font-normal group-data-selected:font-semibold capitalize"
               >
-                {option}
+                {option.toString().replace("_", " ").toLowerCase()}
               </m.span>
             </ListboxOption>
           ))}
