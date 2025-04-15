@@ -1,5 +1,6 @@
 import ButtonLoader from "@/components/loaders/button";
 import {
+  ADMIN_DASHBOARD,
   DASHBOARD,
   ONBOARDING,
   OTP_VERIFICATION,
@@ -50,8 +51,6 @@ const Login = () => {
       try {
         const res = await login(values).unwrap();
 
-        console.log(res, "res");
-
         if (
           res?.token &&
           res?.user?.user_type === "CHURCH_USER" &&
@@ -84,12 +83,34 @@ const Login = () => {
             });
           }
         } else {
-          toast(
-            JSON.stringify({
-              type: "error",
-              title: "Error logging in",
-            })
-          );
+          if (
+            res?.token &&
+            (res?.user?.user_type === "ADMIN" ||
+              res?.user?.user_type === "FINANCE_OFFICER")
+          ) {
+            dispatch(setCredentials({ ...res }));
+            toast(
+              JSON.stringify({
+                type: "success",
+                title: `Welcome back ${res?.user?.name?.split(" ")[0]}`,
+              })
+            );
+
+            navigate({
+              replace: true,
+              to:
+                search.redirect === ""
+                  ? ADMIN_DASHBOARD
+                  : search.redirect ?? ADMIN_DASHBOARD,
+            });
+          } else {
+            toast(
+              JSON.stringify({
+                type: "error",
+                title: "Unauthorized Access",
+              })
+            );
+          }
         }
       } catch (err: any) {
         console.log(err);

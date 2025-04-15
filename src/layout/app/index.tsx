@@ -112,7 +112,6 @@ export default function AppLayout() {
     return (
       <Navigate
         to={LOGIN}
-        // search={{ redirect: current === "/user-profile" ? "" : currentHref }}
         search={{ redirect: currentHref }}
         replace
       />
