@@ -46,14 +46,13 @@ const AdminAuth = () => {
       try {
         const res = await login(values).unwrap();
 
-        // console.log(res, "res");
+     
 
         if (
           res?.token &&
           (res?.user?.user_type === "ADMIN" ||
             res?.user?.user_type === "FINANCE_OFFICER") 
-          // res?.user?.is_staff &&
-          // res?.user?.is_superuser
+         
         ) {
           dispatch(setCredentials({ ...res }));
           toast(

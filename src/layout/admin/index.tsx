@@ -152,8 +152,7 @@ export default function AdminLayout() {
   if (!token || !user ||  user?.user_type === "CHURCH_USER")
     return (
       <Navigate
-        to={ADMIN_LOGIN}
-        // search={{ redirect: current === "/user-profile" ? "" : currentHref }}
+        to={LOGIN}
         search={{ redirect: currentHref }}
         replace
       />

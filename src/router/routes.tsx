@@ -179,13 +179,13 @@ const routes: RouteProps[] = [
   },
 
   // Admin routes
-  {
-    path: ADMIN_LOGIN,
-    element: <AdminAuth />,
-    meta: {
-      layout: "Auth",
-    },
-  },
+  // {
+  //   path: ADMIN_LOGIN,
+  //   element: <AdminAuth />,
+  //   meta: {
+  //     layout: "Auth",
+  //   },
+  // },
   {
     path: ADMIN_DASHBOARD,
     element: <AdminDashboard />,
