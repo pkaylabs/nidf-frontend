@@ -76,10 +76,10 @@ const Login = () => {
 
             navigate({
               replace: true,
-              to:
-                search.redirect === ""
-                  ? DASHBOARD
-                  : search.redirect ?? DASHBOARD,
+              to: DASHBOARD,
+              // search.redirect === ""
+              //   ? DASHBOARD
+              //   : search.redirect ?? DASHBOARD,
             });
           }
         } else {
@@ -98,10 +98,10 @@ const Login = () => {
 
             navigate({
               replace: true,
-              to:
-                search.redirect === ""
-                  ? ADMIN_DASHBOARD
-                  : search.redirect ?? ADMIN_DASHBOARD,
+              to: ADMIN_DASHBOARD,
+              // search.redirect === ""
+              //   ? ADMIN_DASHBOARD
+              //   : search.redirect ?? ADMIN_DASHBOARD,
             });
           } else {
             toast(
