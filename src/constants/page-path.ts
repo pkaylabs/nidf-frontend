@@ -12,6 +12,7 @@ export const PROGRESS = "/progress-report";
 export const ADD_PROGRESS = "/progress-report/add";
 export const REPAYMENT = "/repayment";
 export const ADD_REPAYMENT = "/repayment/add";
+export const NOTIFICATIONS = "/notifications";
 
 // admin urls
 export const ADMIN_LOGIN = "/admin/auth";

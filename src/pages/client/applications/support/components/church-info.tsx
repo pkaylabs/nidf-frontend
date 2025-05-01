@@ -35,7 +35,7 @@ const ChurchInfo: React.FC<ChurchInfoProps> = ({
   ) => {
     return (
       <div className="font-poppins mt-5">
-        <label htmlFor={name} className=" block text-lg font-medium text-black">
+        <label htmlFor={name} className="block md:text-lg font-medium text-black">
           {label}
         </label>
         <input
@@ -47,7 +47,7 @@ const ChurchInfo: React.FC<ChurchInfoProps> = ({
           value={values[name] || ""}
           onChange={handleChange}
           onBlur={handleBlur}
-          className={`w-full px-4 py-3 mt-2 text-lg border border-[#71839B] placeholder:font-light disabled:bg-[#EFEFEF] rounded-md focus:outline-none focus:ring-1 focus:ring-primary focus:border-transparent`}
+          className={`w-full px-4 py-3 mt-2 md:text-lg border border-[#71839B] placeholder:font-light disabled:bg-[#EFEFEF] rounded-md focus:outline-none focus:ring-1 focus:ring-primary focus:border-transparent`}
         />
         {errors[name] && touched[name] && typeof errors[name] === "string" && (
           <p className="font-normal text-sm text-[#fc8181]">{errors[name]}</p>
@@ -58,14 +58,14 @@ const ChurchInfo: React.FC<ChurchInfoProps> = ({
 
   return (
     <div className="font-poppins">
-      <h4 className="font-semibold text-lg text-black">{title} </h4>
-      <p className="font-light text-lg text-[#71839B]">{description}</p>
+      <h4 className="font-semibold md:text-lg text-black">{title} </h4>
+      <p className="font-light md:text-lg text-[#71839B]">{description}</p>
       <div className="mt-8">
         {currentPath.includes("admin") && (
           <div className="">
             <label
               htmlFor="church"
-              className="block text-lg font-medium text-black"
+              className="block md:text-lg font-medium text-black"
             >
               Select Church
             </label>

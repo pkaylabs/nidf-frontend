@@ -18,6 +18,7 @@ import {
   APPLY_SUPPORT,
   DASHBOARD,
   LOGIN,
+  NOTIFICATIONS,
   ONBOARDING,
   OTP_VERIFICATION,
   PROGRESS,
@@ -171,6 +172,29 @@ const routes: RouteProps[] = [
       {
         path: "/:id",
         element: <RepaymentDetails />,
+        meta: {
+          layout: "App",
+        },
+      },
+    ],
+  },
+  {
+    path: NOTIFICATIONS,
+    element: <Outlet />,
+    meta: {
+      layout: "App",
+    },
+    children: [
+      {
+        path: "/",
+        element: <Notifications />,
+        meta: {
+          layout: "App",
+        },
+      },
+      {
+        path: "/:id",
+        element: <NotificationDetails />,
         meta: {
           layout: "App",
         },

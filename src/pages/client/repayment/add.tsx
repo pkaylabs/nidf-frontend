@@ -230,7 +230,7 @@ const AddRepayment = () => {
   ) => {
     return (
       <div className="font-poppins mt-5">
-        <label htmlFor={name} className=" block text-lg font-medium text-black">
+        <label htmlFor={name} className=" block md:text-lg font-medium text-black">
           {label}
         </label>
         <input
@@ -242,7 +242,7 @@ const AddRepayment = () => {
           value={values[name] || ""}
           onChange={handleChange}
           onBlur={handleBlur}
-          className={`w-full px-4 py-3 mt-2 text-lg border border-[#71839B] placeholder:font-light disabled:bg-[#EFEFEF] rounded-md focus:outline-none focus:ring-1 focus:ring-primary focus:border-transparent`}
+          className={`w-full px-4 py-3 mt-2 md:text-lg border border-[#71839B] placeholder:font-light disabled:bg-[#EFEFEF] rounded-md focus:outline-none focus:ring-1 focus:ring-primary focus:border-transparent`}
         />
         {errors[name] && touched[name] && typeof errors[name] === "string" && (
           <p className="font-normal text-sm text-[#fc8181]">{errors[name]}</p>
@@ -252,30 +252,30 @@ const AddRepayment = () => {
   };
 
   return (
-    <section className="font-poppins p-5">
+    <section className="font-poppins p-3 md:p-5">
       <button
         onClick={() => navigate({ to: ".." })}
         className="font-light flex items-center space-x-2 border-[0.5px] border-[#545454] bg-white text-black py-2.5 px-4 rounded-md transition-all duration-150 ease-in-out mb-5"
       >
         <IoIosArrowRoundBack className="size-5" aria-hidden="true" />{" "}
-        <span>Back to Repayments</span>
+        <span className="hidden md:block">Back to Repayments</span>
       </button>
-      <div className=" mb-5 p-8 bg-white rounded-md ">
-        <p className="font-medium  text-black mb-3">Outstanding Loan Details</p>
-        <div className="flex space-x-2 justify-between items-center ">
+      <div className=" mb-5 p-3 md:p-8 bg-white rounded-md ">
+        <p className="font-medium text-black mb-3">Outstanding Loan Details</p>
+        <div className="flex flex-wrap gap-2 justify-between md:items-center ">
           {loan.map((loans, index) => (
-            <div className="max-w-[241px] w-full border px-3 py-5 border-[#71839B] rounded-md">
+            <div className="md:max-w-[241px] w-full border px-3 py-5 border-[#71839B] rounded-md">
               <p className="font-light text-sm text-black ">{loans.name}</p>
-              <p className="font-medium text-2xl text-black mt-3">
+              <p className="font-medium text-lg md:text-2xl text-black mt-3">
                 {index !== 3 && "GHS"} {loans.value}
               </p>
             </div>
           ))}
         </div>
       </div>
-      <div className="p-8 bg-white rounded-md ">
+      <div className="p-3 md:p-8 bg-white rounded-md ">
         <div className="">
-          <p className="font-medium text-lg text-black ">Submit Repayment</p>
+          <p className="font-medium md:text-lg text-black ">Submit Repayment</p>
           <p className="flex justify-between items-center w-full cursor-default text-gray-400 mt-1">
             Enter the details of your latest repayment
           </p>
@@ -283,7 +283,7 @@ const AddRepayment = () => {
         <div className="mt-5">
           <label
             htmlFor="application"
-            className="block text-lg font-medium text-black"
+            className="block md:text-lg font-medium text-black"
           >
             Select Application
           </label>
@@ -336,7 +336,7 @@ const AddRepayment = () => {
 
         {/* File Upload */}
         <div className="mt-5">
-          <label className="font-medium text-lg text-black">
+          <label className="font-medium md:text-lg text-black">
             Upload Supporting Documents or Photos
           </label>
           <div className="mt-5">
@@ -369,7 +369,7 @@ const AddRepayment = () => {
                   ) : (
                     <>
                       <FiUpload className="w-7 h-7 text-[#71839B] mb-3" />
-                      <p className="font-light text-center text-[#71839B]">
+                      <p className="font-light text-sm md:text-base px-2 text-center text-[#71839B]">
                         Drag and drop files here, or click to browse.
                         <br />
                         Supported formats: PDF, DOCX, XLSX, JPG, PNG (max 10MB
@@ -417,7 +417,7 @@ const AddRepayment = () => {
           <button
             disabled={isLoading || updating}
             onClick={() => handleSubmit()}
-            className="font-poppins font-light w-56 h-10 bg-primary text-[#F5F5F5] flex justify-center items-center border border-primary rounded-md
+            className="font-poppins font-light w-full md:w-56 h-10 bg-primary text-[#F5F5F5] flex justify-center items-center border border-primary rounded-md
             disabled:bg-opacity-80  "
           >
             {isLoading || updating ? (

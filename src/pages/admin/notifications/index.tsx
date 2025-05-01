@@ -11,9 +11,12 @@ import moment from "moment";
 import ButtonLoader from "@/components/loaders/button";
 import { Edit2, Trash } from "iconsax-react";
 import Swal from "sweetalert2";
+import { useAppSelector } from "@/redux";
+import { selectCurrentUser } from "@/redux/features/auth/authSlice";
 
 const Notifications = () => {
   const navigate = useNavigate();
+  const user = useAppSelector(selectCurrentUser);
 
   const headers = [{ name: "Name", value: "name" }];
 
@@ -73,16 +76,16 @@ const Notifications = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ delay: index * 0.05 }}
-      className="font-poppins border-b text-lg  text-black  border-gray-200 hover:bg-gray-100 transition-all duration-150 ease-in-out"
+      className="font-poppins border-b md:text-lg  text-black  border-gray-200 hover:bg-gray-100 transition-all duration-150 ease-in-out"
     >
       <td className="px-4 py-3 ">
-        <div className="flex justify-between items-center space-x-4 border-[0.5px] border-[#71839B] rounded-md shadow-sm p-6 mb-5">
+        <div className="flex flex-col md:flex-row justify-between md:items-center gap-4 border-[0.5px] border-[#71839B] rounded-md shadow-sm p-3 md:p-6 mb-5">
           <div className="">
-            <h4 className="font-semibold text-xl text-[#454545] ">
+            <h4 className="font-semibold md:text-xl text-[#454545] ">
               {row.title}
             </h4>
 
-            <p className=" text-[#545454] text-lg my-3">{row?.message}</p>
+            <p className=" text-[#545454] md:text-lg my-3">{row?.message}</p>
 
             <p className="font-light text-[#545454] my-3">
               Recipients: <span className="font-semibold">{row?.target}</span>
@@ -110,9 +113,9 @@ const Notifications = () => {
               )}
             </p>
           </div>
-          <div className="flex flex-col items-end  space-x-3">
+          <div className="flex flex-col items-end  gap-3">
             <p
-              className={`font-semibold text-lg  ${
+              className={`font-semibold md:text-lg  ${
                 !row?.is_scheduled ? "text-[#2D9632]" : "text-[#AD6915] "
               } my-3`}
             >
@@ -186,10 +189,12 @@ const Notifications = () => {
   }, [data]);
 
   return (
-    <div className="p-5">
+    <div className="p-3 md:p-5">
       <Table
         displayHeader={false}
-        showAddButton={true}
+        showAddButton={
+          user?.user_type === "ADMIN" || user?.user_type === "FINANCE_OFFICER"
+        }
         addButtonText="Create New Notification"
         onAddButtonClick={() => navigate({ to: `${ADMIN_NOTIFICATIONS}/add` })}
         headers={headers}

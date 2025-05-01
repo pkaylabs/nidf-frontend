@@ -110,21 +110,21 @@ const AddProgressReport = () => {
   }, [previewUrl]);
 
   return (
-    <section className="font-poppins p-5">
+    <section className="font-poppins p-3 md:p-5">
       <button
         onClick={() => navigate({ to: ".." })}
         className="font-light flex items-center space-x-2 border-[0.5px] border-[#545454] bg-white text-black py-2.5 px-4 rounded-md transition-all duration-150 ease-in-out mb-5"
       >
         <IoIosArrowRoundBack className="size-5" aria-hidden="true" />{" "}
-        <span>Back to Progress</span>
+        <span className="hidden md:block">Back to Progress</span>
       </button>
-      <div className="p-10 bg-white rounded-md ">
+      <div className="p-4 md:p-10 bg-white rounded-md ">
         <form onSubmit={formik.handleSubmit}>
           <div>
             <div className="mt-5">
               <label
                 htmlFor="application"
-                className="block text-lg font-medium text-black"
+                className="block md:text-lg font-medium text-black"
               >
                 Select Application
               </label>
@@ -145,7 +145,7 @@ const AddProgressReport = () => {
             <div className="mt-5">
               <label
                 htmlFor="progressDescription"
-                className="font-medium text-lg text-black"
+                className="font-medium md:text-lg text-black"
               >
                 Progress Description
               </label>
@@ -156,7 +156,7 @@ const AddProgressReport = () => {
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 placeholder="Write a brief description of the current projects’ status..."
-                className="border border-[#71839B] w-full h-36 rounded-md p-4 mt-2 text-base resize-none"
+                className="border border-[#71839B] w-full h-36 rounded-md p-4 mt-2 text-sm md:text-base resize-none"
               />
               {formik.touched.progressDescription &&
                 formik.errors.progressDescription && (
@@ -169,7 +169,7 @@ const AddProgressReport = () => {
 
             {/* File Upload */}
             <div className="mt-5">
-              <label className="font-medium text-lg text-black">
+              <label className="font-medium md:text-lg text-black">
                 Upload Supporting Documents or Photos
               </label>
               <div className="mt-5">
@@ -194,7 +194,7 @@ const AddProgressReport = () => {
                       ) : (
                         <>
                           <FiUpload className="w-7 h-7 text-[#71839B] mb-3" />
-                          <p className="font-light text-center text-[#71839B]">
+                          <p className="font-light text-sm md:text-base px-2 text-center text-[#71839B]">
                             Drag and drop files here, or click to browse.
                             <br />
                             Supported formats: PDF, DOCX, XLSX, JPG, PNG (max
@@ -239,11 +239,11 @@ const AddProgressReport = () => {
             </div>
 
             {/* Submit Button */}
-            <div className="flex items-center space-x-5 mt-6">
+            <div className="flex items-center gap-3 md:gap-5 mt-6">
               <button
                 disabled={isLoading}
                 type="submit"
-                className="font-poppins font-light w-56 h-10 bg-primary text-[#F5F5F5] flex justify-center items-center border border-primary rounded-md  "
+                className="font-poppins font-light w-full px-2 md:w-56 h-10 bg-primary text-[#F5F5F5] flex justify-center items-center border border-primary rounded-md  "
               >
                 {isLoading ? (
                   <ButtonLoader title="Submitting..." />
@@ -254,7 +254,7 @@ const AddProgressReport = () => {
               <button
                 onClick={() => formik.resetForm()}
                 type="button"
-                className="font-poppins font-light w-40 h-10 flex justify-center items-center border border-[#324054] rounded-md text-[#324054]  "
+                className="font-poppins font-light px-2 w-40 h-10 flex justify-center items-center border border-[#324054] rounded-md text-[#324054]  "
               >
                 Reset Form
               </button>

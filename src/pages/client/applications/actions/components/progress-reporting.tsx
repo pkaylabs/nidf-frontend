@@ -99,7 +99,7 @@ const ProgressReportingComponent: React.FC<ProgressReportingComponentProps> = ({
 
   return (
     <section className="font-poppins px-4 py-5">
-      <h4 className="font-medium text-lg text-[#454545] mb-5">
+      <h4 className="font-medium md:text-lg text-[#454545] mb-5">
         Submit Progress Report
       </h4>
       <form onSubmit={formik.handleSubmit}>
@@ -108,7 +108,7 @@ const ProgressReportingComponent: React.FC<ProgressReportingComponentProps> = ({
           <div className="mt-5">
             <label
               htmlFor="progressDescription"
-              className="font-medium text-lg text-black"
+              className="font-medium md:text-lg text-black"
             >
               Progress Description
             </label>
@@ -119,7 +119,7 @@ const ProgressReportingComponent: React.FC<ProgressReportingComponentProps> = ({
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               placeholder="Write a brief description of the current projects’ status..."
-              className="border border-[#71839B] w-full h-36 rounded-md p-4 mt-2 text-base resize-none"
+              className="border border-[#71839B] w-full h-36 rounded-md p-4 mt-2 text-sm md:text-base resize-none"
             />
             {formik.touched.progressDescription &&
               formik.errors.progressDescription && (
@@ -132,7 +132,7 @@ const ProgressReportingComponent: React.FC<ProgressReportingComponentProps> = ({
 
           {/* File Upload */}
           <div className="mt-5">
-            <label className="font-medium text-lg text-black">
+            <label className="font-medium md:text-lg text-black">
               Upload Supporting Documents or Photos
             </label>
             <div className="mt-5">
@@ -155,7 +155,7 @@ const ProgressReportingComponent: React.FC<ProgressReportingComponentProps> = ({
                     ) : (
                       <>
                         <FiUpload className="w-7 h-7 text-[#71839B] mb-3" />
-                        <p className="font-light text-center text-[#71839B]">
+                        <p className="font-light text-sm md:text-base px-2 text-center text-[#71839B]">
                           Drag and drop files here, or click to browse.
                           <br />
                           Supported formats: PDF, DOCX, XLSX, JPG, PNG (max 10MB

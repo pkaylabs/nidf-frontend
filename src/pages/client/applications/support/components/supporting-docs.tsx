@@ -94,7 +94,6 @@ const SupportingDocs: React.FC<ChurchInfoProps> = ({
     }
   };
 
-  // Clean up all object URLs on unmount
   React.useEffect(() => {
     return () => {
       Object.values(previewUrls).forEach((url) => {
@@ -105,20 +104,19 @@ const SupportingDocs: React.FC<ChurchInfoProps> = ({
 
   return (
     <div className="font-poppins">
-      <h4 className="font-semibold text-lg text-black">{title}</h4>
-      <p className="font-light text-lg text-[#71839B]">{description}</p>
+      <h4 className="font-semibold md:text-lg text-black">{title}</h4>
+      <p className="font-light md:text-lg text-[#71839B]">{description}</p>
 
       <div className="mt-8">
         {docTypes.map((doc, index) => (
           <div key={index} className="mt-5">
-            <label className="font-medium text-lg text-black">
+            <label className="font-medium md:text-lg text-black">
               {doc.label}
             </label>
             <div className="w-full py-12 border border-dashed border-[#71839B] relative group overflow-hidden rounded-xl transition-all duration-200 ease-in-out mt-3">
               <div className="flex h-full justify-center items-center transition-all duration-200 ease-in-out">
                 <div className="flex flex-col items-center mb-8">
                   {doc.value ? (
-                    // If a file is available, display its preview or name in place of the icon
                     doc.value instanceof File &&
                     doc.value.type.startsWith("image/") ? (
                       previewUrls[doc.name] ? (
@@ -129,7 +127,6 @@ const SupportingDocs: React.FC<ChurchInfoProps> = ({
                         />
                       ) : null
                     ) : (
-                      // <p>{doc.check ? doc?.documentName : doc.value?.name}</p>
                       <p>
                         {!doc.value?.name
                           ? doc.check
@@ -139,10 +136,9 @@ const SupportingDocs: React.FC<ChurchInfoProps> = ({
                       </p>
                     )
                   ) : (
-                    // When no file is selected, show the upload icon and instructions
                     <>
                       <FiUpload className="w-7 h-7 text-[#71839B] mb-3" />
-                      <p className="font-light text-center text-[#71839B]">
+                      <p className="font-light text-sm md:text-base text-center text-[#71839B]">
                         {doc.description}
                       </p>
                     </>

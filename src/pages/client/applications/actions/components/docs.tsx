@@ -13,41 +13,43 @@ const Documents = ({ data }: DocumentsProps) => {
   const [fileName, setFileName] = React.useState("");
   const [url, setURL] = React.useState("");
   return (
-    <section className="font-poppins px-4 py-5">
-      <h4 className="font-medium text-lg text-[#454545] mb-5">Documents</h4>
+    <section className="font-poppins px-4 py-5 overflow-auto">
+      <h4 className="font-medium md:text-lg text-[#454545] mb-5">Documents</h4>
 
       <motion.table
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="w-full table-auto border-collapse"
+        className="w-full table-auto border-collapse "
       >
         <thead>
           <tr className="border-b">
-            <th className="py-3 font-semibold text-left text-lg text-[#212121] ">
+            <th className="py-3 font-semibold text-left md:text-lg text-[#212121] text-nowrap pr-6">
               Document Name
             </th>
-            <th className="py-3 font-semibold text-left text-lg text-[#212121] ">
+            <th className="py-3 font-semibold text-left md:text-lg text-[#212121] text-nowrap pr-6">
               Uploaded Date
             </th>
-            <th className="py-3 font-semibold text-left text-lg text-[#212121] ">
+            <th className="py-3 font-semibold text-left md:text-lg text-[#212121] ">
               Status
             </th>
-            <th className="py-3 font-semibold text-left text-lg text-[#212121] ">
+            <th className="py-3 font-semibold text-left md:text-lg text-[#212121] ">
               Action
             </th>
           </tr>
         </thead>
-        <tbody>
+        <tbody >
           {data.map((doc, index) => (
-            <tr className=" border-b">
-              <td className="w-[35%] py-3  text-lg text-black">{doc.name}</td>
-              <td className="w-[25%] flex-1 py-3 text-lg text-black ">
+            <tr className="border-b">
+              <td className="w-[35%] py-3  md:text-lg text-black text-nowrap pr-6">
+                {doc.name}
+              </td>
+              <td className="w-[25%] flex-1 py-3 md:text-lg text-black text-nowrap pr-6">
                 {doc.date}
               </td>
-              <td className="w-[25%] py-3 text-lg text-black ">
+              <td className="w-[25%] py-3 md:text-lg text-black text-nowrap pr-6">
                 <p
-                  className={`w-fit text-[#F5F5F5] text-base py-1 px-5 rounded-md text-center ${
+                  className={`w-fit text-[#F5F5F5] text-sm md:text-base py-1 px-5 rounded-md text-center ${
                     doc.status === "APPROVED" ? "bg-[#2D9632]" : ""
                   }
 ${doc.status === "PENDING REVIEW" ? "bg-[#BAB21D]" : ""}
@@ -60,7 +62,7 @@ ${doc.status === "REJECTED" ? "bg-red" : ""}
                   {doc.status}
                 </p>
               </td>
-              <td className="w-[10%] py-3 text-lg text-black">
+              <td className="w-[10%] py-3 md:text-lg text-black">
                 <div className="flex items-center space-x-3">
                   <div
                     onClick={() => {

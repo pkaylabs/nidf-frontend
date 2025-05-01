@@ -21,7 +21,7 @@ const SupportInfo: React.FC<ChurchInfoProps> = ({ formik, title, description }) 
   ) => {
     return (
       <div className="font-poppins mt-5">
-        <label htmlFor={name} className="block text-lg font-medium text-black">
+        <label htmlFor={name} className="block md:text-lg font-medium text-black">
           {label}
         </label>
         <input
@@ -33,7 +33,7 @@ const SupportInfo: React.FC<ChurchInfoProps> = ({ formik, title, description }) 
           value={values[name] || ""}
           onChange={handleChange}
           onBlur={handleBlur}
-          className="w-full px-4 py-3 mt-2 text-lg border border-[#71839B] placeholder:font-light disabled:bg-[#EFEFEF] rounded-md focus:outline-none focus:ring-1 focus:ring-primary focus:border-transparent"
+          className="w-full px-4 py-3 mt-2 md:text-lg border border-[#71839B] placeholder:font-light disabled:bg-[#EFEFEF] rounded-md focus:outline-none focus:ring-1 focus:ring-primary focus:border-transparent"
         />
         {errors[name] && touched[name] && typeof errors[name] === "string" && (
           <p className="font-normal text-sm text-[#fc8181]">{errors[name]}</p>
@@ -44,13 +44,13 @@ const SupportInfo: React.FC<ChurchInfoProps> = ({ formik, title, description }) 
 
   return (
     <div className="font-poppins">
-      <h4 className="font-semibold text-lg text-black">{title}</h4>
-      <p className="font-light text-lg text-[#71839B]">{description}</p>
+      <h4 className="font-semibold md:text-lg text-black">{title}</h4>
+      <p className="font-light md:text-lg text-[#71839B]">{description}</p>
 
       <div className="mt-8">
         {/* Support Type */}
         <div className="mt-5">
-          <label htmlFor="supportType" className="block text-lg font-medium text-black">
+          <label htmlFor="supportType" className="block md:text-lg font-medium text-black">
             Select Support Type
           </label>
           <SelectDropdown
@@ -65,7 +65,7 @@ const SupportInfo: React.FC<ChurchInfoProps> = ({ formik, title, description }) 
 
         {/* Church Project Type */}
         <div className="mt-5">
-          <label htmlFor="typeOfChurchProject" className="block text-lg font-medium text-black">
+          <label htmlFor="typeOfChurchProject" className="block md:text-lg font-medium text-black">
             Select Church Project Type
           </label>
           <SelectDropdown
@@ -81,7 +81,7 @@ const SupportInfo: React.FC<ChurchInfoProps> = ({ formik, title, description }) 
         {input("Purpose For Aid", "purposeForAid", "text", false, "Enter Purpose For Aid")}
 
         <div className="mt-5">
-          <label className="flex items-center text-lg font-medium text-black" htmlFor="isEmergency">
+          <label className="flex items-center md:text-lg font-medium text-black" htmlFor="isEmergency">
             <input
               id="isEmergency"
               name="isEmergency"
@@ -98,7 +98,7 @@ const SupportInfo: React.FC<ChurchInfoProps> = ({ formik, title, description }) 
         </div>
 
         <div className="mt-5">
-          <label htmlFor="progressDescription" className="block text-lg font-medium text-black">
+          <label htmlFor="progressDescription" className="block md:text-lg font-medium text-black">
             Progress Description
           </label>
           <textarea
@@ -108,7 +108,7 @@ const SupportInfo: React.FC<ChurchInfoProps> = ({ formik, title, description }) 
             value={values.progressDescription || ""}
             onChange={handleChange}
             onBlur={handleBlur}
-            className="w-full h-32 px-4 py-3 mt-2 text-lg border border-[#71839B] placeholder:font-light rounded-md resize-none focus:outline-none focus:ring-1 focus:ring-primary focus:border-transparent"
+            className="w-full h-32 px-4 py-3 mt-2 md:text-lg border border-[#71839B] placeholder:font-light rounded-md resize-none focus:outline-none focus:ring-1 focus:ring-primary focus:border-transparent"
           />
           {touched.progressDescription && errors.progressDescription && typeof errors.progressDescription === "string" && (
             <p className="font-normal text-sm text-[#fc8181]">{errors.progressDescription}</p>
