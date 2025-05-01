@@ -28,7 +28,7 @@ const FilterDropdown: React.FC<FilterDropdownProps> = ({
 
   return (
     <Listbox value={selectedOption} onChange={handleSelect}>
-      <div className="relative flex-1">
+      <div className="relative w-full md:flex-1">
         <ListboxButton
           className="font-poppins font-light w-full cursor-default flex flex-1 justify-between items-center  rounded-md bg-white py-2.5 pr-2
          pl-3 text-left text-[#324054] outline-1 -outline-offset-1 border border-[#71839B]

@@ -21,12 +21,7 @@ import {
   MenuItems,
   TransitionChild,
 } from "@headlessui/react";
-import {
-  Bars3Icon,
-  BellIcon,
-  Cog6ToothIcon,
-  XMarkIcon,
-} from "@heroicons/react/24/outline";
+import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { useState } from "react";
 import { classNames } from "@/utils";
 import {
@@ -34,6 +29,7 @@ import {
   BACKEND_BASE_URL,
   DASHBOARD,
   LOGIN,
+  NOTIFICATIONS,
   PROGRESS,
   REPAYMENT,
   SIGNUP,
@@ -41,7 +37,6 @@ import {
 import logo from "@/assets/images/logo.png";
 import { ArrowDown2 } from "iconsax-react";
 import { TbLogout2 } from "react-icons/tb";
-import LoadingProgressBar from "@/components/loaders/loadingProgressBar";
 import { useAppDispatch, useAppSelector } from "@/redux";
 import {
   logout,
@@ -74,6 +69,12 @@ const navigation = [
     href: REPAYMENT,
     icon: BiDollar,
     target: "repayment",
+  },
+  {
+    name: "Notifications",
+    href: NOTIFICATIONS,
+    icon: BellIcon,
+    target: "notifications",
   },
 ];
 
@@ -109,13 +110,7 @@ export default function AppLayout() {
     user?.is_staff ||
     user?.is_superuser
   )
-    return (
-      <Navigate
-        to={LOGIN}
-        search={{ redirect: currentHref }}
-        replace
-      />
-    );
+    return <Navigate to={LOGIN} search={{ redirect: currentHref }} replace />;
 
   // if (false)
   //   return (
@@ -163,8 +158,8 @@ export default function AppLayout() {
                 <div className="flex h-16 shrink-0 items-center">
                   <img
                     alt="Your Company"
-                    src="https://tailwindui.com/plus/img/logos/mark.svg?color=indigo&shade=600"
-                    className="h-8 w-auto"
+                    src={logo}
+                    className="h-10 w-auto object-contain"
                   />
                 </div>
                 <nav className="flex flex-1 flex-col">
@@ -180,7 +175,7 @@ export default function AppLayout() {
                                   currentPath.includes(
                                     item.name.split(" ")[0].toLowerCase()
                                   )
-                                  ? "bg-primary-50 text-primary font-semibold"
+                                  ? "bg-primary-50 text-white font-semibold"
                                   : "text-gray-800 hover:bg-gray-50 hover:text-primary-600 font-medium",
                                 "group flex gap-x-3 rounded-xl px-5 py-3 text-sm  leading-6 capitalize"
                               )}
@@ -192,7 +187,7 @@ export default function AppLayout() {
                                     currentPath.includes(
                                       item.name.split(" ")[0].toLowerCase()
                                     )
-                                    ? "text-primary"
+                                    ? "text-white"
                                     : "text-black group-hover:text-primary",
                                   "h-5 w-5 shrink-0"
                                 )}
@@ -351,7 +346,7 @@ export default function AppLayout() {
         </div>
 
         <div className="lg:pl-80 h-screen flex flex-col">
-          <div className="sticky top-0 z-40 flex h-20 border-b shrink-0 items-center gap-x-4 bg-white pr-4 sm:gap-x-6 sm:pr-6 lg:pr-8">
+          <div className="sticky top-0 z-40 flex h-20 border-b shrink-0 items-center gap-x-4 bg-white px-4 sm:gap-x-6 sm:px-6 lg:pr-8">
             <button
               type="button"
               onClick={() => setSidebarOpen(true)}
@@ -368,7 +363,7 @@ export default function AppLayout() {
             />
 
             <div className="font-poppins flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
-              <div className="font-semibold text-[1.75rem] text-gray-900 flex-1 flex items-center">
+              <div className="font-semibold text-xl md:text-[1.75rem] text-gray-900 flex-1 flex items-center">
                 {currentPath === DASHBOARD
                   ? `Welcome ${user?.name?.split(" ")[0] ?? "User"}!`
                   : currentPath.includes(APPLICATIONS)
@@ -401,7 +396,6 @@ export default function AppLayout() {
                     <span className="sr-only">Open user menu</span>
                     <img
                       alt=""
-                     
                       src={churchLogo.includes("null") ? logo : churchLogo}
                       className="size-11 rounded-full object-cover bg-gray-50"
                     />

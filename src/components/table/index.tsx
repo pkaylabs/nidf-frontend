@@ -5,6 +5,8 @@ import FilterDropdown from "./components/filter-dropdown";
 import TableLoader from "./components/loader";
 import { ArrowLeft2, ArrowRight2 } from "iconsax-react";
 import EmptyState from "./components/empty-state";
+import { useAppSelector } from "@/redux";
+import { selectCurrentUser } from "@/redux/features/auth/authSlice";
 
 interface Header {
   name: string;
@@ -52,6 +54,7 @@ const Table: React.FC<TableProps> = ({
     {}
   );
   const [currentPage, setCurrentPage] = useState(1);
+  const user = useAppSelector(selectCurrentUser);
 
   // Filter rows based on search and dropdown filters
   const filteredRows = rows.filter((row) => {
@@ -101,11 +104,11 @@ const Table: React.FC<TableProps> = ({
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
     >
-      <div className="p-4 flex flex-col md:flex-row justify-between space-x-5 items-center rounded-md bg-white py-5 lg:px-5 ">
+      <div className="p-4 flex flex-col md:flex-row justify-between gap-5 md:items-center rounded-md bg-white py-5 lg:px-5 ">
         {searchable && (
           <SearchBar query={searchQuery} onChange={setSearchQuery} />
         )}
-        <div className="flex items-center justify-between flex-1 space-x-5">
+        <div className="flex flex-col md:flex-row items-center justify-between flex-1 gap-5">
           {filters?.map((filter) => (
             <FilterDropdown
               key={filter.name}
@@ -120,7 +123,7 @@ const Table: React.FC<TableProps> = ({
         {showAddButton && (
           <button
             onClick={onAddButtonClick}
-            className="font-medium flex-[0.3] flex items-center justify-center space-x-3 bg-primary-500 text-lg text-white py-2.5 px-4 rounded-md hover:bg-primary-600 transition-all duration-150 ease-in-out "
+            className="font-medium flex-[0.3] flex items-center justify-center space-x-3 bg-primary-500 md:text-lg text-white py-2.5 px-4 rounded-md hover:bg-primary-600 transition-all duration-150 ease-in-out "
           >
             <span>+</span> <span className="truncate"> {addButtonText} </span>{" "}
           </button>
@@ -130,10 +133,15 @@ const Table: React.FC<TableProps> = ({
         <TableLoader headers={headers || []} rows={maxRows} />
       ) : filteredRows.length === 0 ? (
         <div className="bg-white py-10 px-6 mt-5 rounded-md">
-          <EmptyState onAdd={onAddButtonClick} />
+          {user?.user_type === "ADMIN" ||
+          user?.user_type === "FINANCE_OFFICER" ? (
+            <EmptyState onAdd={onAddButtonClick} />
+          ) : (
+            "No data available now. Please check again later."
+          )}
         </div>
       ) : (
-        <div className="font-poppins bg-white py-10 px-6 mt-5 rounded-md">
+        <div className="font-poppins bg-white py-4 md:py-10 px-1 md:px-6 mt-5 rounded-md overflow-auto">
           <table className="table-auto w-full text-left ">
             {/* header */}
             {displayHeader && (
@@ -142,7 +150,7 @@ const Table: React.FC<TableProps> = ({
                   {headers?.map((header) => (
                     <th
                       key={header.value}
-                      className="font-semibold px-4 py-2.5 bg-primary text-lg text-white truncate"
+                      className="font-semibold px-4 py-2.5 bg-primary text-sm md:text-lg text-white truncate"
                     >
                       {header.name}
                     </th>

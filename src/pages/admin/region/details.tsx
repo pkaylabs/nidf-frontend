@@ -14,7 +14,7 @@ export interface TabProps {
 export const Tab = ({ label, active, onClick }: TabProps) => (
   <button
     onClick={onClick}
-    className={`font-poppins px-4 py-2 text-lg  transition-colors duration-300 ${
+    className={`font-poppins px-2 md:px-4 py-2 md:text-lg  transition-colors duration-300 ${
       active
         ? " font-medium bg-primary-50 text-white rounded-md shadow-sm"
         : "border-transparent text-[#545454]"

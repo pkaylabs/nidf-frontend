@@ -98,15 +98,21 @@ const Applications = () => {
       transition={{ delay: index * 0.05 }}
       className="font-poppins border-b text-lg  text-black  border-gray-200 hover:bg-gray-100 transition-all duration-150 ease-in-out"
     >
-      <td className="px-4 py-3 ">{row?.application_id}</td>
-      <td className="px-4 py-3">{row?.support_type}</td>
-      <td className="px-4 py-3 capitalize">{row?.is_emergency.toString()}</td>
-      <td className="px-4 py-3 ">
+      <td className="px-4 py-3 text-sm md:text-base text-nowrap ">
+        {row?.application_id}
+      </td>
+      <td className="px-4 py-3 text-sm md:text-base text-nowrap">
+        {row?.support_type}
+      </td>
+      <td className="px-4 py-3 text-sm md:text-base  text-nowrap capitalize">
+        {row?.is_emergency.toString()}
+      </td>
+      <td className="px-4 py-3 text-sm md:text-base text-nowrap">
         {row?.created_at && typeof row.created_at === "string"
           ? moment(row.created_at).format("LL")
           : "N/A"}
       </td>
-      <td className="px-4 py-3 select-none">
+      <td className="px-4 py-3 select-none text-nowrap">
         <p
           className={`text-[#F5F5F5] text-sm py-2 px-2 rounded-md text-center !capitalize truncate max-w-full ${
             row.status === "APPROVED" ? "bg-[#2D9632]" : ""
@@ -255,7 +261,7 @@ const Applications = () => {
   }, []);
 
   return (
-    <div className="p-5">
+    <div className="p-2.5 md:p-5">
       <Table
         headers={headers}
         showAddButton={true}
@@ -264,7 +270,7 @@ const Applications = () => {
         rows={rows}
         renderRow={customRowRenderer}
         footer={<div>Pagination goes here</div>}
-        maxRows={5}
+        maxRows={10}
         loading={isLoading}
         searchableFields={["application_id"]}
         filters={[

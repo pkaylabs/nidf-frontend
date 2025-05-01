@@ -3,14 +3,14 @@ import { IoIosArrowRoundBack } from "react-icons/io";
 import { useNavigate, useSearch } from "react-location";
 import { FormikProps, useFormik } from "formik";
 import * as Yup from "yup";
-import SelectDropdown from "../applications/support/components/select";
-
+import SelectDropdown from "@/pages/client/applications/support/components/select";
 import { Switch } from "@headlessui/react";
 import { motion } from "framer-motion";
-import { ghanaRegions } from "@/constants";
 import { useCreateUserMutation } from "@/redux/features/user/userApiSlice";
 import toast from "react-hot-toast";
 import ButtonLoader from "@/components/loaders/button";
+import { useGetRegionsQuery } from "@/redux/features/regions/regionApiSlice";
+import { useGetChurchesQuery } from "@/redux/features/churches/churchApiSlice";
 
 const AddUser = () => {
   const navigate = useNavigate();
@@ -18,6 +18,19 @@ const AddUser = () => {
   const search = useSearch<any>();
 
   const [createUser, { isLoading }] = useCreateUserMutation();
+
+  const { data } = useGetRegionsQuery({});
+  const { data: churchesData } = useGetChurchesQuery({});
+
+  console.log(churchesData, "church data");
+
+  const regionOptions = data?.region?.map((app: any) => {
+    return { label: app?.name, value: app?.id };
+  });
+
+  const churchOptions = churchesData?.map((app: any) => {
+    return { label: app?.name, value: app?.id };
+  });
 
   const formik: FormikProps<any> = useFormik({
     initialValues: {
@@ -57,9 +70,7 @@ const AddUser = () => {
           toast(
             JSON.stringify({
               type: "success",
-              title:
-                res?.message ??
-                `User created successfully`,
+              title: res?.message ?? `User created successfully`,
             })
           );
           navigate({ to: ".." });
@@ -187,13 +198,16 @@ const AddUser = () => {
             <div className="flex-1">
               <label
                 htmlFor="region"
-                className=" block text-lg font-medium text-black"
+                className="block text-lg font-medium text-black"
               >
                 Region
               </label>
               <SelectDropdown
-                options={ghanaRegions}
-                onChange={(value) => formik.setFieldValue("region", value)}
+                options={regionOptions}
+                value={values.region}
+                onChange={(value) => {
+                  formik.setFieldValue("region", value);
+                }}
               />
               {errors.region && typeof errors.region === "string" && (
                 <p className="font-normal text-sm text-[#fc8181]">
@@ -230,6 +244,7 @@ const AddUser = () => {
                 },
               ]}
               onChange={(value) => formik.setFieldValue("role", value)}
+              value={values.role}
             />
             {errors.role && typeof errors.role === "string" && (
               <p className="font-normal text-sm text-[#fc8181]">
@@ -253,14 +268,9 @@ const AddUser = () => {
                   Church
                 </label>
                 <SelectDropdown
-                  options={[
-                    { label: "Church 1", value: "church1" },
-                    { label: "Church 2", value: "church2" },
-                    { label: "Church 2", value: "church2" },
-                    { label: "Church 2", value: "church2" },
-                    { label: "Church 2", value: "church2" },
-                  ]}
+                  options={churchOptions}
                   onChange={(value) => formik.setFieldValue("church", value)}
+                  value={values.church}
                 />
                 {errors.church && typeof errors.church === "string" && (
                   <p className="font-normal text-sm text-[#fc8181]">

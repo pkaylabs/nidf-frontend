@@ -39,34 +39,34 @@ const NotificationDetails = () => {
   ];
   //
   return (
-    <main className="font-poppins p-5">
+    <main className="font-poppins p-3 md:p-5">
       <div className="flex items-center gap-x-4 mb-5">
         <button
           onClick={() => navigate({ to: ".." })}
           className="font-light flex items-center space-x-2 border-[0.5px] border-[#545454] bg-white text-black py-2.5 px-4 rounded-md transition-all duration-150 ease-in-out "
         >
           <IoIosArrowRoundBack className="size-5" aria-hidden="true" />{" "}
-          <span>Back to Lists</span>
+          <span className="hidden md:block">Back to Lists</span>
         </button>
       </div>
 
-      <section className="p-8 bg-white rounded-md ">
-        <div className="flex justify-between items-start gap-5 ">
+      <section className="p-3 md:p-8 bg-white rounded-md ">
+        <div className="flex justify-between items-start md:gap-5 ">
           <div className="flex-1">
-            <h4 className="font-medium text-2xl text-[#252525] ">{title}</h4>
+            <h4 className="font-medium text-lg md:text-2xl text-[#252525] ">{title}</h4>
             <p className="font-light text-lg text-[#545454] mt-5 ">{message}</p>
             <div className=" mt-5 flex w-full">
               <div className="flex-1">
                 <p className="font-light text-base text-[#545454] ">
                   Recipients
                 </p>
-                <h2 className="font-semibold text-2xl text-[#454545] mt-2">
+                <h2 className="font-semibold md:text-2xl text-[#454545] mt-2">
                   {target}
                 </h2>
               </div>
               <div className="flex-1">
                 <p className="font-light text-base text-[#545454] ">Schedule</p>
-                <h2 className="font-semibold text-2xl text-[#454545] mt-2">
+                <h2 className="font-semibold md:text-2xl text-[#454545] mt-2">
                   {scheduled ? (
                     <>
                       Schedule:{" "}
@@ -99,17 +99,17 @@ const NotificationDetails = () => {
                   attachment?.replace("/assets/notifications/", "")
                 );
               }}
-              className="flex items-center gap-2 border border-[#71839B] text-[#545454] text-lg px-4 py-1.5 mt-8  rounded-md hover:shadow-md transition-all duration-150 ease-in-out"
+              className="flex items-center gap-2 border border-[#71839B] text-[#545454] md:text-lg px-2 md:px-4 py-1.5 mt-8  rounded-md hover:shadow-md transition-all duration-150 ease-in-out"
             >
               <RxDownload className="size-5" aria-hidden="true" />
-              <span>{attachment?.replace("/assets/notifications/", "")}</span>
+              <span className="">{attachment?.replace("/assets/notifications/", "")}</span>
             </button>
           </div>
 
           <div className="">
-            <div className="flex gap-2 items-center bg-[#252525] rounded-md py-3 px-4 mt-2">
+            <div className="flex w-full gap-2 items-center bg-[#252525] rounded-md py-3 px-2 md:px-4 mt-2">
               <div
-                className={`w-6 h-6 rounded-sm flex justify-center items-center ${
+                className={`w-4 h-4 md:w-6 md:h-6 rounded-sm flex justify-center items-center ${
                   !scheduled ? "bg-[#2D9632] " : "bg-[#AD6915] "
                 } `}
               >
@@ -118,7 +118,7 @@ const NotificationDetails = () => {
                   <IoCheckmark className="text-white size-4" />
                 )}{" "}
               </div>
-              <p className="font-semibold text-base text-white">
+              <p className="font-semibold text-xs md:text-base text-white">
                 {scheduled ? "Scheduled" : "Sent"}
               </p>
             </div>
