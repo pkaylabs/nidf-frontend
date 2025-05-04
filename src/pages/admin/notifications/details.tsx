@@ -51,11 +51,13 @@ const NotificationDetails = () => {
       </div>
 
       <section className="p-3 md:p-8 bg-white rounded-md ">
-        <div className="flex justify-between items-start md:gap-5 ">
+        <div className="flex flex-col md:flex-row justify-between items-start md:gap-5 ">
           <div className="flex-1">
-            <h4 className="font-medium text-lg md:text-2xl text-[#252525] ">{title}</h4>
+            <h4 className="font-medium text-lg md:text-2xl text-[#252525] ">
+              {title}
+            </h4>
             <p className="font-light text-lg text-[#545454] mt-5 ">{message}</p>
-            <div className=" mt-5 flex w-full">
+            <div className=" mt-5 flex flex-col gap-4 md:flex-row w-full">
               <div className="flex-1">
                 <p className="font-light text-base text-[#545454] ">
                   Recipients
@@ -102,7 +104,9 @@ const NotificationDetails = () => {
               className="flex items-center gap-2 border border-[#71839B] text-[#545454] md:text-lg px-2 md:px-4 py-1.5 mt-8  rounded-md hover:shadow-md transition-all duration-150 ease-in-out"
             >
               <RxDownload className="size-5" aria-hidden="true" />
-              <span className="">{attachment?.replace("/assets/notifications/", "")}</span>
+              <span className="">
+                {attachment?.replace("/assets/notifications/", "")}
+              </span>
             </button>
           </div>
 
@@ -127,7 +131,7 @@ const NotificationDetails = () => {
       </section>
 
       <div className="mt-8">
-        <div className="flex  bg-white rounded-md px-6 py-3 space-x-6 mb-6 ">
+        <div className="flex  bg-white rounded-md px-3 md:px-6 py-1.5 md:py-3 space-x-3 md:space-x-6 mb-6 ">
           {tabs.map((tab, index) => (
             <Tab
               key={index}

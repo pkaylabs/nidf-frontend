@@ -8,7 +8,7 @@ export default function ActivityLog() {
            className="size-20 text-gray-300"
            aria-hidden="true"
          />
-         <p className="font-medium text-lg text-gray-400">
+         <p className="font-medium md:text-lg text-gray-400">
            No Activity Logs to Display
          </p>
        </section>

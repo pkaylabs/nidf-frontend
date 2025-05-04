@@ -72,10 +72,10 @@ export default function ViewUserModal({
       />
 
       <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
-        <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+        <div className="flex min-h-full  justify-center text-center sm:items-center ">
           <DialogPanel
             transition
-            className="relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all data-[closed]:translate-y-4 data-[closed]:opacity-0 data-[enter]:duration-300 data-[leave]:duration-200 data-[enter]:ease-out data-[leave]:ease-in sm:my-8 sm:w-full sm:max-w-2xl sm:p-6 data-[closed]:sm:translate-y-0 data-[closed]:sm:scale-95"
+            className="relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all data-[closed]:translate-y-4 data-[closed]:opacity-0 data-[enter]:duration-300 data-[leave]:duration-200 data-[enter]:ease-out data-[leave]:ease-in sm:my-8 w-full sm:max-w-2xl sm:p-6 data-[closed]:sm:translate-y-0 data-[closed]:sm:scale-95"
           >
             <div className="absolute right-0 top-0 hidden pr-4 pt-4 sm:block">
               <button
@@ -93,15 +93,15 @@ export default function ViewUserModal({
               </button>
             </div>
             <div className="">
-              <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
+              <div className="mt-3  sm:ml-4 sm:mt-0 sm:text-left">
                 <DialogTitle
                   as="h3"
-                  className="text-2xl font-semibold text-gray-900"
+                  className="text-lg md:text-2xl font-semibold text-gray-900"
                 >
                   User Details
                 </DialogTitle>
                 <div className="mt-2">
-                  <p className="font-light text-lg text-[#71839B] ">
+                  <p className="font-light md:text-lg text-[#71839B] ">
                     View detailed information about this user
                   </p>
                 </div>
@@ -109,11 +109,11 @@ export default function ViewUserModal({
                 <div className="w-full py-5">
                   {data.map((item, idx) => (
                     <div key={idx} className="flex justify-between py-3 ">
-                      <p className="font-medium  text-lg text-gray-900 flex-1">
+                      <p className="font-medium  md:text-lg text-gray-900 flex-1">
                         {item.name}
                       </p>
                       <p
-                        className={`text-lg w-fit  flex-[1.5]
+                        className={`md:text-lg w-fit  flex-[1.5]
                         ${
                           idx === data.length - 1
                             ? item.value
@@ -156,7 +156,7 @@ export default function ViewUserModal({
                       to: "..",
                     });
                   }}
-                  className="font-light flex items-center space-x-2 border-[0.5px] border-[#545454] bg-white text-black py-2 px-4 rounded-md transition-all"
+                  className="font-light flex items-center text-sm md:text-base space-x-2 border-[0.5px] border-[#545454] bg-white text-black py-2 px-4 rounded-md transition-all"
                 >
                   <IoIosArrowRoundBack className="size-5" />
                   <span>Back to List</span>

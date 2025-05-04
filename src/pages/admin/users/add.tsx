@@ -108,7 +108,7 @@ const AddUser = () => {
   ) => {
     return (
       <div className="font-poppins ">
-        <label htmlFor={name} className=" block text-lg font-medium text-black">
+        <label htmlFor={name} className=" block md:text-lg font-medium text-black">
           {label}
         </label>
         <input
@@ -120,7 +120,7 @@ const AddUser = () => {
           value={values[name] || ""}
           onChange={handleChange}
           onBlur={handleBlur}
-          className={`w-full px-4 py-3 mt-2 text-lg border border-[#71839B] placeholder:font-light disabled:bg-[#EFEFEF] rounded-md focus:outline-none focus:ring-1 focus:ring-primary focus:border-transparent`}
+          className={`w-full px-4 py-3 mt-2 md:text-lg border border-[#71839B] placeholder:font-light disabled:bg-[#EFEFEF] rounded-md focus:outline-none focus:ring-1 focus:ring-primary focus:border-transparent`}
         />
         {errors[name] && touched[name] && typeof errors[name] === "string" && (
           <p className="font-normal text-sm text-[#fc8181]">{errors[name]}</p>
@@ -130,27 +130,27 @@ const AddUser = () => {
   };
 
   return (
-    <main className="font-poppins p-5">
+    <main className="font-poppins p-3 md:p-5">
       <div className="flex items-center gap-x-4 mb-5">
         <button
           onClick={() => navigate({ to: ".." })}
           className="font-light flex items-center space-x-2 border-[0.5px] border-[#545454] bg-white text-black py-2.5 px-4 rounded-md transition-all"
         >
           <IoIosArrowRoundBack className="size-5" />
-          <span>Back to List</span>
+          <span className="hidden md:block">Back to List</span>
         </button>
-        <h4 className="font-medium text-2xl text-[#252525]">Add New User</h4>
+        <h4 className="font-medium text-lg md:text-2xl text-[#252525]">Add New User</h4>
       </div>
 
-      <section className="bg-white rounded-md p-8">
-        <h4 className="font-semibold text-lg text-black mb-4">Add New User</h4>
-        <p className=" font-light text-lg text-[#71839B] ">
+      <section className="bg-white rounded-md p-3 md:p-8">
+        <h4 className="font-semibold md:text-lg text-black mb-4">Add New User</h4>
+        <p className=" font-light md:text-lg text-[#71839B] ">
           Create a new user and assign them the appropriate role.
         </p>
 
         <div className="mt-8">
-          <div className="w-full flex items-center gap-4 my-5">
-            <div className="flex-1 ">
+          <div className="w-full flex flex-col md:flex-row items-center gap-4 my-5">
+            <div className="w-full flex-1 ">
               {input(
                 "First Name",
                 "firstName",
@@ -159,13 +159,13 @@ const AddUser = () => {
                 "Enter First Name"
               )}
             </div>
-            <div className="flex-1 ">
+            <div className="w-full flex-1 ">
               {input("Last Name", "lastName", "text", false, "Enter Last Name")}
             </div>
           </div>
 
-          <div className="w-full flex items-center gap-4 my-5">
-            <div className="flex-1 ">
+          <div className="w-full flex flex-col md:flex-row items-center gap-4 my-5">
+            <div className="w-full flex-1 ">
               {input(
                 "Email Address",
                 "emailAddress",
@@ -174,7 +174,7 @@ const AddUser = () => {
                 "Enter Email Address"
               )}
             </div>
-            <div className="flex-1 ">
+            <div className="w-full flex-1 ">
               {input(
                 "Password",
                 "password",
@@ -185,8 +185,8 @@ const AddUser = () => {
             </div>
           </div>
 
-          <div className="w-full flex items-center gap-4 my-5">
-            <div className="flex-1 ">
+          <div className="w-full flex flex-col md:flex-row items-center gap-4 my-5">
+            <div className="w-full flex-1 ">
               {input(
                 "Phone Number",
                 "phoneNumber",
@@ -195,10 +195,10 @@ const AddUser = () => {
                 "Enter Phone Number"
               )}
             </div>
-            <div className="flex-1">
+            <div className="w-full flex-1">
               <label
                 htmlFor="region"
-                className="block text-lg font-medium text-black"
+                className="block md:text-lg font-medium text-black"
               >
                 Region
               </label>
@@ -220,7 +220,7 @@ const AddUser = () => {
           <div className="w-full">
             <label
               htmlFor="role"
-              className=" block text-lg font-medium text-black"
+              className=" block md:text-lg font-medium text-black"
             >
               Role
             </label>
@@ -263,7 +263,7 @@ const AddUser = () => {
               <div className="my-5 w-full">
                 <label
                   htmlFor="church"
-                  className="block text-lg font-medium text-black"
+                  className="block md:text-lg font-medium text-black"
                 >
                   Church
                 </label>
@@ -303,7 +303,7 @@ const AddUser = () => {
             <button
               onClick={() => handleSubmit()}
               disabled={isLoading}
-              className="w-44 bg-primary-700 text-white py-3  rounded-md mt-5 disabled:bg-opacity-80"
+              className="w-full md:w-44 bg-primary-700 text-white py-3  rounded-md mt-5 disabled:bg-opacity-80"
             >
               {isLoading ? (
                 <ButtonLoader title="Creating..." />

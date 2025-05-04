@@ -87,16 +87,16 @@ export default function AdditionalInfoModal({
       />
 
       <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
-        <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+        <div className="flex min-h-full justify-center  text-center sm:items-center sm:p-0">
           <DialogPanel
             transition
-            className="relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all data-[closed]:translate-y-4 data-[closed]:opacity-0 data-[enter]:duration-300 data-[leave]:duration-200 data-[enter]:ease-out data-[leave]:ease-in sm:my-8 sm:w-full sm:max-w-3xl sm:p-6 data-[closed]:sm:translate-y-0 data-[closed]:sm:scale-95"
+            className="relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all data-[closed]:translate-y-4 data-[closed]:opacity-0 data-[enter]:duration-300 data-[leave]:duration-200 data-[enter]:ease-out data-[leave]:ease-in sm:my-8 w-full sm:max-w-3xl sm:p-6 data-[closed]:sm:translate-y-0 data-[closed]:sm:scale-95"
           >
             <div className="">
-              <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
+              <div className="mt-3  sm:ml-4 sm:mt-0 sm:text-left">
                 <DialogTitle
                   as="h3"
-                  className="text-lg font-semibold text-gray-900"
+                  className="text-lg text-center md:text-left font-semibold text-gray-900"
                 >
                   Request Additional Info
                 </DialogTitle>
@@ -139,6 +139,19 @@ export default function AdditionalInfoModal({
                  ring-primary hover:bg-primary-100 transition-all duration-150 ease-in-out sm:mt-0 sm:w-auto"
               >
                 {isLoading ? <ButtonLoader title="Submitting " /> : "Submit"}
+              </button>
+              <button
+                disabled={isLoading}
+                type="button"
+                data-autofocus
+                onClick={() => {
+                  setOpen(false);
+                }}
+                className="md:hidden mt-3 inline-flex w-full justify-center rounded-md bg-gray-50 px-12 py-4 text-sm
+                 text-gray-500 shadow-sm  disabled:bg-opacity-80 border border-gray-200
+                 ring-primary hover:bg-primary-100 transition-all duration-150 ease-in-out sm:mt-0 sm:w-auto"
+              >
+                Cancel
               </button>
             </div>
           </DialogPanel>

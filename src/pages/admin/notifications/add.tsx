@@ -154,7 +154,7 @@ const AddNotification = () => {
 
     return (
       <div className="font-poppins">
-        <label htmlFor={name} className="block text-lg font-medium text-black">
+        <label htmlFor={name} className="block md:text-lg font-medium text-black">
           {label}
         </label>
         <input
@@ -172,7 +172,7 @@ const AddNotification = () => {
             }
           }}
           onBlur={handleBlur}
-          className={`w-full px-4 py-3 mt-2 text-lg border border-[#71839B] placeholder:font-light disabled:bg-[#EFEFEF] rounded-md focus:outline-none focus:ring-1 focus:ring-primary focus:border-transparent`}
+          className={`w-full px-4 py-3 mt-2 md:text-lg border border-[#71839B] placeholder:font-light disabled:bg-[#EFEFEF] rounded-md focus:outline-none focus:ring-1 focus:ring-primary focus:border-transparent`}
         />
         {errors[name] && touched[name] && typeof errors[name] === "string" && (
           <p className="font-normal text-sm text-[#fc8181]">{errors[name]}</p>
@@ -201,25 +201,25 @@ const AddNotification = () => {
   }, [id]);
 
   return (
-    <main className="font-poppins p-5">
+    <main className="font-poppins p-3 md:p-5">
       <div className="flex items-center gap-x-4 mb-5">
         <button
           onClick={() => navigate({ to: ".." })}
           className="font-light flex items-center space-x-2 border-[0.5px] border-[#545454] bg-white text-black py-2.5 px-4 rounded-md transition-all"
         >
           <IoIosArrowRoundBack className="size-5" />
-          <span>Back to List</span>
+          <span className="hidden md:block">Back to List</span>
         </button>
-        <h4 className="font-medium text-2xl text-[#252525]">
+        <h4 className="font-medium text-lg md:text-2xl text-[#252525]">
           Add New Notifications
         </h4>
       </div>
 
-      <section className="bg-white rounded-md p-8">
-        <h4 className="font-semibold text-lg text-black mb-4">
+      <section className="bg-white rounded-md p-3 md:p-8">
+        <h4 className="font-semibold md:text-lg text-black mb-4">
           Add New Notification
         </h4>
-        <p className="font-light text-lg text-[#71839B]">
+        <p className="font-light md:text-lg text-[#71839B]">
           Create, schedule, and manage notifications for applicants
         </p>
 
@@ -229,7 +229,7 @@ const AddNotification = () => {
           <div className="mt-5 w-full">
             <label
               htmlFor="message"
-              className="block text-lg font-medium text-black"
+              className="block md:text-lg font-medium text-black"
             >
               Message
             </label>
@@ -240,7 +240,7 @@ const AddNotification = () => {
               value={values.message || ""}
               onChange={handleChange}
               onBlur={handleBlur}
-              className={`w-full h-32 px-4 py-3 mt-2 text-lg border border-[#71839B] placeholder:font-light rounded-md resize-none focus:outline-none focus:ring-1 focus:ring-primary focus:border-transparent`}
+              className={`w-full h-32 px-4 py-3 mt-2 md:text-lg border border-[#71839B] placeholder:font-light rounded-md resize-none focus:outline-none focus:ring-1 focus:ring-primary focus:border-transparent`}
             />
             {errors.message && typeof errors.message === "string" && (
               <p className="font-normal text-sm text-[#fc8181]">
@@ -249,11 +249,11 @@ const AddNotification = () => {
             )}
           </div>
 
-          <div className="w-full flex items-center gap-4 mt-5">
-            <div className="flex-1">
+          <div className="w-full flex flex-col md:flex-row md:items-center gap-4 mt-5">
+            <div className="w-full flex-1">
               <label
                 htmlFor="recipients"
-                className="block text-lg font-medium text-black"
+                className="block md:text-lg font-medium text-black"
               >
                 Recipients
               </label>
@@ -273,7 +273,7 @@ const AddNotification = () => {
                 </p>
               )}
             </div>
-            <div className="flex-1">
+            <div className="w-full flex-1">
               {input("File Attachment", "fileAttachment", "file", false)}
             </div>
           </div>
@@ -293,7 +293,7 @@ const AddNotification = () => {
                 className="pointer-events-none inline-block size-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out group-data-[checked]:translate-x-5"
               />
             </Switch>
-            <p className="font-medium text-lg">Schedule Notification</p>
+            <p className="font-medium md:text-lg">Schedule Notification</p>
           </div>
 
           {values.enabled && (
@@ -303,11 +303,11 @@ const AddNotification = () => {
               exit={{ opacity: 0, y: 20 }}
               transition={{ duration: 0.4, ease: "easeInOut" }}
             >
-              <div className="w-full flex items-center gap-4 mt-5">
-                <div className="flex-1">
+              <div className="w-full flex flex-col md:flex-row items-center gap-4 mt-5">
+                <div className="w-full flex-1">
                   {input("Start Date", "startDate", "date", false, "Enter")}
                 </div>
-                <div className="flex-1">
+                <div className="w-full flex-1">
                   {input("End Date", "endDate", "date", false, "Enter")}
                 </div>
               </div>
@@ -342,7 +342,7 @@ const AddNotification = () => {
             <button
               onClick={() => handleSubmit()}
               disabled={isLoading}
-              className="w-56 h-[50px] flex justify-center items-center gap-x-2 rounded-md border border-primary-50 bg-primary-50 hover:bg-primary-100 transition-all duration ease-in-out text-lg text-white disabled:bg-opacity-80 disabled:cursor-not-allowed"
+              className="w-full md:w-56 h-[50px] mt-3 flex justify-center items-center gap-x-2 rounded-md border border-primary-50 bg-primary-50 hover:bg-primary-100 transition-all duration ease-in-out text-lg text-white disabled:bg-opacity-80 disabled:cursor-not-allowed"
             >
               {isLoading || updating ? (
                 <ButtonLoader title={id ? "Updating..." : "Creating..."} />

@@ -198,8 +198,8 @@ export default function AdminLayout() {
                 <div className="flex h-16 shrink-0 items-center">
                   <img
                     alt="Your Company"
-                    src="https://tailwindui.com/plus/img/logos/mark.svg?color=indigo&shade=600"
-                    className="h-8 w-auto"
+                    src={logo}
+                    className="h-10 w-auto"
                   />
                 </div>
                 <nav className="flex flex-1 flex-col">
@@ -215,7 +215,7 @@ export default function AdminLayout() {
                                   currentPath.includes(
                                     item.name.split(" ")[0].toLowerCase()
                                   )
-                                  ? "bg-primary-50 text-primary font-semibold"
+                                  ? "bg-primary-50 text-white font-semibold"
                                   : "text-gray-800 hover:bg-gray-50 hover:text-primary-600 font-medium",
                                 "group flex gap-x-3 rounded-xl px-5 py-3 text-sm  leading-6 capitalize"
                               )}
@@ -227,7 +227,7 @@ export default function AdminLayout() {
                                     currentPath.includes(
                                       item.name.split(" ")[0].toLowerCase()
                                     )
-                                    ? "text-primary"
+                                    ? "text-white"
                                     : "text-black group-hover:text-primary",
                                   "h-5 w-5 shrink-0"
                                 )}
@@ -386,7 +386,7 @@ export default function AdminLayout() {
         </div>
 
         <div className="lg:pl-80 h-screen flex flex-col">
-          <div className="sticky top-0 z-40 flex h-20 border-b shrink-0 items-center gap-x-4 bg-white pr-4 sm:gap-x-6 sm:pr-6 lg:pr-8">
+          <div className="sticky top-0 z-40 flex h-20 border-b shrink-0 items-center gap-x-4 bg-white px-4 sm:gap-x-6 sm:pr-6 lg:pr-8">
             <button
               type="button"
               onClick={() => setSidebarOpen(true)}
@@ -403,11 +403,11 @@ export default function AdminLayout() {
             />
 
             <div className="font-poppins flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
-              <div className="flex-1  flex items-center">
+              <div className="flex-1 flex items-center">
                 <input
                   type="text"
                   placeholder="Search Application ID, Name or Type"
-                  className="w-1/2 h-14 border rounded-md px-2 "
+                  className="w-full md:w-1/2 h-12 md:h-14 text-sm md:text-base border rounded-md px-2 "
                 />
               </div>
               <div className="flex items-center gap-x-4 lg:gap-x-6">

@@ -138,11 +138,32 @@ const Notifications = () => {
                   },
                 })
               }
-              className="font-poppins font-light w-40 h-12 flex justify-center items-center border border-[#324054] rounded-md text-[#324054] hover:bg-[#324054] hover:text-white transition-all duration-200 ease-in-out "
+              className="hidden md:flex font-poppins font-light w-40 h-12  justify-center items-center border border-[#324054] rounded-md text-[#324054] hover:bg-[#324054] hover:text-white transition-all duration-200 ease-in-out "
             >
               View Details
             </button>
-            <div className="flex items-center gap-3 mt-3">
+            <div className="w-full md:w-[unset] flex items-center gap-3 mt-3">
+              <button
+                onClick={() =>
+                  navigate({
+                    to: `/admin/notifications/${row?.id}`,
+                    search: {
+                      title: row?.title,
+                      message: row?.message,
+                      target: row?.target,
+                      scheduled: row?.is_scheduled,
+                      schedule_start_date: row?.schedule_start_date,
+                      schedule_start_end: row?.schedule_start_end,
+                      schedule_frequency: row?.schedule_frequency,
+                      id: row?.id,
+                      attachment: row?.attachment,
+                    },
+                  })
+                }
+                className="font-poppins flex-1 font-light w-40 h-12 flex justify-center items-center border border-[#324054] rounded-md text-[#324054] hover:bg-[#324054] hover:text-white transition-all duration-200 ease-in-out "
+              >
+                View Details
+              </button>
               <button
                 onClick={() =>
                   navigate({

@@ -81,12 +81,12 @@ const Districts = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ delay: index * 0.05 }}
-      className="font-poppins border-b text-lg  text-black  border-gray-200 hover:bg-gray-100 transition-all duration-150 ease-in-out"
+      className="font-poppins border-b md:text-lg  text-black  border-gray-200 hover:bg-gray-100 transition-all duration-150 ease-in-out"
     >
-      <td className="px-4 py-3 ">{row?.name ?? "N/A"}</td>
-      <td className="px-4 py-3 ">{row?.region?.name ?? "0"}</td>
-      <td className="px-4 py-3">{row?.churches ?? "0"}</td>
-      <td className="px-4 py-3 ">{row?.overseer_name ?? "N/A"}</td>
+      <td className="px-4 py-3 text-nowrap">{row?.name ?? "N/A"}</td>
+      <td className="px-4 py-3 text-nowrap">{row?.region?.name ?? "0"}</td>
+      <td className="px-4 py-3 text-nowrap">{row?.churches ?? "0"}</td>
+      <td className="px-4 py-3 text-nowrap">{row?.overseer_name ?? "N/A"}</td>
 
       <td className="px-4 py-4 ">
         <div className="flex items-center gap-3">
@@ -146,7 +146,7 @@ const Districts = () => {
   }, [data]);
 
   return (
-    <div className="p-5 h-full ">
+    <div className="p-3 md:p-5 h-full ">
       <Table
         headers={headers}
         showAddButton={true}

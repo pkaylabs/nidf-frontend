@@ -3,8 +3,8 @@ import { motion } from "framer-motion";
 
 const ApplicationDetail = ({ data }: any) => {
   return (
-    <section className="font-poppins px-4 py-5">
-      <h4 className="font-medium text-lg text-[#454545] mb-5">
+    <section className="font-poppins md:px-4 md:py-5">
+      <h4 className="font-medium md:text-lg text-[#454545] mb-5">
         Project Details
       </h4>
 
@@ -17,10 +17,10 @@ const ApplicationDetail = ({ data }: any) => {
         <tbody>
           {data.map((item: any, idx: number) => (
             <tr key={idx} className="border-b">
-              <td className="py-3 font-medium text-lg text-black">
+              <td className="py-3 font-medium md:text-lg text-black">
                 {item?.name}{" "}
               </td>
-              <td className="py-2 text-lg text-black">{item?.value} </td>
+              <td className="py-2 md:text-lg text-black">{item?.value} </td>
             </tr>
           ))}
         </tbody>
