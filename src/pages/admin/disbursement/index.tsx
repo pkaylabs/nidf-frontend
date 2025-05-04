@@ -6,6 +6,7 @@ import Table from "@/components/table";
 import { ADD_DIBURSEMENT } from "@/constants/page-path";
 import { useGetDisbursementsQuery } from "@/redux/features/disbursements/disbursementsApiSlice";
 import { computeSignature } from "@/helpers";
+import moment from "moment";
 
 const Disbursement = () => {
   const navigate = useNavigate();
@@ -31,19 +32,19 @@ const Disbursement = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ delay: index * 0.05 }}
-      className="font-poppins border-b text-lg  text-black  border-gray-200 hover:bg-gray-100 transition-all duration-150 ease-in-out"
+      className="font-poppins border-b md:text-lg  text-black  border-gray-200 hover:bg-gray-100 transition-all duration-150 ease-in-out"
     >
       <td className="px-4 py-3 ">
-        <div className="flex justify-between items-center space-x-4 border-[0.5px] border-[#71839B] rounded-md shadow-sm p-6 mb-5">
+        <div className="flex flex-col md:flex-row justify-between md:items-center gap-4 border-[0.5px] border-[#71839B] rounded-md shadow-sm p-3 md:p-6 mb-3 md:mb-5">
           <div className="">
-            <h4 className="font-semibold text-xl text-[#454545] ">
+            <h4 className="font-semibold md:text-xl text-[#454545] ">
               {row?.application?.purpose}
             </h4>
             <p className="font-light text-[#545454] my-3">
-              Payment Date: {row?.date_paid}
+              Payment Date: {moment(row?.date_paid).format("LL") ?? "N/A"}{" "}
             </p>
             <p className="font-light text-[#545454] my-3">
-              Payment Date: {row?.account_number}
+              Account Number: {row?.account_number}
             </p>
 
             <p className="font-light text-[#545454]">
@@ -51,11 +52,11 @@ const Disbursement = () => {
             </p>
           </div>
           <div className="">
-            <h5 className="font-bold text-2xl text-[#252525] mb-3">
+            <h5 className="font-bold text-lg md:text-2xl text-[#252525] mb-3">
               GHS {row?.amount ?? "0"}
             </h5>
             <h6
-              className={`font-semibold text-lg ${
+              className={`font-semibold md:text-lg ${
                 row.status === "COMPLETED" ? "text-[#2D9632]" : "text-[#AD6915]"
               }  mb-3`}
             >
@@ -90,7 +91,7 @@ const Disbursement = () => {
                   },
                 });
               }}
-              className="font-poppins font-light w-40 h-10 flex justify-center items-center border border-[#324054] rounded-md text-[#324054] hover:bg-[#324054] hover:text-white transition-all duration-200 ease-in-out"
+              className="font-poppins font-light w-full md:w-40 h-10 flex justify-center items-center border border-[#324054] rounded-md text-[#324054] hover:bg-[#324054] hover:text-white transition-all duration-200 ease-in-out"
             >
               View Details
             </button>

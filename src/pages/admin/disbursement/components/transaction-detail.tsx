@@ -46,7 +46,7 @@ const TransactionDetails = ({ data }: Trans) => {
               {item.title}{" "}
             </p>
             <h2
-              className={`font-semibold text-2xl text-[#252525] ${
+              className={`font-semibold md:text-2xl text-[#252525] ${
                 idx === menu.length - 1
                   ? item.value === "Completed"
                     ? "text-[#2D9632]"

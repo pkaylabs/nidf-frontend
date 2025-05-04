@@ -1,13 +1,10 @@
 import React from "react";
 
-
-
 interface Trans {
   data: any;
 }
 
 const BankingInfo = ({ data }: Trans) => {
-
   const info = [
     {
       title: "Bank Name",
@@ -36,7 +33,7 @@ const BankingInfo = ({ data }: Trans) => {
             <p className="font-light text-base text-[#545454] mb-4">
               {item.title}{" "}
             </p>
-            <h2 className={`font-semibold text-2xl  text-[#252525] `}>
+            <h2 className={`font-semibold md:text-2xl  text-[#252525] `}>
               {item.value}
             </h2>
           </div>

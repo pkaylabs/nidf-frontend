@@ -8,7 +8,7 @@ export default function Districts() {
         className="size-20 text-gray-300"
         aria-hidden="true"
       />
-      <p className="font-medium text-lg text-gray-400">
+      <p className="font-medium md:text-lg text-gray-400">
         No district to display at the moment
       </p>
     </section>

@@ -8,7 +8,7 @@ export default function Churches() {
             className="size-20 text-gray-300"
             aria-hidden="true"
           />
-          <p className="font-medium text-lg text-gray-400">
+          <p className="font-medium text-center md:text-lg text-gray-400">
             No churches to display at the moment
           </p>
         </section>

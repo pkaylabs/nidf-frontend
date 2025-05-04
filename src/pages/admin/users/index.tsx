@@ -32,15 +32,15 @@ const Users = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ delay: index * 0.05 }}
-      className="font-poppins border-b text-lg  text-black  border-gray-200 hover:bg-gray-100 transition-all duration-150 ease-in-out"
+      className="font-poppins border-b md:text-lg  text-black  border-gray-200 hover:bg-gray-100 transition-all duration-150 ease-in-out"
     >
-      <td className="px-4 py-3 ">{row?.name}</td>
-      <td className="px-4 py-3 capitalize">{row?.user_type}</td>
-      <td className="px-4 py-3">{row?.email}</td>
-      <td className="px-4 py-3 ">{row?.phone}</td>
-      <td className="px-4 py-3 ">
+      <td className="px-4 py-3 text-nowrap">{row?.name}</td>
+      <td className="px-4 py-3 text-nowrap capitalize">{row?.user_type}</td>
+      <td className="px-4 py-3 text-nowrap">{row?.email}</td>
+      <td className="px-4 py-3 text-nowrap">{row?.phone}</td>
+      <td className="px-4 py-3 text-nowrap">
         <p
-          className={` text-base py-1 rounded-md text-center ${
+          className={`text-sm md:text-base px-2 py-1 rounded-md text-center ${
             row.is_active
               ? "bg-[#2D9632] bg-opacity-40 text-[#2D9632] "
               : "bg-[#CE5347] bg-opacity-40 text-[#CE5347]"
@@ -104,7 +104,7 @@ const Users = () => {
   }, [data]);
 
   return (
-    <div className="p-5">
+    <div className="p-3 md:p-5">
       <Table
         headers={headers}
         showAddButton={true}

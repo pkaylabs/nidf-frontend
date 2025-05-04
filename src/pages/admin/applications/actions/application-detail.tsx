@@ -27,7 +27,7 @@ interface TabProps {
 const Tab = ({ label, active, onClick }: TabProps) => (
   <button
     onClick={onClick}
-    className={`font-poppins px-4 py-2 text-lg  transition-colors duration-300 ${
+    className={`font-poppins px-4 py-2 text-sm md:text-lg  transition-colors duration-300 ${
       active
         ? " font-medium bg-primary-50 text-white rounded-md shadow-sm"
         : "border-transparent text-[#545454]"
@@ -198,25 +198,25 @@ const AdminApplicationDetails = () => {
   }, [status]);
 
   return (
-    <main className="font-poppins p-5">
+    <main className="font-poppins p-3 md:p-5">
       <div className="flex items-center gap-x-4 mb-5">
         <button
           onClick={() => navigate({ to: ".." })}
           className="font-light flex items-center space-x-2 border-[0.5px] border-[#545454] bg-white text-black py-2.5 px-4 rounded-md transition-all duration-150 ease-in-out "
         >
           <IoIosArrowRoundBack className="size-5" aria-hidden="true" />{" "}
-          <span>Back to Applications</span>
+          <span className="hidden md:block">Back to Applications</span>
         </button>
       </div>
 
-      <section className="p-8 bg-white rounded-md ">
+      <section className="p-3 md:p-8 bg-white rounded-md">
         <div className="flex justify-between items-center gap-5 ">
-          <h4 className="font-medium text-xl text-[#454545] ">
+          <h4 className="font-medium md:text-xl text-[#454545] ">
             Application Summary
           </h4>
 
           <p
-            className={`text-[#F5F5F5] text-base py-1.5 px-4 rounded-md text-center ${
+            className={`text-[#F5F5F5] text-sm md:text-base py-1.5 px-2 md:px-4 rounded-md text-center ${
               search.status === "APPROVED" ? "bg-[#2D9632]" : ""
             }
              
@@ -230,18 +230,18 @@ const AdminApplicationDetails = () => {
           </p>
         </div>
 
-        <div className="flex justify-between gap-4 mt-10">
-          <div className="w-2/3 flex flex-wrap justify-between  ">
+        <div className="flex flex-wrap md:flex-nowrap justify-between gap-4 mt-10">
+          <div className="w-full md:w-2/3 flex flex-wrap justify-between  ">
             {summery.map((item, index) => (
               <div key={index} className="flex flex-col gap-1 w-1/2 mb-6">
                 <p className="font-light text-[#545454] mb-1.5">{item.title}</p>
-                <p className="font-semibold  text-2xl text-[#252525] ">
+                <p className="font-semibold md:text-2xl text-[#252525] ">
                   {item.value}
                 </p>
               </div>
             ))}
           </div>
-          <div className="flex-1 pl-8">
+          <div className="flex-1 md:pl-8">
             {status !== "DRAFT" &&
               status !== "APPROVED" &&
               status !== "REJECTED" && (
@@ -257,7 +257,7 @@ const AdminApplicationDetails = () => {
                   <div className="mb-5">
                     <label
                       htmlFor="typeOfChurchProject"
-                      className="block text-lg font-medium text-black"
+                      className="block md:text-lg font-medium text-black"
                     >
                       Select Application Status
                     </label>
@@ -297,7 +297,7 @@ const AdminApplicationDetails = () => {
       </section>
 
       <div className="mt-8">
-        <div className="flex  bg-white rounded-md px-6 py-3 space-x-6 mb-6 ">
+        <div className="flex  bg-white rounded-md px-3 md:px-6 py-1.5 md:py-3 space-x-2 md:space-x-6 mb-6 ">
           {tabs.map((tab, index) => (
             <Tab
               key={index}

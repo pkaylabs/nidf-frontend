@@ -547,26 +547,26 @@ const CreateApplication = () => {
       : "Review your application and submit";
 
   return (
-    <main className="font-poppins p-5">
+    <main className="font-poppins p-3 md:p-5">
       <div className="flex items-center gap-x-4 mb-5">
         <button
           onClick={() => navigate({ to: ".." })}
           className="font-light flex items-center space-x-2 border-[0.5px] border-[#545454] bg-white text-black py-2.5 px-4 rounded-md transition-all"
         >
           <IoIosArrowRoundBack className="size-5" />
-          <span>Back to Application</span>
+          <span className="hidden md:block">Back to Application</span>
         </button>
-        <h4 className="font-medium text-2xl text-[#252525]">
+        <h4 className="font-medium text-lg md:text-2xl text-[#252525]">
           Apply For Support
         </h4>
       </div>
 
-      <section className="bg-white rounded-md p-8">
-        <div className="flex justify-between items-center gap-x-4 max-w-lg mx-auto">
+      <section className="bg-white rounded-md pt-2 md:p-8">
+        <div className="flex justify-between items-center gap-x-4 max-w-lg mx-auto px-3 md:px-0">
           {supportApplicationSteps.map((step, index) => (
             <button
               key={step.id}
-              className={`font-medium w-14 h-14 rounded-full flex justify-center items-center border text-2xl
+              className={`font-medium w-10 md:w-14 h-10 md:h-14 rounded-full flex justify-center items-center border md:text-2xl
                 ${
                   activeStep === index
                     ? "bg-white border-primary text-primary"
@@ -581,7 +581,7 @@ const CreateApplication = () => {
           ))}
         </div>
 
-        <div className="border-[0.5px] border-[#71839B] rounded-md p-5 mt-6 ">
+        <div className="border-[0.5px] border-[#71839B] rounded-md p-3 md:p-5 mt-6 ">
           <motion.div
             key={activeStep}
             initial={{ opacity: 0, x: 100 }}
@@ -596,11 +596,11 @@ const CreateApplication = () => {
             />
           </motion.div>
 
-          <div className="flex justify-between mt-6 select-none">
+          <div className="flex justify-between gap-5 mt-6 select-none">
             <button
               onClick={prevStep}
               disabled={activeStep === 0}
-              className="w-56 h-16 flex justify-center items-center gap-x-2 rounded-md border border-gray-400 text-lg text-gray-500 disabled:opacity-50"
+              className="w-full md:w-56 h-12 md:h-16 flex justify-center items-center gap-x-2 rounded-md border border-gray-400 md:text-lg text-gray-500 disabled:opacity-50"
             >
               <IoIosArrowRoundBack className="size-8" />
               <span>Previous</span>
@@ -608,7 +608,7 @@ const CreateApplication = () => {
             <button
               onClick={handleProceed}
               disabled={isLoading || isFinalLoading}
-              className="w-56 h-16 flex justify-center items-center gap-x-2 rounded-md bg-primary text-white text-lg disabled:opacity-80 "
+              className="w-full md:w-56 h-12 md:h-16 flex justify-center items-center gap-x-2 rounded-md bg-primary text-white md:text-lg disabled:opacity-80"
             >
               {isLoading || isFinalLoading ? (
                 <ButtonLoader title="Processing" />

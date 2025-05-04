@@ -19,7 +19,7 @@ interface TabProps {
 const Tab = ({ label, active, onClick }: TabProps) => (
   <button
     onClick={onClick}
-    className={`font-poppins px-4 py-2 text-lg  transition-colors duration-300 ${
+    className={`font-poppins px-4 py-2 text-sm md:text-lg  transition-colors duration-300 ${
       active
         ? " font-medium bg-primary-50 text-white rounded-md shadow-sm"
         : "border-transparent text-[#545454]"
@@ -95,7 +95,7 @@ const DisbursementDetails = () => {
   }, [providedSignature, computedSignature, dispatch]);
 
   return (
-    <main className="font-poppins p-5">
+    <main className="font-poppins p-3 md:p-5">
       <div className="flex items-center gap-x-4 mb-5">
         <button
           onClick={() => navigate({ to: ".." })}
@@ -103,26 +103,26 @@ const DisbursementDetails = () => {
            bg-white text-black py-2.5 px-4 rounded-md transition-all duration-150 ease-in-out "
         >
           <IoIosArrowRoundBack className="size-5" aria-hidden="true" />{" "}
-          <span>Back to Lists</span>
+          <span className="hidden md:block">Back to Lists</span>
         </button>
       </div>
 
-      <section className="p-8 bg-white rounded-md ">
-        <div className="flex justify-between items-center gap-5 ">
+      <section className="p-3 md:p-8 bg-white rounded-md ">
+        <div className="flex flex-col md:flex-row justify-between md:items-center gap-3 md:gap-5">
           <div className="">
-            <h4 className="font-medium text-xl text-[#454545] ">
+            <h4 className="font-medium text-lg md:text-xl text-[#454545]">
               {search?.project_name}
             </h4>
-            <p className="font-light text-lg text-[#545454] mt-5 ">
+            <p className="font-light md:text-lg text-[#545454] mt-3 md:mt-5 ">
               Reference: {search.reference}
             </p>
           </div>
 
           <div className="">
-            <h4 className="font-bold text-3xl text-[#121212] ">GHS {search?.amount} </h4>
-            <div className="flex gap-2 items-center bg-[#252525] rounded-md py-3 px-4 mt-2">
+            <h4 className="font-bold text-xl md:text-3xl text-[#121212] ">GHS {search?.amount} </h4>
+            <div className="flex w-fit gap-2 items-center bg-[#252525] rounded-md py-2 md:py-3 px-2 md:px-4 mt-2">
               <div
-                className={`w-6 h-6 rounded-sm flex justify-center items-center ${
+                className={`w-4 md:w-6 h-4 md:h-6 rounded-sm flex justify-center items-center ${
                   search?.status === "COMPLETED" ? "bg-[#2D9632] " : "bg-[#AD6915] "
                 } `}
               >
@@ -131,7 +131,7 @@ const DisbursementDetails = () => {
                   <IoCheckmark className="text-white size-4" />
                 )}{" "}
               </div>
-              <p className="font-semibold text-base text-white">
+              <p className="font-semibold text-sm md:text-base text-white">
                 {search?.status}
               </p>
             </div>
@@ -140,7 +140,7 @@ const DisbursementDetails = () => {
       </section>
 
       <div className="mt-8">
-        <div className="flex  bg-white rounded-md px-6 py-3 space-x-6 mb-6 ">
+        <div className="flex  bg-white rounded-md px-3 md:px-6 py-1.5 md:py-3 space-x-3 md:space-x-6 mb-6 ">
           {tabs.map((tab, index) => (
             <Tab
               key={index}

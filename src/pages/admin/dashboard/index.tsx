@@ -59,24 +59,24 @@ const AdminDashboard = () => {
   ];
 
   return (
-    <main className="font-poppins p-5">
-      <h2 className="font-medium text-3xl text-[#252525] ">
+    <main className="font-poppins p-3 md:p-5">
+      <h2 className="font-medium text-2xl md:text-3xl text-[#252525] ">
         Welcome {user?.name?.split(" ")[0] ?? "User"}!
       </h2>
 
       <section className="my-5">
-        <div className="bg-white p-5 rounded-md mb-5">
-          <h5 className="font-medium text-xl text-[#454545] mb-5 ">
+        <div className="bg-white p-3 md:p-5 rounded-md mb-5">
+          <h5 className="font-medium text-lg md:text-xl text-[#454545] mb-5 ">
             Applications Overview
           </h5>
 
-          <div className="flex items-center gap-4 justify-between ">
+          <div className="flex flex-wrap md:flex-nowrap md:items-center gap-4 justify-between ">
             {applicationOverview.map((item, index) => (
               <div
                 key={index}
-                className="bg-white p-4 rounded-md border border-[#71839B] py-4 px-5 shadow w-1/3"
+                className="bg-white p-4 rounded-md border border-[#71839B] py-4 px-5 shadow w-full md:w-1/3"
               >
-                <h5 className="font-light text-xl text-[#545454] mb-3">
+                <h5 className="font-light text-lg md:text-xl text-[#545454] mb-3">
                   {item.title}
                 </h5>
                 {isLoading ? (
@@ -84,7 +84,7 @@ const AdminDashboard = () => {
                     <div className="w-full max-w-64 h-10 rounded bg-gray-300"></div>
                   </div>
                 ) : (
-                  <h3 className="font-semibold text-3xl text-[#545454]">
+                  <h3 className="font-semibold text-2xl md:text-3xl text-[#545454]">
                     {item.value}
                   </h3>
                 )}
@@ -93,18 +93,18 @@ const AdminDashboard = () => {
           </div>
         </div>
 
-        <div className="bg-white p-5 rounded-md mb-5 ">
-          <h5 className="font-medium text-xl text-[#454545] mb-5 ">
+        <div className="bg-white p-3 md:p-5 rounded-md mb-5 ">
+          <h5 className="font-medium text-lg md:text-xl text-[#454545] mb-5 ">
             Financial Summary
           </h5>
 
-          <div className="flex items-center gap-4 justify-between ">
+          <div className="flex flex-wrap md:flex-nowrap md:items-center gap-4 justify-between ">
             {finacialSummary.map((item, index) => (
               <div
                 key={index}
-                className="bg-white p-4 rounded-md border border-[#71839B] py-4 px-5 shadow w-1/3"
+                className="bg-white p-4 rounded-md border border-[#71839B] py-4 px-5 shadow w-full md:w-1/3"
               >
-                <h5 className="font-light text-xl text-[#545454] mb-3">
+                <h5 className="font-light text-lg md:text-xl text-[#545454] mb-3">
                   {item.title}
                 </h5>
                 {isLoading ? (
@@ -112,7 +112,7 @@ const AdminDashboard = () => {
                     <div className="w-full max-w-64 h-10 rounded bg-gray-300"></div>
                   </div>
                 ) : (
-                  <h3 className="font-semibold text-3xl text-[#545454]">
+                  <h3 className="font-semibold text-2xl md:text-3xl text-[#545454]">
                     GHS {item.value}
                   </h3>
                 )}
@@ -121,17 +121,17 @@ const AdminDashboard = () => {
           </div>
         </div>
 
-        <div className="bg-white p-5 rounded-md mb-5 ">
-          <h5 className="font-medium text-xl text-[#454545] mb-5 ">
+        <div className="bg-white p-3 md:p-5 rounded-md mb-5">
+          <h5 className="font-medium text-lg md:text-xl text-[#454545] mb-5">
             Quick Actions
           </h5>
 
-          <div className="flex items-center gap-4 justify-between ">
+          <div className="flex flex-wrap md:flex-nowrap md:items-center gap-4 justify-between">
             {quickActions.map((item, index) => (
               <button
                 onClick={() => navigate({ to: item.to })}
                 key={index}
-                className={`${item.bg} p-4 h-28 flex justify-center items-center rounded-md py-4 px-5 shadow w-1/3`}
+                className={`${item.bg} p-4 h-28 flex justify-center items-center rounded-md py-4 px-5 shadow w-full md:w-1/3`}
               >
                 <h5 className="font-light text-xl text-white ">{item.title}</h5>
               </button>

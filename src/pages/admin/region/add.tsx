@@ -124,7 +124,7 @@ const AddRegion = () => {
   ) => {
     return (
       <div className="font-poppins ">
-        <label htmlFor={name} className=" block text-lg font-medium text-black">
+        <label htmlFor={name} className=" block md:text-lg font-medium text-black">
           {label}
         </label>
         <input
@@ -136,7 +136,7 @@ const AddRegion = () => {
           value={values[name] || ""}
           onChange={handleChange}
           onBlur={handleBlur}
-          className={`w-full px-4 py-3 mt-2 text-lg border border-[#71839B] placeholder:font-light disabled:bg-[#EFEFEF] rounded-md focus:outline-none focus:ring-1 focus:ring-primary focus:border-transparent`}
+          className={`w-full px-4 py-3 mt-2 md:text-lg border border-[#71839B] placeholder:font-light disabled:bg-[#EFEFEF] rounded-md focus:outline-none focus:ring-1 focus:ring-primary focus:border-transparent`}
         />
         {errors[name] && touched[name] && typeof errors[name] === "string" && (
           <p className="font-normal text-sm text-[#fc8181]">{errors[name]}</p>
@@ -160,21 +160,21 @@ const AddRegion = () => {
   }, [search]);
 
   return (
-    <main className="font-poppins p-5">
+    <main className="font-poppins p-3 md:p-5">
       <div className="flex items-center gap-x-4 mb-5">
         <button
           onClick={() => navigate({ to: ".." })}
           className="font-light flex items-center space-x-2 border-[0.5px] border-[#545454] bg-white text-black py-2.5 px-4 rounded-md transition-all duration-150 ease-in-out "
         >
           <IoIosArrowRoundBack className="size-5" aria-hidden="true" />{" "}
-          <span>Back to List</span>
+          <span className="hidden md:block">Back to List</span>
         </button>
-        <h4 className="font-medium text-2xl text-[#252525] ">Add New Region</h4>
+        <h4 className="font-medium text-lg md:text-2xl text-[#252525] ">Add New Region</h4>
       </div>
 
-      <section className="p-5 rounded-md bg-white ">
-        <h4 className="font-semibold text-lg text-black mb-2">New Region</h4>
-        <p className=" font-light text-lg text-[#71839B] ">
+      <section className="p-3 md:p-5 rounded-md bg-white ">
+        <h4 className="font-semibold md:text-lg text-black mb-2">New Region</h4>
+        <p className=" font-light md:text-lg text-[#71839B] ">
           Create a new region
         </p>
 
@@ -223,7 +223,7 @@ const AddRegion = () => {
           <button
             disabled={isLoading || updating}
             onClick={() => handleSubmit()}
-            className="bg-primary text-white w-44 h-[50px]
+            className="bg-primary text-white w-full md:w-44 h-[50px]
              flex justify-center items-center
                rounded-md text-lg disabled:bg-opacity-80"
           >

@@ -55,7 +55,7 @@ const AdminApplications = () => {
       </td>
       <td className="px-4 py-3 truncate">
         <p
-          className={`text-[#F5F5F5] text-sm px-1.5 py-2 rounded-md text-center truncate max-w-36 !capitalize ${
+          className={`text-[#F5F5F5] text-xs md:text-sm px-1.5 py-2 rounded-md text-center truncate max-w-36 !capitalize ${
             row.status === "APPROVED" ? "bg-[#2D9632]" : ""
           }
            
@@ -98,10 +98,12 @@ const AdminApplications = () => {
               },
             })
           }
-          className={`w-full text-[#71839B] text-base py-1 rounded-md text-center border border-[#71839B]
+          className={`w-full flex justify-center items-center text-[#71839B] text-base py-1 rounded-md text-center md:border border-[#71839B]
             hover:bg-primary-100 hover:text-white transition-all duration-150 ease-in-out `}
         >
-          View
+          <p className="hidden md:block">View</p> 
+          <Eye size={'20'} color="black" />
+
         </button>
       </td>
     </motion.tr>
@@ -112,7 +114,7 @@ const AdminApplications = () => {
   }, []);
 
   return (
-    <div className="p-5">
+    <div className="p-3 md:p-5">
       <Table
         headers={headers}
         showAddButton={true}
