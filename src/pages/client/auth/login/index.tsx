@@ -41,7 +41,7 @@ const Login = () => {
     validationSchema: Yup.object().shape({
       email: Yup.string()
         .email("Please enter a valid email")
-        .required("Email is required"),
+        .required("Email or phone is required"),
       password: Yup.string()
         .min(8, "Password must be 8 characters or more")
         .required("Password is required"),
@@ -134,7 +134,7 @@ const Login = () => {
       </div>
       <form onSubmit={handleSubmit} className="w-full flex flex-col gap-y-2">
         <label htmlFor="Email" className="font-normal text-xs">
-          Email
+          Email or Phone
         </label>
         <input
           id="Email"
@@ -179,9 +179,12 @@ const Login = () => {
         ) : (
           ""
         )}
-        <p className="text-base text-[#1024A3] font-normal cursor-pointer mobile:text-sm">
-          Forgotten Password?
-        </p>
+        <button
+          onClick={() => {}}
+          className="text-base text-left text-[#1024A3] font-normal cursor-pointer mobile:text-sm"
+        >
+          Forgot Password?
+        </button>
         <button
           disabled={isSubmitting}
           type="submit"
@@ -200,7 +203,7 @@ const Login = () => {
             to={SIGNUP}
             className="text-[#1024A3] cursor-pointer mobile:text-sm"
           >
-            Register
+            Register a church
           </Link>
         </p>
       </form>

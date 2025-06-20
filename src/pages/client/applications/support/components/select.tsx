@@ -7,25 +7,32 @@ import {
   ListboxOptions,
 } from "@headlessui/react";
 import { ChevronUpDownIcon } from "@heroicons/react/16/solid";
+import { cn } from "@/utils/cs";
 
 interface FilterDropdownProps {
   options: { label: string; value: string }[];
   value: string;
   onChange: (value: string) => void;
+  className?: string;
 }
 
 const SelectDropdown: React.FC<FilterDropdownProps> = ({
   options,
   value,
   onChange,
+  className,
 }) => {
-  // Compute the selected option based on the passed value.
   const selectedOption = options?.find((opt) => opt.value === value) || null;
-
+  // className={cn(className, showBar ? "opacity-100" : "opacity-0")}
   return (
     <Listbox value={value} onChange={onChange}>
-      <div className="relative flex-1 mt-2">
-        <ListboxButton className="font-poppins font-light w-full cursor-default flex flex-1 justify-between items-center rounded-md bg-white py-3 pr-2 pl-3 text-left text-[#324054] border border-[#71839B] focus:outline-indigo-600 sm:text-sm md:text-base xl:text-lg">
+      <div className="relative flex-1 ">
+        <ListboxButton
+          className={cn(
+            "font-poppins font-light w-full cursor-default flex flex-1 justify-between items-center rounded-md bg-white py-3 pr-2 pl-3 text-left text-[#324054] border border-[#71839B] focus:outline-indigo-600 sm:text-sm md:text-base xl:text-lg",
+            className
+          )}
+        >
           <span className="truncate pr-6  max-w-sm">
             {selectedOption ? selectedOption.label : "Select an option"}
           </span>

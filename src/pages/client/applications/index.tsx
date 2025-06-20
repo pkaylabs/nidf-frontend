@@ -265,7 +265,7 @@ const Applications = () => {
       <Table
         headers={headers}
         showAddButton={true}
-        addButtonText="Apply For Support"
+        addButtonText="Start Application"
         onAddButtonClick={() => navigate({ to: APPLY_SUPPORT })}
         rows={rows}
         renderRow={customRowRenderer}

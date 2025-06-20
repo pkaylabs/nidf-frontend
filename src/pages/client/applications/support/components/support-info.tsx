@@ -48,6 +48,22 @@ const SupportInfo: React.FC<ChurchInfoProps> = ({ formik, title, description }) 
       <p className="font-light md:text-lg text-[#71839B]">{description}</p>
 
       <div className="mt-8">
+          <div className="mt-5">
+          <label className="flex items-center md:text-lg font-medium text-black" htmlFor="isEmergency">
+            <input
+              id="isEmergency"
+              name="isEmergency"
+              type="checkbox"
+              className="mr-2 size-5 bg-primary-50 border border-primary rounded-lg focus:outline-none focus:ring-primary"
+              checked={values.isEmergency}
+              onChange={handleChange}
+            />
+            Is this an emergency application ?
+          </label>
+          {errors.isEmergency && typeof errors.isEmergency === "string" && (
+            <p className="font-normal text-sm text-[#fc8181]">{errors.isEmergency}</p>
+          )}
+        </div>
         {/* Support Type */}
         <div className="mt-5">
           <label htmlFor="supportType" className="block md:text-lg font-medium text-black">
@@ -78,26 +94,11 @@ const SupportInfo: React.FC<ChurchInfoProps> = ({ formik, title, description }) 
           )}
         </div>
 
-        {input("Purpose For Aid", "purposeForAid", "text", false, "Enter Purpose For Aid")}
+          {/* only show if support type is Aid */}
+        {input("Justification for Aid (For Aid only)", "purposeForAid", "text", false, "Enter Justification For Aid")}
 
-        <div className="mt-5">
-          <label className="flex items-center md:text-lg font-medium text-black" htmlFor="isEmergency">
-            <input
-              id="isEmergency"
-              name="isEmergency"
-              type="checkbox"
-              className="mr-2 size-5 bg-primary-50 border border-primary rounded-lg focus:outline-none focus:ring-primary"
-              checked={values.isEmergency}
-              onChange={handleChange}
-            />
-            Is Emergency
-          </label>
-          {errors.isEmergency && typeof errors.isEmergency === "string" && (
-            <p className="font-normal text-sm text-[#fc8181]">{errors.isEmergency}</p>
-          )}
-        </div>
-
-        <div className="mt-5">
+      
+        {/* <div className="mt-5">
           <label htmlFor="progressDescription" className="block md:text-lg font-medium text-black">
             Progress Description
           </label>
@@ -113,13 +114,19 @@ const SupportInfo: React.FC<ChurchInfoProps> = ({ formik, title, description }) 
           {touched.progressDescription && errors.progressDescription && typeof errors.progressDescription === "string" && (
             <p className="font-normal text-sm text-[#fc8181]">{errors.progressDescription}</p>
           )}
-        </div>
+        </div> */}
 
         {input("Amount Requested", "amountRequested", "text", false, "Enter only the figure")}
         {input("Amount Requested In Words", "amountInWords", "text", false, "Enter Amount Requested In Words")}
         {input("Estimated Project Cost", "estimatedProjectCost", "text", false, "Enter only the figure")}
+
+        {/* should only show when support type is revolving fund*/}
+        {input("Monthly Repayment Amount (Revolving Fund only)", "monthlyRepayment", "text", false, "Enter only the figure")}
+
         {input("Project Location", "projectLocation", "text", false, "Enter Project Location")}
-        {input("Phase", "phase", "text", false, "Enter Phase")}
+        {/* should be a dropdown. options: 1. Land acquisition, 2. Foundation, 3. Superstructure (columns, beams, blockwork etc.), 4. Roofing, 5. General finishes 6. Others (specify)*/}
+        {input("Project Phase to be Tackled/Supported", "phase", "text", false, "Enter Phase")}
+
         {input("Expected Completion Date", "expectedCompletionDate", "date", false, "Enter Expected Completion Date")}
       </div>
     </div>

@@ -1,19 +1,10 @@
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { FaFileUpload } from "react-icons/fa";
-import { Navigate, useNavigate } from "react-location";
-import { DASHBOARD } from "@/constants/page-path";
+import { Link, useNavigate } from "react-location";
+import { DASHBOARD, LOGIN } from "@/constants/page-path";
 import ButtonLoader from "@/components/loaders/button";
-
-import {
-  Combobox,
-  ComboboxButton,
-  ComboboxInput,
-  ComboboxOption,
-  ComboboxOptions,
-} from "@headlessui/react";
-import { CheckIcon, ChevronDownIcon } from "@heroicons/react/20/solid";
 import { useAppDispatch, useAppSelector } from "@/redux";
 import {
   selectCurrentToken,
@@ -24,6 +15,8 @@ import { useGetRegionsQuery } from "@/redux/features/regions/regionApiSlice";
 import { useGetDivisionsQuery } from "@/redux/features/divisions/divisionApiSlice";
 import toast from "react-hot-toast";
 import { useGetUserProfileQuery } from "@/redux/features/user/userApiSlice";
+import { churchStatus } from "@/constants";
+import SelectDropdown from "../../applications/support/components/select";
 
 const Onboarding = () => {
   const [query, setQuery] = useState<any>("");
@@ -36,10 +29,6 @@ const Onboarding = () => {
 
   const dispatch = useAppDispatch();
 
-  useEffect(() => {
-    document.title = "NIDF | Onboarding";
-  }, []);
-
   const { data } = useGetRegionsQuery({});
   const { data: divisionsData } = useGetDivisionsQuery({});
   const regions = data?.region || [];
@@ -50,7 +39,6 @@ const Onboarding = () => {
     refetch,
     isLoading: fetchingUser,
   } = useGetUserProfileQuery({});
-  // console.log(userData, "userData");
 
   const filteredRegions =
     query === ""
@@ -59,7 +47,6 @@ const Onboarding = () => {
           region.name.toLowerCase().includes(query.toLowerCase())
         );
 
-  // fit it into component later
   const filteredDivisions =
     query === ""
       ? divisions
@@ -87,22 +74,42 @@ const Onboarding = () => {
       division: "",
       phone: "",
       email: "",
+      status: "",
       pastor_name: "",
       pastor_phone: "",
       pastor_email: "",
+      personal_name: "",
+      personal_email: "",
+      personal_phone: "",
+      password: "",
     },
     validationSchema: Yup.object().shape({
       name: Yup.string().required("Name is required"),
       location: Yup.string().required("Location is required"),
       region: Yup.string().required("Region is required"),
       division: Yup.string().required("Division is required"),
+      status: Yup.string().required("Status is required"),
       phone: Yup.string().required("Phone is required"),
-      email: Yup.string().required("Email is required"),
+      email: Yup.string().email("Please enter a valid email"),
       pastor_name: Yup.string().required("Pastor name is required"),
       pastor_phone: Yup.string().required("Pastor phone is required"),
       pastor_email: Yup.string().required("Pastor email is required"),
+      personal_name: Yup.string()
+        .min(2, "Too Short!")
+        .max(50, "Too Long!")
+        .required("Personal name is required"),
+      personal_email: Yup.string().email("Please enter a valid email"),
+      personal_phone: Yup.string()
+        .matches(
+          /^0(24|54|55|59|20|50|26|56|27|57|28|58|23)\d{7}$/,
+          "Please enter a valid phone number"
+        )
+        .required("Phone number is required"),
+      password: Yup.string()
+        .min(8, "Password must be 8 characters or more")
+        .required("Password is required"),
     }),
-    onSubmit: async (values, actions) => {
+    onSubmit: async (values) => {
       try {
         const formData = new FormData();
 
@@ -117,14 +124,11 @@ const Onboarding = () => {
         formData.append("pastor_email", values.pastor_email);
         formData.append("church_type", "LOCATION");
 
-        // Append the file if it exists. Make sure selectedLogo is a File object.
         if (selectedLogo) {
           formData.append("church_logo", selectedLogo);
         }
 
         const res = await createChurch(formData).unwrap();
-
-        // console.log(res, "res");
 
         if (res) {
           toast(
@@ -157,43 +161,20 @@ const Onboarding = () => {
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      // console.log(file);
       setSelectedLogo(file);
-
       const localUrl = URL.createObjectURL(file);
       setImageSrc(localUrl);
-      // try {
-      //   // await uploadImage(file);
-      // } catch (err) {
-      //   console.error("Upload failed:", err);
-      // }
+     
     }
   };
 
-  if (!token)
-    return (
-      <Navigate
-        to={DASHBOARD}
-        // search={{ redirect: current === "/user-profile" ? "" : currentHref }}
-        replace
-      />
-    );
-
   return (
-    <div className="w-full flex flex-col gap-y-10 p-5 mobile:p-3 mobile:mt-5 mobile:gap-y-5">
-      <div className="">
-        <h1 className="font-bold text-3xl mobile:text-lg">
-          Set Up Your Church Profile
-        </h1>
-        <p className="text-[#A3A3A3] font-normal mobile:text-sm">
-          Complete the following form to create your church profile
-        </p>
-      </div>
+    <div className="w-full flex flex-col gap-y-10 mobile:mt-5 mobile:gap-y-5">
       <form onSubmit={handleSubmit} className="w-full flex flex-col gap-y-3">
         <div className="flex flex-col gap-y-2">
           <h1 className="font-semibold">Church Details</h1>
           <label htmlFor="name" className="font-normal text-xs">
-            Church Name
+            Church Location/Name
           </label>
           <input
             id="name"
@@ -214,7 +195,7 @@ const Onboarding = () => {
             ""
           )}
           <label htmlFor="location" className="font-normal text-xs">
-            Location
+            Locational Address (including street name, town or city)
           </label>
           <input
             id="location"
@@ -238,184 +219,70 @@ const Onboarding = () => {
           ) : (
             ""
           )}
-          <div className="w-full flex gap-x-3">
+
+          <div className="mt-1">
+            <label htmlFor="status" className="font-normal text-xs">
+              Church Status
+            </label>
+            <SelectDropdown
+              options={churchStatus}
+              value={values.status || ""}
+              onChange={(value: string) => setFieldValue("status", value)}
+              className="border-[#EAE0E0] text-sm xl:text-sm placeholder:text-xs mt-0 h-12"
+            />
+            {touched.status &&
+              errors.status &&
+              typeof errors.status === "string" && (
+                <p className="font-normal text-sm text-[#fc8181]">
+                  {errors.status}
+                </p>
+              )}
+          </div>
+
+          <div className="w-full flex gap-x-3 mt-1">
             <div className="flex-1 relative flex flex-col gap-y-2">
               <label htmlFor="region" className="font-normal text-xs">
                 Region
               </label>
-              <Combobox
+              <SelectDropdown
+                options={filteredRegions}
                 value={selectedRegion}
-                onChange={(value) => {
+                onChange={(value: any) => {
                   setSelectedRegion(value);
                   setFieldValue("region", value.id);
                 }}
-                // onChange={(value) => setFieldValue("region", value)}
-              >
-                <div className="relative">
-                  <Combobox.Input
-                    id="region"
-                    name="region"
-                    value={selectedRegion?.name || ""}
-                    onChange={(e) => {
-                      setQuery(e.target.value);
-                      setSelectedRegion(e.target.value as any);
-                      handleChange;
-                    }}
-                    className={`w-full p-3 h-12 rounded-md border border-[#EAE0E0] focus:outline-0 focus:ring-2 focus:ring-primary-300 transition-all duration-300 ease-in-out placeholder:font-normal placeholder:text-xs placeholder:text-[#969696] text-base font-normal ${
-                      errors.region && touched.region ? "border-[#fc8181]" : ""
-                    }`}
-                    placeholder="Select Region"
-                    displayValue={(region: any) => region?.name || ""}
-                  />
-                  <Combobox.Button className="absolute inset-y-0 right-0 flex items-center pr-2">
-                    <ChevronDownIcon className="w-5 h-5 text-gray-400" />
-                  </Combobox.Button>
-                </div>
-                <Combobox.Options className="absolute w-60 z-10 mt-1 top-[4.5rem] bg-white shadow-lg max-h-60 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-hidden overflow-y-scroll focus:outline-none sm:text-sm">
-                  {filteredRegions.map((region: any) => (
-                    <Combobox.Option
-                      key={region.id}
-                      value={region}
-                      className={({ active }) =>
-                        `cursor-pointer select-none relative py-2 pl-10 pr-4 ${
-                          active ? "text-white bg-primary-600" : "text-gray-900"
-                        }`
-                      }
-                    >
-                      {({ selected, active }) => (
-                        <>
-                          <span
-                            className={`block truncate ${
-                              selected ? "font-medium" : "font-normal"
-                            }`}
-                          >
-                            {region.name}
-                          </span>
-                          {selected ? (
-                            <span
-                              className={`absolute inset-y-0 left-0 flex items-center pl-3 ${
-                                active ? "text-white" : "text-primary-600"
-                              }`}
-                            >
-                              <CheckIcon
-                                className="w-5 h-5"
-                                aria-hidden="true"
-                              />
-                            </span>
-                          ) : null}
-                        </>
-                      )}
-                    </Combobox.Option>
-                  ))}
-                </Combobox.Options>
-              </Combobox>
-              {errors.region && touched.region ? (
-                <p className="text-xs text-[#fc8181] mt-1">{errors.region}</p>
-              ) : null}
+                className="border-[#EAE0E0] text-sm xl:text-sm placeholder:text-xs mt-0 h-12"
+              />
+              {touched.region &&
+                errors.region &&
+                typeof errors.region === "string" && (
+                  <p className="font-normal text-sm text-[#fc8181]">
+                    {errors.region}
+                  </p>
+                )}
             </div>
+
             <div className="flex-1 relative flex flex-col gap-y-2">
               <label htmlFor="division" className="font-normal text-xs">
                 Division
               </label>
-              <Combobox
+              <SelectDropdown
+                options={filteredDivisions}
                 value={selectedDivision}
-                onChange={(value) => {
+                onChange={(value: any) => {
                   setSelectedDivision(value);
                   setFieldValue("division", value.id);
                 }}
-              >
-                <div className="relative">
-                  <Combobox.Input
-                    id="division"
-                    name="division"
-                    value={selectedDivision?.name || ""}
-                    onChange={(e) => {
-                      setQuery(e.target.value);
-                      setSelectedDivision(e.target.value as any);
-                      handleChange;
-                    }}
-                    className={`w-full p-3 h-12 rounded-md border border-[#EAE0E0] focus:outline-0 focus:ring-2 focus:ring-primary-300 transition-all duration-300 ease-in-out placeholder:font-normal placeholder:text-xs placeholder:text-[#969696] text-base font-normal ${
-                      errors.division && touched.division
-                        ? "border-[#fc8181]"
-                        : ""
-                    }`}
-                    placeholder="Select Division"
-                    displayValue={(division: any) => division?.name || ""}
-                  />
-                  <Combobox.Button className="absolute inset-y-0 right-0 flex items-center pr-2">
-                    <ChevronDownIcon className="w-5 h-5 text-gray-400" />
-                  </Combobox.Button>
-                </div>
-                <Combobox.Options className="absolute w-60 z-10 mt-1 top-[4.5rem] bg-white shadow-lg max-h-60 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-hidden overflow-y-scroll focus:outline-none sm:text-sm">
-                  {filteredDivisions.map((division: any) => (
-                    <Combobox.Option
-                      key={division.id}
-                      value={division}
-                      className={({ active }) =>
-                        `cursor-pointer select-none relative py-2 pl-10 pr-4 ${
-                          active ? "text-white bg-primary-600" : "text-gray-900"
-                        }`
-                      }
-                    >
-                      {({ selected, active }) => (
-                        <>
-                          <span
-                            className={`block truncate ${
-                              selected ? "font-medium" : "font-normal"
-                            }`}
-                          >
-                            {division.name}
-                          </span>
-                          {selected ? (
-                            <span
-                              className={`absolute inset-y-0 left-0 flex items-center pl-3 ${
-                                active ? "text-white" : "text-primary-600"
-                              }`}
-                            >
-                              <CheckIcon
-                                className="w-5 h-5"
-                                aria-hidden="true"
-                              />
-                            </span>
-                          ) : null}
-                        </>
-                      )}
-                    </Combobox.Option>
-                  ))}
-                </Combobox.Options>
-              </Combobox>
-              {errors.division && touched.division ? (
-                <p className="text-xs text-[#fc8181] mt-1">{errors.division}</p>
-              ) : null}
-            </div>
-
-            {/* <div className="flex-1">
-              <label htmlFor="district" className="font-normal text-xs">
-                Division
-              </label>
-              <input
-                id="district"
-                name="district"
-                type="text"
-                value={values.district}
-                onBlur={handleBlur}
-                onChange={handleChange}
-                className={`w-full p-3 h-12 rounded-md  border border-[#EAE0E0] focus:outline-0 focus:outline-primary-300 
-           transition-all duration-300 ease-in-out placeholder:font-normal placeholder:text-xs placeholder:text-[#969696] 
-           text-base font-normal ${
-             errors.district && touched.district
-               ? "border border-[#fc8181]"
-               : ""
-           }`}
+                className="border-[#EAE0E0] text-sm xl:text-sm placeholder:text-xs mt-0 h-12"
               />
-              {errors.district && touched.district ? (
-                <p className="font-normal text-xs text-[#fc8181]">
-                  {errors.district}
-                </p>
-              ) : (
-                ""
-              )}
-            </div> */}
+              {touched.division &&
+                errors.division &&
+                typeof errors.division === "string" && (
+                  <p className="font-normal text-sm text-[#fc8181]">
+                    {errors.division}
+                  </p>
+                )}
+            </div>
           </div>
         </div>
         <div className="flex flex-col gap-y-2">
@@ -598,18 +465,140 @@ const Onboarding = () => {
             )} */}
           </div>
         </div>
+
+        <div className="flex flex-col gap-y-2">
+          <h1 className="font-semibold">Personal Information</h1>
+          <div className="">
+            <label htmlFor="personal_name" className="font-normal text-xs">
+              Full Name
+            </label>
+            <input
+              id="personal_name"
+              name="personal_name"
+              type="text"
+              value={values.personal_name}
+              onBlur={handleBlur}
+              onChange={handleChange}
+              className={`w-full p-3 h-12 rounded-md  border border-[#EAE0E0] focus:outline-0 focus:outline-primary-300 
+           transition-all duration-300 ease-in-out placeholder:font-normal placeholder:text-xs placeholder:text-[#969696] 
+           text-base font-normal ${
+             errors.personal_name && touched.personal_name
+               ? "border border-[#fc8181]"
+               : ""
+           }`}
+            />
+            {errors.personal_name && touched.personal_name ? (
+              <p className="font-normal text-xs text-[#fc8181]">
+                {errors.personal_name}
+              </p>
+            ) : (
+              ""
+            )}
+          </div>
+
+          <div className="">
+            <label htmlFor="personal_email" className="font-normal text-xs">
+              Email
+            </label>
+            <input
+              id="personal_email"
+              name="personal_email"
+              type="email"
+              value={values.personal_email}
+              onBlur={handleBlur}
+              onChange={handleChange}
+              className={`w-full p-3 h-12 rounded-md  border border-[#EAE0E0] focus:outline-0 focus:outline-primary-300 
+            transition-all duration-300 ease-in-out placeholder:font-normal placeholder:text-xs placeholder:text-[#969696] 
+            text-base font-normal ${
+              errors.personal_email && touched.personal_email
+                ? "border border-[#fc8181]"
+                : ""
+            }`}
+            />
+            {errors.personal_email && touched.personal_email ? (
+              <p className="font-normal text-xs text-[#fc8181]">
+                {errors.personal_email}
+              </p>
+            ) : (
+              ""
+            )}
+          </div>
+
+          <div className="">
+            <label htmlFor="personal_phone" className="font-normal text-xs">
+              Phone Number
+            </label>
+            <input
+              id="personal_phone"
+              name="personal_phone"
+              type="text"
+              value={values.personal_phone}
+              onBlur={handleBlur}
+              onChange={handleChange}
+              className={`w-full p-3 h-12 rounded-md  border border-[#EAE0E0] focus:outline-0 focus:outline-primary-300 
+            transition-all duration-300 ease-in-out placeholder:font-normal placeholder:text-xs placeholder:text-[#969696] 
+            text-base font-normal ${
+              errors.personal_phone && touched.personal_phone
+                ? "border border-[#fc8181]"
+                : ""
+            }`}
+            />
+            {errors.personal_phone && touched.personal_phone ? (
+              <p className="font-normal text-xs text-[#fc8181]">
+                {errors.personal_phone}
+              </p>
+            ) : (
+              ""
+            )}
+          </div>
+
+          <div className="">
+            <label htmlFor="password" className="font-normal text-xs">
+              Password
+            </label>
+            <input
+              id="password"
+              name="password"
+              type="password"
+              value={values.password}
+              onBlur={handleBlur}
+              onChange={handleChange}
+              className={`w-full p-3 h-12 rounded-md  border border-[#EAE0E0] focus:outline-0 focus:outline-primary-300 
+            transition-all duration-300 ease-in-out placeholder:font-normal placeholder:text-xs placeholder:text-[#969696] 
+            text-base font-normal ${
+              errors.password && touched.password
+                ? "border border-[#fc8181]"
+                : ""
+            }`}
+            />
+            {errors.password && touched.password ? (
+              <p className="font-normal text-xs text-[#fc8181]">
+                {errors.password}
+              </p>
+            ) : (
+              ""
+            )}
+          </div>
+        </div>
+
+        <p className="mx-auto font-normal text-base mobile:text-sm">
+          Already have an account?
+          <Link
+            to={LOGIN}
+            className="text-[#1024A3] cursor-pointer mobile:text-sm ml-2"
+          >
+            Login
+          </Link>
+        </p>
+
         <button
           type="submit"
           disabled={isSubmitting}
-          className={`bg-[#17567E] w-40 h-12 flex justify-center items-center mt-2 rounded-md text-center text-white mx-auto ${
+          className={`bg-[#17567E] w-44 h-12 flex justify-center items-center mt-2 rounded-md text-center text-white mx-auto ${
             isSubmitting ? "opacity-80" : ""
           } mobile:px-10 mobile:py-2 text-sm`}
         >
-          {isLoading || fetchingUser ? (
-            <ButtonLoader title="Confirming" />
-          ) : (
-            "Confirm"
-          )}
+          {isLoading ? <ButtonLoader title="Confirming" /> : "Confirm"}
         </button>
       </form>
     </div>

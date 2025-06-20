@@ -8,6 +8,7 @@ import { setCredentials } from "@/redux/features/auth/authSlice";
 import { useAppDispatch } from "@/redux";
 import toast from "react-hot-toast";
 import { useRegisterMutation } from "@/redux/features/auth/authApiSlice";
+import Onboarding from "../onboarding";
 
 const SignUp = () => {
   const navigate = useNavigate();
@@ -109,7 +110,8 @@ const SignUp = () => {
           Create an NIDF Portal account
         </p>
       </div>
-      <form onSubmit={handleSubmit} className="w-full flex flex-col gap-y-2">
+
+      {/* <form onSubmit={handleSubmit} className="w-full flex flex-col gap-y-2">
         <label htmlFor="name" className="font-normal text-xs">
           Full Name
         </label>
@@ -210,13 +212,16 @@ const SignUp = () => {
         <button
           disabled={isSubmitting}
           type="submit"
-          className={`bg-[#17567E] w-36 h-12 flex justify-center items-center rounded-md text-white mx-auto mt-3 ${
+          className={`bg-[#17567E] w-44 h-12 flex justify-center items-center rounded-md text-white mx-auto mt-3 ${
             isSubmitting ? "opacity-80" : ""
           }`}
         >
           {isLoading ? <ButtonLoader title="Registering" /> : "Register"}
         </button>
-      </form>
+      </form> */}
+
+        <Onboarding />
+
     </div>
   );
 };

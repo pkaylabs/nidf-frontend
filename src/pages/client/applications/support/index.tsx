@@ -40,10 +40,11 @@ const ApplyForSupport = () => {
       typeOfChurchProject: "",
       purposeForAid: "",
       isEmergency: false,
-      progressDescription: "",
+     
       amountRequested: "",
       amountInWords: "",
       estimatedProjectCost: "",
+      monthlyRepayment: "",
       projectLocation: "",
       phase: "",
       expectedCompletionDate: "",
@@ -73,9 +74,7 @@ const ApplyForSupport = () => {
       ),
       purposeForAid: Yup.string().required("Purpose for aid is required"),
       isEmergency: Yup.boolean(),
-      progressDescription: Yup.string().required(
-        "Progress description is required"
-      ),
+      
       amountRequested: Yup.string()
         .matches(/^\d+$/, "Amount requested must be a valid number")
         .required("Amount requested is required"),
@@ -111,7 +110,7 @@ const ApplyForSupport = () => {
       ),
       costEstimateFIle: Yup.mixed().required("Cost estimate file is required"),
       ownershipDoc: Yup.mixed().required("Ownership document is required"),
-      invoices: Yup.mixed().required("Invoices are required"),
+      // invoices: Yup.mixed(),
     }),
     onSubmit: (values) => {
       // console.log("values ", values);
@@ -217,8 +216,7 @@ const ApplyForSupport = () => {
         !_.isEmpty(formik.values.typeOfChurchProject) &&
         _.isEmpty(formik.errors.purposeForAid) &&
         !_.isEmpty(formik.values.purposeForAid) &&
-        _.isEmpty(formik.errors.progressDescription) &&
-        !_.isEmpty(formik.values.progressDescription) &&
+       
         _.isEmpty(formik.errors.amountRequested) &&
         !_.isEmpty(formik.values.amountRequested) &&
         _.isEmpty(formik.errors.amountInWords) &&
@@ -241,7 +239,7 @@ const ApplyForSupport = () => {
           );
           formData.append("purpose", formik.values.purposeForAid);
           formData.append("is_emergency", formik.values.isEmergency.toString());
-          formData.append("description", formik.values.progressDescription);
+         
           formData.append("amount", formik.values.amountRequested);
           formData.append("amount_in_words", formik.values.amountInWords);
           formData.append(
@@ -306,7 +304,7 @@ const ApplyForSupport = () => {
           supportType: true,
           typeOfChurchProject: true,
           purposeForAid: true,
-          progressDescription: true,
+         
           amountRequested: true,
           amountInWords: true,
           estimatedProjectCost: true,
@@ -553,6 +551,8 @@ const ApplyForSupport = () => {
 
   useEffect(() => {
     if (data) {
+      console.log(data, "church data");
+
       formik.setValues({
         ...formik.values,
         churchName: data?.[0]?.name,
@@ -561,7 +561,6 @@ const ApplyForSupport = () => {
         pastorEmail: data?.[0]?.pastor_email,
         pastorPhone: data?.[0]?.pastor_phone,
       });
-
     }
     if (search?.id) {
       formik.setValues({
@@ -576,7 +575,7 @@ const ApplyForSupport = () => {
         typeOfChurchProject: search?.type_of_church_project,
         purposeForAid: search?.purpose,
         isEmergency: search?.is_emergency,
-        progressDescription: search?.description,
+       
         amountRequested: search?.amount,
         amountInWords: search?.amount_in_words,
         estimatedProjectCost: search?.estimated_project_cost,
@@ -686,7 +685,6 @@ const ApplyForSupport = () => {
               )}
             </button>
           </div>
-          
         </div>
       </section>
     </main>

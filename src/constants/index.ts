@@ -11,20 +11,46 @@ export const applicationTypes = [
   {
     icon: VscTarget,
     title: "Aid Application",
-    description: "Financial support for general church activities or projects.",
+    description: "Financial support/aid for church building projects.",
     link: "/aid-application",
   },
   {
     icon: GrPowerCycle,
     title: "Revolving Fund",
-    description: "Short-term loans to support church initiatives.",
+    description: "Short-term loans to support church building projects.",
     link: "/revolving-fund",
   },
   {
     icon: BsExclamationDiamond,
     title: "Emergency Support",
-    description: "Urgent funding for disasters or critical issues.",
+    description:
+      "Urgent funding (aid or revolving fund) for disasters or critical issues.",
     link: "/emergency-support",
+  },
+];
+
+export const churchStatus = [
+  {
+    label: "Location church",
+    value: "Location church",
+  },
+
+  {
+    label: "District church",
+    value: "District church",
+  },
+
+  {
+    label: "Group of District Headquarters",
+    value: "Group of District Headquarters",
+  },
+  {
+    label: "Divisional Headquarters",
+    value: "Divisional Headquarters",
+  },
+  {
+    label: "Regional Headquarters",
+    value: "Regional Headquarters",
   },
 ];
 

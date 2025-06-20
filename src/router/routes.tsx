@@ -444,13 +444,13 @@ const routes: RouteProps[] = [
   },
 
   // Auth routes
-  {
-    path: ONBOARDING,
-    element: <Onboarding />,
-    meta: {
-      layout: "Auth",
-    },
-  },
+  // {
+  //   path: ONBOARDING,
+  //   element: <Onboarding />,
+  //   meta: {
+  //     layout: "Auth",
+  //   },
+  // },
   {
     path: OTP_VERIFICATION,
     element: <OtpVerification />,

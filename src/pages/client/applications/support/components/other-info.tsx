@@ -21,11 +21,15 @@ const OtherInfo: React.FC<ChurchInfoProps> = ({
     name: string,
     type: string = "text",
     disabled: boolean = false,
-    placeholder: string = ""
+    placeholder: string = "",
+    additionalInfo: string = ""
   ) => {
     return (
       <div className="font-poppins mt-5">
-        <label htmlFor={name} className=" block md:text-lg font-medium text-black">
+        <label
+          htmlFor={name}
+          className=" block md:text-lg font-medium text-black"
+        >
           {label}
         </label>
         <input
@@ -39,6 +43,9 @@ const OtherInfo: React.FC<ChurchInfoProps> = ({
           onBlur={handleBlur}
           className={`w-full px-4 py-3 mt-2 md:text-lg border border-[#71839B] placeholder:font-light disabled:bg-[#EFEFEF] rounded-md focus:outline-none focus:ring-1 focus:ring-primary focus:border-transparent`}
         />
+        <p className="font-light text-gray-400 text-sm mt-1 ">
+          {additionalInfo}
+        </p>
         {errors[name] && touched[name] && typeof errors[name] === "string" && (
           <p className="font-normal text-sm text-[#fc8181]">{errors[name]}</p>
         )}
@@ -71,8 +78,10 @@ const OtherInfo: React.FC<ChurchInfoProps> = ({
           "avgMonthlyContributions",
           "text",
           false,
-          "Enter only numbers"
+          "Enter only numbers",
+          "Average monthly contributions towards the building or other infrastructure projects over the past six (6) months"
         )}
+
         {input(
           "Average Monthly Expenses",
           "avgMonthlyExpenses",
