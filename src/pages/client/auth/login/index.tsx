@@ -4,6 +4,7 @@ import {
   DASHBOARD,
   ONBOARDING,
   OTP_VERIFICATION,
+  RESET,
   SIGNUP,
 } from "@/constants/page-path";
 import { useAppDispatch } from "@/redux";
@@ -37,7 +38,6 @@ const Login = () => {
       email: "",
       password: "",
     },
-
     validationSchema: Yup.object().shape({
       email: Yup.string()
         .email("Please enter a valid email")
@@ -180,7 +180,8 @@ const Login = () => {
           ""
         )}
         <button
-          onClick={() => {}}
+          type="button"
+          onClick={() => navigate({ to: RESET })}
           className="text-base text-left text-[#1024A3] font-normal cursor-pointer mobile:text-sm"
         >
           Forgot Password?
