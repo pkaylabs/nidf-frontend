@@ -10,6 +10,7 @@ import {
 import { MdOutlineDashboard } from "react-icons/md";
 import { MdOutlineCalendarMonth } from "react-icons/md";
 import { AiOutlineClockCircle } from "react-icons/ai";
+import { TbUserCog } from "react-icons/tb";
 import { BiDollar } from "react-icons/bi";
 import {
   Dialog,
@@ -30,6 +31,7 @@ import {
   DASHBOARD,
   LOGIN,
   NOTIFICATIONS,
+  PROFILE,
   PROGRESS,
   REPAYMENT,
   SIGNUP,
@@ -79,7 +81,7 @@ const navigation = [
 ];
 
 const userNavigation = [
-  { name: "Your profile", href: "#" },
+  { name: "Your profile", href: PROFILE },
   { name: "Logout", href: "#" },
 ];
 
@@ -198,50 +200,6 @@ export default function AppLayout() {
                         ))}
                       </ul>
                     </li>
-                    {/* <li>
-                      <div className="text-xs/6 font-semibold text-gray-400">
-                        Your teams
-                      </div>
-                      <ul role="list" className="-mx-2 mt-2 space-y-1">
-                        {teams.map((team) => (
-                          <li key={team.name}>
-                            <Link
-                              to={team.href}
-                              className={classNames(
-                                team.current
-                                  ? "bg-gray-50 text-primary-600"
-                                  : "text-gray-700 hover:bg-gray-50 hover:text-primary-600",
-                                "group flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold"
-                              )}
-                            >
-                              <span
-                                className={classNames(
-                                  team.current
-                                    ? "border-primary-600 text-primary-600"
-                                    : "border-gray-200 text-gray-400 group-hover:border-primary-600 group-hover:text-primary-600",
-                                  "flex size-6 shrink-0 items-center justify-center rounded-lg border bg-white text-[0.625rem] font-medium"
-                                )}
-                              >
-                                {team.initial}
-                              </span>
-                              <span className="truncate">{team.name}</span>
-                            </Link>
-                          </li>
-                        ))}
-                      </ul>
-                    </li>
-                    <li className="mt-auto">
-                      <Link
-                        to={SETTINGS}
-                        className="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold text-gray-700 hover:bg-gray-50 hover:text-primary-600"
-                      >
-                        <Cog6ToothIcon
-                          aria-hidden="true"
-                          className="size-6 shrink-0 text-gray-400 group-hover:text-primary-600"
-                        />
-                        Settings
-                      </Link>
-                    </li> */}
                   </ul>
                 </nav>
               </div>
@@ -296,39 +254,34 @@ export default function AppLayout() {
                     ))}
                   </ul>
                 </li>
-                {/* <li>
-                  <div className="text-xs/6 font-semibold text-gray-400">
-                    Your teams
-                  </div>
-                  <ul role="list" className="-mx-2 mt-2 space-y-1">
-                    {teams.map((team) => (
-                      <li key={team.name}>
-                        <a
-                          href={team.href}
-                          className={classNames(
-                            team.current
-                              ? "bg-gray-50 text-primary-600"
-                              : "text-gray-700 hover:bg-gray-50 hover:text-primary-600",
-                            "group flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold"
-                          )}
-                        >
-                          <span
-                            className={classNames(
-                              team.current
-                                ? "border-primary-600 text-primary-600"
-                                : "border-gray-200 text-gray-400 group-hover:border-primary-600 group-hover:text-primary-600",
-                              "flex size-6 shrink-0 items-center justify-center rounded-lg border bg-white text-[0.625rem] font-medium"
-                            )}
-                          >
-                            {team.initial}
-                          </span>
-                          <span className="truncate">{team.name}</span>
-                        </a>
-                      </li>
-                    ))}
-                  </ul>
-                </li> */}
+
                 <li className="mt-auto">
+                  <Link
+                    to={PROFILE}
+                    className={classNames(
+                      currentPath === PROFILE ||
+                        currentPath.includes(
+                          PROFILE.split(" ")[0].toLowerCase()
+                        )
+                        ? "bg-gray-50 text-primary font-semibold"
+                        : "text-[#324054] hover:bg-gray-50 hover:text-primary-600 font-medium",
+                      "group  -mx-2 flex gap-x-3 rounded-xl px-2 py-4 text-base leading-6 capitalize font-poppins"
+                    )}
+                  >
+                    <TbUserCog
+                      aria-hidden="true"
+                      className={classNames(
+                        currentPath === PROFILE ||
+                          currentPath.includes(
+                            PROFILE.split(" ")[0].toLowerCase()
+                          )
+                          ? "text-primary"
+                          : "text-black group-hover:text-primary",
+                        "size-6 shrink-0"
+                      )}
+                    />
+                    Profile
+                  </Link>
                   <button
                     onClick={handleLogout}
                     className="font-poppins w-full group -mx-2 flex gap-x-3 rounded-md p-2 font-medium text-gray-700 hover:bg-gray-50 hover:text-primary-600"
@@ -377,6 +330,7 @@ export default function AppLayout() {
               <div className="flex items-center gap-x-4 lg:gap-x-6">
                 <button
                   type="button"
+                  onClick={() => navigate({ to: NOTIFICATIONS })}
                   className="relative -m-2.5 p-2 bg-gray-100 rounded-full text-gray-400 hover:text-gray-500"
                 >
                   <span className="sr-only">View notifications</span>
