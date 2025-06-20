@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { FormikProps } from "formik";
 import SelectDropdown from "./select";
-import { churchProjectTypes, supportTypes } from "@/constants";
+import { churchProjectTypes, projectPhase, supportTypes } from "@/constants";
+import DropdownWithOtherOption from "@/components/core/select-with-type-option";
 
 interface ChurchInfoProps {
   title: string;
@@ -208,14 +209,30 @@ const SupportInfo: React.FC<ChurchInfoProps> = ({
           "Enter Project Location"
         )}
 
-        {/* should be a dropdown. options: 1. Land acquisition, 2. Foundation, 3. Superstructure (columns, beams, blockwork etc.), 4. Roofing, 5. General finishes 6. Others (specify)*/}
-        {input(
-          "Project Phase to be Tackled/Supported",
-          "phase",
-          "text",
-          false,
-          "Enter Phase"
-        )}
+        <div className="mt-5">
+          <label
+            htmlFor="phase"
+            className="block md:text-lg font-medium text-black"
+          >
+            Project Phase to be Tackled/Supported
+          </label>
+          <DropdownWithOtherOption
+            options={projectPhase}
+            value={values.phase || ""}
+            onChange={(value) => {
+              formik.setFieldValue("phase", value);
+            }}
+            othersLabel="Other"
+            othersPlaceholder="Enter your custom Project Phase to be Tackled/Supported..."
+          />
+          {touched.phase &&
+            errors.phase &&
+            typeof errors.phase === "string" && (
+              <p className="font-normal text-sm text-[#fc8181]">
+                {errors.phase}
+              </p>
+            )}
+        </div>
 
         {input(
           "Expected Completion Date",

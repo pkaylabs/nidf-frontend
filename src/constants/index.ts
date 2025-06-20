@@ -75,6 +75,30 @@ export const bankNames = [
   { label: "Other", value: "other" },
 ];
 
+export const projectPhase = [
+  {
+    label: 'Land acquisition',
+    value: 'Land acquisition'
+  },
+  {
+    label: 'Foundation',
+    value: 'Foundation'
+  },
+  {
+    label: 'Superstructure (columns, beams, blockwork etc.)',
+    value: 'Superstructure'
+  },
+  {
+    label: 'Roofing',
+    value: 'Roofing'
+  },
+  {
+    label: 'General finishes',
+    value: 'General finishes'
+  },
+ 
+]
+
 export const churchProjectTypes = [
   {
     label: " Regional headquarters church",

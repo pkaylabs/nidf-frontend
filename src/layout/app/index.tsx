@@ -325,6 +325,8 @@ export default function AppLayout() {
                   ? "Progress Report"
                   : currentPath.includes(REPAYMENT)
                   ? "Repayment Reconciliation"
+                  : currentPath.includes(PROFILE)
+                  ? "Profile"
                   : `Welcome ${user?.name?.split(" ")[0] ?? "User"}!`}
               </div>
               <div className="flex items-center gap-x-4 lg:gap-x-6">
