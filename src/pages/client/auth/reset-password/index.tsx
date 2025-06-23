@@ -1,9 +1,10 @@
 import { LOGIN } from "@/constants/page-path";
-import { useFormik } from "formik";
+import { FormikProps, useFormik } from "formik";
 import _ from "lodash";
 import { Link, useNavigate, useSearch } from "react-location";
 import * as Yup from "yup";
 import { MdOutlineKeyboardBackspace } from "react-icons/md";
+import OtpInputComponent from "@/components/core/opt-input";
 
 const ResetPassword = () => {
   const navigate = useNavigate();
@@ -42,15 +43,32 @@ const ResetPassword = () => {
     onSubmit: async (values) => {},
   });
 
+  const otpForm: FormikProps<any> = useFormik({
+    initialValues: {
+      otp: "",
+    },
+    validationSchema: Yup.object({
+      otp: Yup.string().required("Otp is Required").length(4, "Otp is Invalid"),
+    }),
+    onSubmit: async (values) => {
+      navigate({
+        to: ".",
+        search: {
+          action: "reset",
+        },
+      });
+    },
+  });
+
   const handleProceed = () => {
-    if (search?.action) {
+    if (search?.action === "reset") {
       return;
     } else {
       if (_.isEmpty(errors.email) && !_.isEmpty(values.email)) {
         navigate({
           to: ".",
           search: {
-            action: "reset",
+            action: "otp-verification",
           },
         });
       } else {
@@ -71,7 +89,7 @@ const ResetPassword = () => {
       </div>
 
       <div className="">
-        {search?.action ? (
+        {search?.action === "reset" ? (
           <>
             <div className="">
               <label htmlFor="password" className="font-normal text-xs">
@@ -130,6 +148,15 @@ const ResetPassword = () => {
                 )}
             </div>
           </>
+        ) : search?.action === "otp-verification" ? (
+          <div className=" mb-5">
+            <OtpInputComponent form={otpForm} />
+            {otpForm.touched.otp && otpForm.errors.otp ? (
+              <div className="text-red text-xs mt-2 ml-4">
+                {typeof otpForm.errors.otp === "string" && otpForm.errors.otp}
+              </div>
+            ) : null}
+          </div>
         ) : (
           <div className="">
             <label htmlFor="Email" className="font-normal text-xs">
@@ -161,10 +188,14 @@ const ResetPassword = () => {
 
         <div className="flex flex-col items-center">
           <button
-            onClick={handleProceed}
+            onClick={
+              search?.action === "otp-verification"
+                ? () => otpForm.handleSubmit()
+                : handleProceed
+            }
             className="w-44 h-12 bg-primary text-white flex justify-center items-center rounded-md mt-5"
           >
-            {search?.action ? "Reset" : "Continue"}
+            {search?.action === 'reset' ? "Reset" : "Continue"}
           </button>
 
           <Link className="mt-2 flex gap-1.5 items-center" to={LOGIN}>

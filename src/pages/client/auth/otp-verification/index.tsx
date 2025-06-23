@@ -21,11 +21,10 @@ const OtpVerification = () => {
 
     const newOtp = [...otp];
     if (value) {
-      // Add the value and move to next input
+ 
       newOtp[index] = value;
       setOtp(newOtp);
 
-      // move to next field if current field is filled
       if (element.target.nextSibling instanceof HTMLInputElement) {
         element.target.nextSibling.focus();
       }

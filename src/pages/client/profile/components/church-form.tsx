@@ -8,6 +8,7 @@ import ButtonLoader from "@/components/loaders/button";
 import { useAppDispatch, useAppSelector } from "@/redux";
 import {
   selectCurrentToken,
+  selectCurrentUser,
   setCredentials,
 } from "@/redux/features/auth/authSlice";
 import { useCreateChurchMutation } from "@/redux/features/churches/churchApiSlice";
@@ -17,17 +18,18 @@ import toast from "react-hot-toast";
 import { useGetUserProfileQuery } from "@/redux/features/user/userApiSlice";
 import { churchStatus } from "@/constants";
 import SelectDropdown from "../../applications/support/components/select";
+import { Save } from "lucide-react";
+import { motion } from "framer-motion";
 
-const Onboarding = () => {
+const ChurchForm = () => {
   const [query, setQuery] = useState<any>("");
   const [selectedRegion, setSelectedRegion] = useState<any>(null);
   const [selectedDivision, setSelectedDivision] = useState<any>(null);
   const [selectedLogo, setSelectedLogo] = useState<File | null>(null);
   const [imageSrc, setImageSrc] = useState("");
 
-  const token = useAppSelector(selectCurrentToken);
-
   const dispatch = useAppDispatch();
+  const user = useAppSelector(selectCurrentUser);
 
   const { data } = useGetRegionsQuery({});
   const { data: divisionsData } = useGetDivisionsQuery({});
@@ -78,12 +80,6 @@ const Onboarding = () => {
       pastor_name: "",
       pastor_phone: "",
       pastor_email: "",
-      personal_name: "",
-      personal_email: "",
-      personal_phone: "",
-      login_email: "",
-      login_phone: "",
-      password: "",
     },
     validationSchema: Yup.object().shape({
       name: Yup.string().required("Name is required"),
@@ -96,68 +92,8 @@ const Onboarding = () => {
       pastor_name: Yup.string().required("Pastor name is required"),
       pastor_phone: Yup.string().required("Pastor phone is required"),
       pastor_email: Yup.string(),
-      personal_name: Yup.string()
-        .min(2, "Too Short!")
-        .max(50, "Too Long!")
-        .required("Personal name is required"),
-      personal_email: Yup.string().email("Please enter a valid email"),
-      personal_phone: Yup.string()
-        .matches(
-          /^0(24|54|55|59|20|50|26|56|27|57|28|58|23)\d{7}$/,
-          "Please enter a valid phone number"
-        )
-        .required("Phone number is required"),
-      password: Yup.string()
-        .min(8, "Password must be 8 characters or more")
-        .required("Password is required"),
     }),
-    onSubmit: async (values) => {
-      try {
-        const formData = new FormData();
-
-        formData.append("name", values.name);
-        formData.append("address", values.location);
-        formData.append("church_phone", values.phone);
-        formData.append("church_email", values.email);
-        formData.append("region", selectedRegion?.id);
-        formData.append("district", selectedDivision?.id);
-        formData.append("pastor_name", values.pastor_name);
-        formData.append("pastor_phone", values.pastor_phone);
-        formData.append("pastor_email", values.pastor_email);
-        formData.append("church_type", "LOCATION");
-
-        if (selectedLogo) {
-          formData.append("church_logo", selectedLogo);
-        }
-
-        const res = await createChurch(formData).unwrap();
-
-        if (res) {
-          toast(
-            JSON.stringify({
-              type: "success",
-              title: res?.message ?? `Church profile created successfully`,
-            })
-          );
-          refetch();
-          dispatch(
-            setCredentials({
-              user: { ...userData, church_profile: res?.id },
-              token: token,
-            })
-          );
-
-          navigate({ to: DASHBOARD, replace: true });
-        } else {
-          toast(
-            JSON.stringify({
-              type: "error",
-              title: "Onboarding failed",
-            })
-          );
-        }
-      } catch (err: any) {}
-    },
+    onSubmit: async (values) => {},
   });
 
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -166,10 +102,8 @@ const Onboarding = () => {
       setSelectedLogo(file);
       const localUrl = URL.createObjectURL(file);
       setImageSrc(localUrl);
-     
     }
   };
-
   return (
     <div className="w-full flex flex-col gap-y-10 mobile:mt-5 mobile:gap-y-5">
       <form onSubmit={handleSubmit} className="w-full flex flex-col gap-y-3">
@@ -288,9 +222,8 @@ const Onboarding = () => {
           </div>
         </div>
         <div className="flex flex-col gap-y-2">
-         
           <div className="w-full flex gap-x-3">
-            <div className="">
+            <div className="flex-1">
               <label htmlFor="phone" className="font-normal text-xs">
                 Phone Number
               </label>
@@ -315,7 +248,7 @@ const Onboarding = () => {
                 ""
               )}
             </div>
-            <div className="">
+            <div className="flex-1">
               <label htmlFor="email" className="font-normal text-xs">
                 Email Address
               </label>
@@ -345,7 +278,7 @@ const Onboarding = () => {
         <div className="flex flex-col gap-y-2">
           <h1 className="font-semibold">Pastor's Details</h1>
           <div className="w-full flex gap-x-3">
-            <div className="">
+            <div className="flex-1">
               <label htmlFor="pastor_name" className="font-normal text-xs">
                 Pastor's Name
               </label>
@@ -372,7 +305,7 @@ const Onboarding = () => {
                 ""
               )}
             </div>
-            <div className="">
+            <div className="flex-1">
               <label htmlFor="pastor_phone" className="font-normal text-xs">
                 Pastor's Phone
               </label>
@@ -468,202 +401,33 @@ const Onboarding = () => {
           </div>
         </div>
 
-        <div className="flex flex-col gap-y-2">
-          <h1 className="font-semibold">Account Manager's Information</h1>
-          <div className="">
-            <label htmlFor="personal_name" className="font-normal text-xs">
-              Full Name
-            </label>
-            <input
-              id="personal_name"
-              name="personal_name"
-              type="text"
-              value={values.personal_name}
-              onBlur={handleBlur}
-              onChange={handleChange}
-              className={`w-full p-3 h-12 rounded-md  border border-[#EAE0E0] focus:outline-0 focus:outline-primary-300 
-           transition-all duration-300 ease-in-out placeholder:font-normal placeholder:text-xs placeholder:text-[#969696] 
-           text-base font-normal ${
-             errors.personal_name && touched.personal_name
-               ? "border border-[#fc8181]"
-               : ""
-           }`}
-            />
-            {errors.personal_name && touched.personal_name ? (
-              <p className="font-normal text-xs text-[#fc8181]">
-                {errors.personal_name}
-              </p>
-            ) : (
-              ""
-            )}
-          </div>
-
-          <div className="">
-            <label htmlFor="personal_email" className="font-normal text-xs">
-              Email
-            </label>
-            <input
-              id="personal_email"
-              name="personal_email"
-              type="email"
-              value={values.personal_email}
-              onBlur={handleBlur}
-              onChange={handleChange}
-              className={`w-full p-3 h-12 rounded-md  border border-[#EAE0E0] focus:outline-0 focus:outline-primary-300 
-            transition-all duration-300 ease-in-out placeholder:font-normal placeholder:text-xs placeholder:text-[#969696] 
-            text-base font-normal ${
-              errors.personal_email && touched.personal_email
-                ? "border border-[#fc8181]"
-                : ""
-            }`}
-            />
-            {errors.personal_email && touched.personal_email ? (
-              <p className="font-normal text-xs text-[#fc8181]">
-                {errors.personal_email}
-              </p>
-            ) : (
-              ""
-            )}
-          </div>
-
-          <div className="">
-            <label htmlFor="personal_phone" className="font-normal text-xs">
-              Phone Number
-            </label>
-            <input
-              id="personal_phone"
-              name="personal_phone"
-              type="text"
-              value={values.personal_phone}
-              onBlur={handleBlur}
-              onChange={handleChange}
-              className={`w-full p-3 h-12 rounded-md  border border-[#EAE0E0] focus:outline-0 focus:outline-primary-300 
-            transition-all duration-300 ease-in-out placeholder:font-normal placeholder:text-xs placeholder:text-[#969696] 
-            text-base font-normal ${
-              errors.personal_phone && touched.personal_phone
-                ? "border border-[#fc8181]"
-                : ""
-            }`}
-            />
-            {errors.personal_phone && touched.personal_phone ? (
-              <p className="font-normal text-xs text-[#fc8181]">
-                {errors.personal_phone}
-              </p>
-            ) : (
-              ""
-            )}
-          </div>
-
-          <h1 className="font-semibold">Login Information</h1>
-
-          <div className="">
-            <label htmlFor="login_email" className="font-normal text-xs">
-              Email
-            </label>
-            <input
-              id="login_email"
-              name="login_email"
-              type="email"
-              value={values.login_email}
-              onBlur={handleBlur}
-              onChange={handleChange}
-              className={`w-full p-3 h-12 rounded-md  border border-[#EAE0E0] focus:outline-0 focus:outline-primary-300 
-            transition-all duration-300 ease-in-out placeholder:font-normal placeholder:text-xs placeholder:text-[#969696] 
-            text-base font-normal ${
-              errors.login_email && touched.login_email
-                ? "border border-[#fc8181]"
-                : ""
-            }`}
-            />
-            {errors.login_email && touched.login_email ? (
-              <p className="font-normal text-xs text-[#fc8181]">
-                {errors.login_email}
-              </p>
-            ) : (
-              ""
-            )}
-          </div>
-
-          <div className="">
-            <label htmlFor="login_phone" className="font-normal text-xs">
-              Phone Number
-            </label>
-            <input
-              id="login_phone"
-              name="login_phone"
-              type="text"
-              value={values.login_phone}
-              onBlur={handleBlur}
-              onChange={handleChange}
-              className={`w-full p-3 h-12 rounded-md  border border-[#EAE0E0] focus:outline-0 focus:outline-primary-300 
-            transition-all duration-300 ease-in-out placeholder:font-normal placeholder:text-xs placeholder:text-[#969696] 
-            text-base font-normal ${
-              errors.login_phone && touched.login_phone
-                ? "border border-[#fc8181]"
-                : ""
-            }`}
-            />
-            {errors.login_phone && touched.login_phone ? (
-              <p className="font-normal text-xs text-[#fc8181]">
-                {errors.login_phone}
-              </p>
-            ) : (
-              ""
-            )}
-          </div>
-
-          <div className="">
-            <label htmlFor="password" className="font-normal text-xs">
-              Password
-            </label>
-            <input
-              id="password"
-              name="password"
-              type="password"
-              value={values.password}
-              onBlur={handleBlur}
-              onChange={handleChange}
-              className={`w-full p-3 h-12 rounded-md  border border-[#EAE0E0] focus:outline-0 focus:outline-primary-300 
-            transition-all duration-300 ease-in-out placeholder:font-normal placeholder:text-xs placeholder:text-[#969696] 
-            text-base font-normal ${
-              errors.password && touched.password
-                ? "border border-[#fc8181]"
-                : ""
-            }`}
-            />
-            {errors.password && touched.password ? (
-              <p className="font-normal text-xs text-[#fc8181]">
-                {errors.password}
-              </p>
-            ) : (
-              ""
-            )}
-          </div>
-
-        </div>
-
-        <p className="mx-auto font-normal text-base mobile:text-sm">
-          Already have an account?
-          <Link
-            to={LOGIN}
-            className="text-[#1024A3] cursor-pointer mobile:text-sm ml-2"
-          >
-            Login
-          </Link>
-        </p>
-
-        <button
-          type="submit"
-          disabled={isSubmitting}
-          className={`bg-[#17567E] w-44 h-12 flex justify-center items-center mt-2 rounded-md text-center text-white mx-auto ${
-            isSubmitting ? "opacity-80" : ""
-          } mobile:px-10 mobile:py-2 text-sm`}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5 }}
+          className="mt-12 flex justify-end"
         >
-          {isLoading ? <ButtonLoader title="Confirming" /> : "Confirm"}
-        </button>
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-primary-600 to-purple-300 text-white rounded-md hover:from-primary-700 hover:to-purple-400 focus:outline-none focus:ring-4 focus:ring-blue-300 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+          >
+            {isLoading ? (
+              <>
+                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-3" />
+                Saving Changes...
+              </>
+            ) : (
+              <>
+                <Save className="w-5 h-5 mr-3" />
+                Save Changes
+              </>
+            )}
+          </button>
+        </motion.div>
       </form>
     </div>
   );
 };
 
-export default Onboarding;
+export default ChurchForm;

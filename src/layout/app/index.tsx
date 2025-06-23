@@ -81,7 +81,7 @@ const navigation = [
 ];
 
 const userNavigation = [
-  { name: "Your profile", href: PROFILE },
+  { name: "Profile Settings", href: PROFILE },
   { name: "Logout", href: "#" },
 ];
 
@@ -280,7 +280,7 @@ export default function AppLayout() {
                         "size-6 shrink-0"
                       )}
                     />
-                    Profile
+                    Profile Settings
                   </Link>
                   <button
                     onClick={handleLogout}
@@ -349,20 +349,26 @@ export default function AppLayout() {
                 {/* Profile dropdown */}
                 <Menu as="div" className="relative">
                   <MenuButton className="-m-1.5 flex items-center p-1.5">
-                    <span className="sr-only">Open user menu</span>
-                    <img
-                      alt=""
-                      src={churchLogo.includes("null") ? logo : churchLogo}
-                      className="size-11 rounded-full object-cover bg-gray-50"
-                    />
-                    <span className="hidden lg:flex lg:items-start">
-                      <ArrowDown2
-                        size="20"
-                        color="#71839B"
-                        variant="Bold"
-                        className="ml-2"
-                      />
-                    </span>
+                    {({ active }) => (
+                      <div className="flex items-center">
+                        <span className="sr-only">Open user menu</span>
+                        <img
+                          alt=""
+                          src={churchLogo.includes("null") ? logo : churchLogo}
+                          className="size-11 rounded-full object-cover bg-gray-50"
+                        />
+                        <span className="hidden lg:flex lg:items-start">
+                          <ArrowDown2
+                            size="20"
+                            color="#71839B"
+                            variant="Bold"
+                            className={`ml-2 ${
+                              active && "transform rotate-180"
+                            } transition-all duration-200 ease-in-out `}
+                          />
+                        </span>
+                      </div>
+                    )}
                   </MenuButton>
                   <MenuItems
                     transition

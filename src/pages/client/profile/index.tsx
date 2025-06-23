@@ -1,28 +1,27 @@
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { Camera, User, Mail, Phone, Save, Edit3 } from 'lucide-react';
-import { useAppSelector } from '@/redux';
-import { selectCurrentUser } from '@/redux/features/auth/authSlice';
+import React, { useState } from "react";
+import { motion } from "framer-motion";
+import { Camera, User, Mail, Phone, Save, Edit3 } from "lucide-react";
+import { useAppSelector } from "@/redux";
+import { selectCurrentUser } from "@/redux/features/auth/authSlice";
+import ChurchForm from "./components/church-form";
 
 const Profile = () => {
-  // Profile picture state
   const [selectedLogo, setSelectedLogo] = useState<File | null>(null);
   const [imageSrc, setImageSrc] = useState("");
 
   const user = useAppSelector(selectCurrentUser);
-  
-  // Form state
+
   const [profileData, setProfileData] = useState({
     name: user?.name ?? "",
     email: user?.email ?? "",
-    phone: user?.phone ?? ""
+    phone: user?.phone ?? "",
   });
-  
+
   const [isEditing, setIsEditing] = useState({
     name: false,
-    email: false
+    email: false,
   });
-  
+
   const [isSaving, setIsSaving] = useState(false);
 
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -35,27 +34,27 @@ const Profile = () => {
   };
 
   const handleInputChange = (field: string, value: string) => {
-    setProfileData(prev => ({
+    setProfileData((prev) => ({
       ...prev,
-      [field]: value
+      [field]: value,
     }));
   };
 
-  const toggleEdit = (field: 'name' | 'email') => {
-    setIsEditing(prev => ({
+  const toggleEdit = (field: "name" | "email") => {
+    setIsEditing((prev) => ({
       ...prev,
-      [field]: !prev[field]
+      [field]: !prev[field],
     }));
   };
 
   const handleSave = async () => {
     setIsSaving(true);
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1500));
+
+    await new Promise((resolve) => setTimeout(resolve, 1500));
     setIsSaving(false);
     setIsEditing({ name: false, email: false });
-    // Here you would typically make an API call to save the data
-    console.log('Saving profile data:', { profileData, selectedLogo });
+
+    console.log("Saving profile data:", { profileData, selectedLogo });
   };
 
   return (
@@ -67,8 +66,12 @@ const Profile = () => {
           animate={{ opacity: 1, y: 0 }}
           className="text-center mb-8"
         >
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Profile Settings</h1>
-          <p className="text-gray-600">Manage your account information and preferences</p>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+            Profile Settings
+          </h1>
+          <p className="text-gray-600">
+            Manage your account information and preferences
+          </p>
         </motion.div>
 
         {/* Main Card */}
@@ -97,7 +100,7 @@ const Profile = () => {
                     </div>
                   )}
                 </div>
-                
+
                 {/* Upload Button Overlay */}
                 <label className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
                   <Camera className="w-8 h-8 text-white" />
@@ -114,22 +117,24 @@ const Profile = () => {
               <div className="text-center sm:text-left">
                 <h2 className="text-2xl font-bold mb-2">{profileData.name}</h2>
                 <p className="text-blue-100 mb-1">{profileData.email}</p>
-                <p className="text-blue-200 text-sm">Member since January 2024</p>
+                <p className="text-blue-200 text-sm">
+                  Member since January 2024
+                </p>
               </div>
             </div>
           </div>
 
           {/* Form Section */}
           <div className="p-8">
-            <div className="space-y-8">
+            <div className="space-y-5">
               {/* Full Name */}
               <motion.div
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.2 }}
-                className="space-y-2"
+                className="space-y-1"
               >
-                <label className="block text-sm font-semibold text-gray-700 mb-3">
+                <label className="font-normal text-xs">
                   Full Name
                 </label>
                 <div className="relative">
@@ -139,9 +144,9 @@ const Profile = () => {
                   <input
                     type="text"
                     value={profileData.name}
-                    onChange={(e) => handleInputChange('name', e.target.value)}
-                    onFocus={() => toggleEdit('name')}
-                    onBlur={() => toggleEdit('name')}
+                    onChange={(e) => handleInputChange("name", e.target.value)}
+                    onFocus={() => toggleEdit("name")}
+                    onBlur={() => toggleEdit("name")}
                     className="w-full pl-12 pr-12 py-4 border border-gray-200 rounded-xl focus:outline-none transition-all duration-200 text-gray-900 font-medium"
                     placeholder="Enter your full name"
                   />
@@ -162,9 +167,9 @@ const Profile = () => {
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.3 }}
-                className="space-y-2"
+                className="space-y-1"
               >
-                <label className="block text-sm font-semibold text-gray-700 mb-3">
+                <label className="font-normal text-xs">
                   Email Address
                 </label>
                 <div className="relative">
@@ -174,9 +179,9 @@ const Profile = () => {
                   <input
                     type="email"
                     value={profileData.email}
-                    onChange={(e) => handleInputChange('email', e.target.value)}
-                    onFocus={() => toggleEdit('email')}
-                    onBlur={() => toggleEdit('email')}
+                    onChange={(e) => handleInputChange("email", e.target.value)}
+                    onFocus={() => toggleEdit("email")}
+                    onBlur={() => toggleEdit("email")}
                     className="w-full pl-12 pr-12 py-4 border border-gray-200 rounded-xl focus:outline-none transition-all duration-200 text-gray-900 font-medium"
                     placeholder="Enter your email address"
                   />
@@ -199,7 +204,7 @@ const Profile = () => {
                 transition={{ delay: 0.4 }}
                 className="space-y-2"
               >
-                <label className="block text-sm font-semibold text-gray-700 mb-3">
+                <label className="font-normal text-xs">
                   Phone Number
                   <span className="ml-2 px-2 py-1 text-xs bg-gray-100 text-gray-600 rounded-full">
                     Contact Support to Change
@@ -217,7 +222,8 @@ const Profile = () => {
                   />
                 </div>
                 <p className="text-sm text-gray-500 ml-1">
-                  For security reasons, phone number changes require verification. Please contact support.
+                  For security reasons, phone number changes require
+                  verification. Please contact support.
                 </p>
               </motion.div>
             </div>
@@ -232,11 +238,11 @@ const Profile = () => {
               <button
                 onClick={handleSave}
                 disabled={isSaving}
-                className="inline-flex items-center px-8 py-4 bg-gradient-to-r from-primary-600 to-purple-300 text-white font-semibold rounded-md hover:from-primary-700 hover:to-purple-400 focus:outline-none focus:ring-4 focus:ring-blue-300 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-primary-600 to-purple-300 text-white rounded-md hover:from-primary-700 hover:to-purple-400 focus:outline-none focus:ring-4 focus:ring-blue-300 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
               >
                 {isSaving ? (
                   <>
-                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-3"/>
+                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-3" />
                     Saving Changes...
                   </>
                 ) : (
@@ -250,6 +256,16 @@ const Profile = () => {
           </div>
         </motion.div>
 
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.6 }}
+          className="mt-5 bg-white rounded-lg  p-6"
+        >
+          {/* Form Section */}
+          <ChurchForm />
+        </motion.div>
+
         {/* Additional Info Card */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -257,7 +273,9 @@ const Profile = () => {
           transition={{ delay: 0.6 }}
           className="mt-5 bg-white rounded-lg  p-6"
         >
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Account Information</h3>
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">
+            Account Information
+          </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
               <span className="text-gray-600">Account Status</span>
