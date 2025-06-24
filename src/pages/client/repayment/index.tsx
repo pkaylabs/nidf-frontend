@@ -16,6 +16,10 @@ import Swal from "sweetalert2";
 const Repayment = () => {
   const navigate = useNavigate();
 
+  useEffect(() => {
+    document.title = "NIDF | Repayment";
+  }, []);
+
   const headers = [{ name: "Status", value: "status" }];
 
   const { data, isLoading, refetch, isError } = useGetRepaymentsQuery({});

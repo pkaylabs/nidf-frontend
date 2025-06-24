@@ -16,6 +16,10 @@ import Table from "@/components/table";
 const ProgressReport = () => {
   const navigate = useNavigate();
 
+  useEffect(() => {
+    document.title = "NIDF | Progress";
+  }, []);
+
   const headers = [{ name: "Status", value: "status" }];
 
   const { data, isLoading, refetch, isError } = useGetProgressReportsQuery({});

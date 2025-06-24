@@ -29,6 +29,10 @@ const Applications = () => {
     { name: "Action", value: "action" },
   ];
 
+  useEffect(() => {
+    document.title = "NIDF | Applications";
+  }, []);
+
   const { data, isLoading, refetch, isError } = useGetApplicationsQuery({});
   console.log(data, "data application");
   const rows = data ?? [];

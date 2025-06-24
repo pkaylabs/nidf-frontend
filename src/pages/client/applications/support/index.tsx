@@ -22,6 +22,10 @@ const ApplyForSupport = () => {
   const [applicationId, setApplicationId] = useState<any>(null);
   const navigate = useNavigate();
 
+  useEffect(() => {
+    document.title = "NIDF | Applications";
+  }, []);
+
   const search = useSearch<any>();
 
   const user = useAppSelector(selectCurrentUser);

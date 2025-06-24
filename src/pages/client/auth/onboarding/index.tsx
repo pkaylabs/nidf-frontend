@@ -1,6 +1,6 @@
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaFileUpload } from "react-icons/fa";
 import { Link, useNavigate } from "react-location";
 import { DASHBOARD, LOGIN } from "@/constants/page-path";
@@ -17,6 +17,7 @@ import toast from "react-hot-toast";
 import { useGetUserProfileQuery } from "@/redux/features/user/userApiSlice";
 import { churchStatus } from "@/constants";
 import SelectDropdown from "../../applications/support/components/select";
+import SearchableCombobox from "@/components/core/searchable-dropdown";
 
 const Onboarding = () => {
   const [query, setQuery] = useState<any>("");
@@ -25,34 +26,25 @@ const Onboarding = () => {
   const [selectedLogo, setSelectedLogo] = useState<File | null>(null);
   const [imageSrc, setImageSrc] = useState("");
 
+  
+
   const token = useAppSelector(selectCurrentToken);
 
   const dispatch = useAppDispatch();
 
+  // const {
+  //   data: userData,
+  //   refetch,
+  //   isLoading: fetchingUser,
+  // } = useGetUserProfileQuery({});
+
   const { data } = useGetRegionsQuery({});
-  const { data: divisionsData } = useGetDivisionsQuery({});
+  const { data: divisionsData, refetch: refetchDivision } =
+    useGetDivisionsQuery({});
   const regions = data?.region || [];
   const divisions = divisionsData?.divisions || [];
 
-  const {
-    data: userData,
-    refetch,
-    isLoading: fetchingUser,
-  } = useGetUserProfileQuery({});
-
-  const filteredRegions =
-    query === ""
-      ? regions
-      : regions.filter((region: any) =>
-          region.name.toLowerCase().includes(query.toLowerCase())
-        );
-
-  const filteredDivisions =
-    query === ""
-      ? divisions
-      : divisions.filter((division: any) =>
-          division.name.toLowerCase().includes(query.toLowerCase())
-        );
+  console.log(divisionsData, "divisions");
 
   const [createChurch, { isLoading }] = useCreateChurchMutation();
 
@@ -112,51 +104,53 @@ const Onboarding = () => {
         .required("Password is required"),
     }),
     onSubmit: async (values) => {
-      try {
-        const formData = new FormData();
+      console.log(values, "values");
 
-        formData.append("name", values.name);
-        formData.append("address", values.location);
-        formData.append("church_phone", values.phone);
-        formData.append("church_email", values.email);
-        formData.append("region", selectedRegion?.id);
-        formData.append("district", selectedDivision?.id);
-        formData.append("pastor_name", values.pastor_name);
-        formData.append("pastor_phone", values.pastor_phone);
-        formData.append("pastor_email", values.pastor_email);
-        formData.append("church_type", "LOCATION");
+      // try {
+      //   const formData = new FormData();
 
-        if (selectedLogo) {
-          formData.append("church_logo", selectedLogo);
-        }
+      //   formData.append("name", values.name);
+      //   formData.append("address", values.location);
+      //   formData.append("church_phone", values.phone);
+      //   formData.append("church_email", values.email);
+      //   formData.append("region", values.region);
+      //   formData.append("district", values.division);
+      //   formData.append("pastor_name", values.pastor_name);
+      //   formData.append("pastor_phone", values.pastor_phone);
+      //   formData.append("pastor_email", values.pastor_email);
+      //   formData.append("church_type", "LOCATION");
 
-        const res = await createChurch(formData).unwrap();
+      //   if (selectedLogo) {
+      //     formData.append("church_logo", selectedLogo);
+      //   }
 
-        if (res) {
-          toast(
-            JSON.stringify({
-              type: "success",
-              title: res?.message ?? `Church profile created successfully`,
-            })
-          );
-          refetch();
-          dispatch(
-            setCredentials({
-              user: { ...userData, church_profile: res?.id },
-              token: token,
-            })
-          );
+      //   const res = await createChurch(formData).unwrap();
 
-          navigate({ to: DASHBOARD, replace: true });
-        } else {
-          toast(
-            JSON.stringify({
-              type: "error",
-              title: "Onboarding failed",
-            })
-          );
-        }
-      } catch (err: any) {}
+      //   if (res) {
+      //     toast(
+      //       JSON.stringify({
+      //         type: "success",
+      //         title: res?.message ?? `Church profile created successfully`,
+      //       })
+      //     );
+      //     refetch();
+      //     dispatch(
+      //       setCredentials({
+      //         user: { ...userData, church_profile: res?.id },
+      //         token: token,
+      //       })
+      //     );
+
+      //     navigate({ to: DASHBOARD, replace: true });
+      //   } else {
+      //     toast(
+      //       JSON.stringify({
+      //         type: "error",
+      //         title: "Onboarding failed",
+      //       })
+      //     );
+      //   }
+      // } catch (err: any) {}
     },
   });
 
@@ -166,7 +160,6 @@ const Onboarding = () => {
       setSelectedLogo(file);
       const localUrl = URL.createObjectURL(file);
       setImageSrc(localUrl);
-     
     }
   };
 
@@ -246,13 +239,15 @@ const Onboarding = () => {
               <label htmlFor="region" className="font-normal text-xs">
                 Region
               </label>
-              <SelectDropdown
-                options={filteredRegions}
+              <SearchableCombobox
+                options={regions}
                 value={selectedRegion}
-                onChange={(value: any) => {
+                onChange={(value) => {
                   setSelectedRegion(value);
-                  setFieldValue("region", value.id);
+                  setFieldValue("region", value?.id || "");
                 }}
+                placeholder="Select Region"
+                error={!!errors.region && touched.region}
                 className="border-[#EAE0E0] text-sm xl:text-sm placeholder:text-xs mt-0 h-12"
               />
               {touched.region &&
@@ -268,13 +263,15 @@ const Onboarding = () => {
               <label htmlFor="division" className="font-normal text-xs">
                 Division
               </label>
-              <SelectDropdown
-                options={filteredDivisions}
+              <SearchableCombobox
+                options={divisions}
                 value={selectedDivision}
-                onChange={(value: any) => {
+                onChange={(value) => {
                   setSelectedDivision(value);
-                  setFieldValue("division", value.id);
+                  setFieldValue("division", value?.id || "");
                 }}
+                placeholder="Select Division"
+                error={!!errors.division && touched.division}
                 className="border-[#EAE0E0] text-sm xl:text-sm placeholder:text-xs mt-0 h-12"
               />
               {touched.division &&
@@ -288,7 +285,6 @@ const Onboarding = () => {
           </div>
         </div>
         <div className="flex flex-col gap-y-2">
-         
           <div className="w-full flex gap-x-3">
             <div className="">
               <label htmlFor="phone" className="font-normal text-xs">
@@ -639,7 +635,6 @@ const Onboarding = () => {
               ""
             )}
           </div>
-
         </div>
 
         <p className="mx-auto font-normal text-base mobile:text-sm">

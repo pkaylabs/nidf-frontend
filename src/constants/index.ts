@@ -31,15 +31,13 @@ export const applicationTypes = [
 
 export const churchStatus = [
   {
-    label: "Location church",
-    value: "Location church",
+    label: "Location Church",
+    value: "Location Church",
   },
-
   {
-    label: "District church",
-    value: "District church",
+    label: "District Church",
+    value: "District Church",
   },
-
   {
     label: "Group of District Headquarters",
     value: "Group of District Headquarters",

@@ -1,6 +1,6 @@
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaFileUpload } from "react-icons/fa";
 import { Link, useNavigate } from "react-location";
 import { DASHBOARD, LOGIN } from "@/constants/page-path";
@@ -20,6 +20,7 @@ import { churchStatus } from "@/constants";
 import SelectDropdown from "../../applications/support/components/select";
 import { Save } from "lucide-react";
 import { motion } from "framer-motion";
+import SearchableCombobox from "@/components/core/searchable-dropdown";
 
 const ChurchForm = () => {
   const [query, setQuery] = useState<any>("");
@@ -27,6 +28,10 @@ const ChurchForm = () => {
   const [selectedDivision, setSelectedDivision] = useState<any>(null);
   const [selectedLogo, setSelectedLogo] = useState<File | null>(null);
   const [imageSrc, setImageSrc] = useState("");
+
+  useEffect(() => {
+    document.title = "NIDF | Profile";
+  }, []);
 
   const dispatch = useAppDispatch();
   const user = useAppSelector(selectCurrentUser);
@@ -36,25 +41,14 @@ const ChurchForm = () => {
   const regions = data?.region || [];
   const divisions = divisionsData?.divisions || [];
 
+  console.log(divisions, 'divisionssssss');
+  
+
   const {
     data: userData,
     refetch,
     isLoading: fetchingUser,
   } = useGetUserProfileQuery({});
-
-  const filteredRegions =
-    query === ""
-      ? regions
-      : regions.filter((region: any) =>
-          region.name.toLowerCase().includes(query.toLowerCase())
-        );
-
-  const filteredDivisions =
-    query === ""
-      ? divisions
-      : divisions.filter((division: any) =>
-          division.name.toLowerCase().includes(query.toLowerCase())
-        );
 
   const [createChurch, { isLoading }] = useCreateChurchMutation();
 
@@ -93,7 +87,9 @@ const ChurchForm = () => {
       pastor_phone: Yup.string().required("Pastor phone is required"),
       pastor_email: Yup.string(),
     }),
-    onSubmit: async (values) => {},
+    onSubmit: async (values) => {
+      console.log(values, "values");
+    },
   });
 
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -180,13 +176,15 @@ const ChurchForm = () => {
               <label htmlFor="region" className="font-normal text-xs">
                 Region
               </label>
-              <SelectDropdown
-                options={filteredRegions}
+              <SearchableCombobox
+                options={regions}
                 value={selectedRegion}
-                onChange={(value: any) => {
+                onChange={(value) => {
                   setSelectedRegion(value);
-                  setFieldValue("region", value.id);
+                  setFieldValue("region", value?.id || "");
                 }}
+                placeholder="Select Region"
+                error={!!errors.region && touched.region}
                 className="border-[#EAE0E0] text-sm xl:text-sm placeholder:text-xs mt-0 h-12"
               />
               {touched.region &&
@@ -202,13 +200,16 @@ const ChurchForm = () => {
               <label htmlFor="division" className="font-normal text-xs">
                 Division
               </label>
-              <SelectDropdown
-                options={filteredDivisions}
+
+              <SearchableCombobox
+                options={divisions}
                 value={selectedDivision}
-                onChange={(value: any) => {
-                  setSelectedDivision(value);
-                  setFieldValue("division", value.id);
+                onChange={(value) => {
+                  setSelectedDivision(value)
+                  setFieldValue("division", value?.id || "");
                 }}
+                placeholder="Select Division"
+                error={!!errors.division && touched.division}
                 className="border-[#EAE0E0] text-sm xl:text-sm placeholder:text-xs mt-0 h-12"
               />
               {touched.division &&

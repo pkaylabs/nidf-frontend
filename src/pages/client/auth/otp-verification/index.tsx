@@ -10,6 +10,10 @@ const OtpVerification = () => {
   const [otp, setOtp] = useState<string[]>(new Array(4).fill(""));
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
+  useEffect(() => {
+    document.title = "NIDF | Reset";
+  }, []);
+
   const search = useSearch<any>();
 
   const handleChange = (

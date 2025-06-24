@@ -12,13 +12,17 @@ import { useLoginMutation } from "@/redux/features/auth/authApiSlice";
 import { setCredentials } from "@/redux/features/auth/authSlice";
 import { LocationGenerics } from "@/router/location";
 import { useFormik } from "formik";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { Link, useNavigate, useSearch } from "react-location";
 import * as Yup from "yup";
 
 const Login = () => {
   const navigate = useNavigate();
+
+  useEffect(() => {
+    document.title = "NIDF | Login";
+  }, []);
 
   const search = useSearch<LocationGenerics>();
   const dispatch = useAppDispatch();
@@ -39,9 +43,9 @@ const Login = () => {
       password: "",
     },
     validationSchema: Yup.object().shape({
-      email: Yup.string()
-        .email("Please enter a valid email")
-        .required("Email or phone is required"),
+      email: Yup.string(),
+        // .email("Please enter a valid email")
+        // .required("Email or phone is required"),
       password: Yup.string()
         .min(8, "Password must be 8 characters or more")
         .required("Password is required"),
@@ -139,7 +143,7 @@ const Login = () => {
         <input
           id="Email"
           name="email"
-          type="email"
+          type="text"
           value={values.email}
           onChange={handleChange}
           onBlur={handleBlur}
