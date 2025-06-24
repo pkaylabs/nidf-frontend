@@ -4,6 +4,8 @@ import { Camera, User, Mail, Phone, Save, Edit3 } from "lucide-react";
 import { useAppSelector } from "@/redux";
 import { selectCurrentUser } from "@/redux/features/auth/authSlice";
 import ChurchForm from "./components/church-form";
+import { useGetUserProfileQuery } from "@/redux/features/user/userApiSlice";
+import moment from "moment";
 
 const Profile = () => {
   const [selectedLogo, setSelectedLogo] = useState<File | null>(null);
@@ -11,10 +13,16 @@ const Profile = () => {
 
   const user = useAppSelector(selectCurrentUser);
 
+  const {
+      data: userData,
+      refetch,
+      isLoading: fetchingUser,
+    } = useGetUserProfileQuery({});
+    
   const [profileData, setProfileData] = useState({
-    name: user?.name ?? "",
-    email: user?.email ?? "",
-    phone: user?.phone ?? "",
+    name: userData?.name ?? user?.name ?? "",
+    email: userData?.email ?? user?.email ?? "",
+    phone: userData?.phone ?? user?.phone ?? "",
   });
 
   const [isEditing, setIsEditing] = useState({
@@ -58,7 +66,7 @@ const Profile = () => {
   };
 
   return (
-    <div className=" bg-gradient-to-br py-8 px-4 sm:px-6 lg:px-8">
+    <div className=" bg-gradient-to-br py-8 px-4 lg:px-8">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <motion.div
@@ -118,14 +126,14 @@ const Profile = () => {
                 <h2 className="text-2xl font-bold mb-2">{profileData.name}</h2>
                 <p className="text-blue-100 mb-1">{profileData.email}</p>
                 <p className="text-blue-200 text-sm">
-                  Member since January 2024
+                  Member since {moment(user?.created_at).format("LL")}
                 </p>
               </div>
             </div>
           </div>
 
           {/* Form Section */}
-          <div className="p-8">
+          <div className="p-4 lg:p-8">
             <div className="space-y-5">
               {/* Full Name */}
               <motion.div
@@ -260,7 +268,7 @@ const Profile = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.6 }}
-          className="mt-5 bg-white rounded-lg  p-6"
+          className="mt-5 bg-white rounded-lg p-4 lg:p-6"
         >
           {/* Form Section */}
           <ChurchForm />

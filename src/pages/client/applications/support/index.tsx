@@ -7,7 +7,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useAppSelector } from "@/redux";
 import { selectCurrentUser } from "@/redux/features/auth/authSlice";
-import { useGetChurchesQuery } from "@/redux/features/churches/churchApiSlice";
+import { useGetChurchesQuery, useGetChurchProfileQuery } from "@/redux/features/churches/churchApiSlice";
 import { supportApplicationSteps } from "@/constants";
 import {
   useCreateApplicationMutation,
@@ -30,8 +30,8 @@ const ApplyForSupport = () => {
 
   const user = useAppSelector(selectCurrentUser);
 
-  const { data } = useGetChurchesQuery({});
-
+  const { data } = useGetChurchProfileQuery({});
+  
   const formik = useFormik({
     initialValues: {
       churchName: "",
@@ -555,25 +555,23 @@ const ApplyForSupport = () => {
 
   useEffect(() => {
     if (data) {
-      console.log(data, "church data");
-
       formik.setValues({
         ...formik.values,
-        churchName: data?.[0]?.name,
-        churchAddress: data?.[0]?.address,
-        pastorName: data?.[0]?.pastor_name,
-        pastorEmail: data?.[0]?.pastor_email,
-        pastorPhone: data?.[0]?.pastor_phone,
+        churchName: data?.location_name,
+        churchAddress: data?.location_address,
+        pastorName: data?.pastor_name,
+        pastorEmail: data?.pastor_email,
+        pastorPhone: data?.pastor_phone,
       });
     }
     if (search?.id) {
       formik.setValues({
         ...formik.values,
-        churchName: search?.churchName ?? data?.[0]?.name,
-        churchAddress: search?.churchAddress ?? data?.[0]?.address,
-        pastorName: search?.pastorName ?? data?.[0]?.pastor_name,
-        pastorEmail: search?.pastorEmail ?? data?.[0]?.pastor_email,
-        pastorPhone: search?.pastorPhone ?? data?.[0]?.pastor_phone,
+        churchName: search?.churchName ?? data?.location_name,
+        churchAddress: search?.churchAddress ?? data?.location_address,
+        pastorName: search?.pastorName ?? data?.pastor_name,
+        pastorEmail: search?.pastorEmail ?? data?.pastor_email,
+        pastorPhone: search?.pastorPhone ?? data?.pastor_phone,
 
         supportType: search?.support_type,
         typeOfChurchProject: search?.type_of_church_project,

@@ -11,7 +11,10 @@ import {
   selectCurrentUser,
   setCredentials,
 } from "@/redux/features/auth/authSlice";
-import { useCreateChurchMutation } from "@/redux/features/churches/churchApiSlice";
+import {
+  useCreateChurchMutation,
+  useGetChurchProfileQuery,
+} from "@/redux/features/churches/churchApiSlice";
 import { useGetRegionsQuery } from "@/redux/features/regions/regionApiSlice";
 import { useGetDivisionsQuery } from "@/redux/features/divisions/divisionApiSlice";
 import toast from "react-hot-toast";
@@ -33,26 +36,18 @@ const ChurchForm = () => {
     document.title = "NIDF | Profile";
   }, []);
 
-  const dispatch = useAppDispatch();
-  const user = useAppSelector(selectCurrentUser);
-
   const { data } = useGetRegionsQuery({});
   const { data: divisionsData } = useGetDivisionsQuery({});
   const regions = data?.region || [];
   const divisions = divisionsData?.divisions || [];
+  const { data: churchData } = useGetChurchProfileQuery({});
 
-  console.log(divisions, 'divisionssssss');
-  
-
-  const {
-    data: userData,
-    refetch,
-    isLoading: fetchingUser,
-  } = useGetUserProfileQuery({});
+  console.log(churchData, "church data");
 
   const [createChurch, { isLoading }] = useCreateChurchMutation();
 
   const navigate = useNavigate();
+
   const {
     values,
     handleSubmit,
@@ -62,18 +57,19 @@ const ChurchForm = () => {
     touched,
     isSubmitting,
     setFieldValue,
+    setValues,
   } = useFormik({
     initialValues: {
-      name: "",
-      location: "",
-      region: "",
-      division: "",
-      phone: "",
-      email: "",
-      status: "",
-      pastor_name: "",
-      pastor_phone: "",
-      pastor_email: "",
+      name: churchData?.location_name ?? "",
+      location: churchData?.location_address ?? "",
+      region: churchData?.region?.id ?? "",
+      division: churchData?.district?.id ?? "",
+      phone: churchData?.church_phone ?? "",
+      email: churchData?.church_email ?? "",
+      status: churchData?.church_status ?? "",
+      pastor_name: churchData?.pastor_name ?? "",
+      pastor_phone: churchData?.pastor_phone ?? "",
+      pastor_email: churchData?.pastor_email ?? "",
     },
     validationSchema: Yup.object().shape({
       name: Yup.string().required("Name is required"),
@@ -92,6 +88,24 @@ const ChurchForm = () => {
     },
   });
 
+  useEffect(() => {
+    if (churchData) {
+      setValues({
+        ...values,
+        name: churchData?.location_name ?? "",
+        location: churchData?.location_address ?? "",
+        region: churchData?.region?.id ?? "",
+        division: churchData?.district?.id ?? "",
+        phone: churchData?.church_phone ?? "",
+        email: churchData?.church_email ?? "",
+        status: churchData?.church_status ?? "",
+        pastor_name: churchData?.pastor_name ?? "",
+        pastor_phone: churchData?.pastor_phone ?? "",
+        pastor_email: churchData?.pastor_email ?? "",
+      });
+    }
+  }, [churchData]);
+
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -101,7 +115,7 @@ const ChurchForm = () => {
     }
   };
   return (
-    <div className="w-full flex flex-col gap-y-10 mobile:mt-5 mobile:gap-y-5">
+    <div className="w-full flex flex-col gap-y-10 mobile:gap-y-5">
       <form onSubmit={handleSubmit} className="w-full flex flex-col gap-y-3">
         <div className="flex flex-col gap-y-2">
           <h1 className="font-semibold">Church Details</h1>
@@ -121,7 +135,7 @@ const ChurchForm = () => {
              errors.name && touched.name ? "border border-[#fc8181]" : ""
            } `}
           />
-          {errors.name && touched.name ? (
+          {errors.name && touched.name && typeof errors.name === "string" ? (
             <p className="font-normal text-xs text-[#fc8181]">{errors.name}</p>
           ) : (
             ""
@@ -144,7 +158,9 @@ const ChurchForm = () => {
                : ""
            }`}
           />
-          {errors.location && touched.location ? (
+          {errors.location &&
+          touched.location &&
+          typeof errors.location === "string" ? (
             <p className="font-normal text-xs text-[#fc8181]">
               {errors.location}
             </p>
@@ -171,7 +187,7 @@ const ChurchForm = () => {
               )}
           </div>
 
-          <div className="w-full flex gap-x-3 mt-1">
+          <div className="w-full flex mobile:flex-col gap-3 mt-1">
             <div className="flex-1 relative flex flex-col gap-y-2">
               <label htmlFor="region" className="font-normal text-xs">
                 Region
@@ -184,7 +200,11 @@ const ChurchForm = () => {
                   setFieldValue("region", value?.id || "");
                 }}
                 placeholder="Select Region"
-                error={!!errors.region && touched.region}
+                error={
+                  typeof errors.region === "string" &&
+                  !!errors.region &&
+                  !!touched.region
+                }
                 className="border-[#EAE0E0] text-sm xl:text-sm placeholder:text-xs mt-0 h-12"
               />
               {touched.region &&
@@ -205,11 +225,11 @@ const ChurchForm = () => {
                 options={divisions}
                 value={selectedDivision}
                 onChange={(value) => {
-                  setSelectedDivision(value)
+                  setSelectedDivision(value);
                   setFieldValue("division", value?.id || "");
                 }}
                 placeholder="Select Division"
-                error={!!errors.division && touched.division}
+                error={!!errors.division && !!touched.division}
                 className="border-[#EAE0E0] text-sm xl:text-sm placeholder:text-xs mt-0 h-12"
               />
               {touched.division &&
@@ -223,7 +243,7 @@ const ChurchForm = () => {
           </div>
         </div>
         <div className="flex flex-col gap-y-2">
-          <div className="w-full flex gap-x-3">
+          <div className="w-full flex mobile:flex-col gap-3">
             <div className="flex-1">
               <label htmlFor="phone" className="font-normal text-xs">
                 Phone Number
@@ -241,7 +261,9 @@ const ChurchForm = () => {
              errors.phone && touched.phone ? "border border-[#fc8181]" : ""
            }`}
               />
-              {errors.phone && touched.phone ? (
+              {errors.phone &&
+              touched.phone &&
+              typeof errors.phone === "string" ? (
                 <p className="font-normal text-xs text-[#fc8181]">
                   {errors.phone}
                 </p>
@@ -266,7 +288,9 @@ const ChurchForm = () => {
              errors.email && touched.email ? "border border-[#fc8181]" : ""
            }`}
               />
-              {errors.email && touched.email ? (
+              {errors.email &&
+              touched.email &&
+              typeof errors.email === "string" ? (
                 <p className="font-normal text-xs text-[#fc8181]">
                   {errors.email}
                 </p>
@@ -278,7 +302,7 @@ const ChurchForm = () => {
         </div>
         <div className="flex flex-col gap-y-2">
           <h1 className="font-semibold">Pastor's Details</h1>
-          <div className="w-full flex gap-x-3">
+          <div className="w-full flex mobile:flex-col gap-3">
             <div className="flex-1">
               <label htmlFor="pastor_name" className="font-normal text-xs">
                 Pastor's Name
@@ -298,7 +322,9 @@ const ChurchForm = () => {
                : ""
            }`}
               />
-              {errors.pastor_name && touched.pastor_name ? (
+              {errors.pastor_name &&
+              touched.pastor_name &&
+              typeof errors.pastor_name === "string" ? (
                 <p className="font-normal text-xs text-[#fc8181]">
                   {errors.pastor_name}
                 </p>
@@ -325,7 +351,9 @@ const ChurchForm = () => {
                : ""
            }`}
               />
-              {errors.pastor_phone && touched.pastor_phone ? (
+              {errors.pastor_phone &&
+              touched.pastor_phone &&
+              typeof errors.pastor_phone === "string" ? (
                 <p className="font-normal text-xs text-[#fc8181]">
                   {errors.pastor_phone}
                 </p>
@@ -352,7 +380,9 @@ const ChurchForm = () => {
                : ""
            }`}
           />
-          {errors.pastor_email && touched.pastor_email ? (
+          {errors.pastor_email &&
+          touched.pastor_email &&
+          typeof errors.pastor_email === "string" ? (
             <p className="font-normal text-xs text-[#fc8181]">
               {errors.pastor_email}
             </p>

@@ -11,10 +11,10 @@ export const authApiSlice = api.injectEndpoints({
       }),
     }),
     register: builder.mutation({
-      query: (credentials) => ({
+      query: (formData: FormData) => ({
         url: "register/",
         method: "POST",
-        body: { ...credentials },
+        body: formData,
       }),
     }),
     verifyOtp: builder.mutation({

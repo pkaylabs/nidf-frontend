@@ -18,6 +18,7 @@ import { useGetUserProfileQuery } from "@/redux/features/user/userApiSlice";
 import { churchStatus } from "@/constants";
 import SelectDropdown from "../../applications/support/components/select";
 import SearchableCombobox from "@/components/core/searchable-dropdown";
+import { useRegisterMutation } from "@/redux/features/auth/authApiSlice";
 
 const Onboarding = () => {
   const [query, setQuery] = useState<any>("");
@@ -26,27 +27,15 @@ const Onboarding = () => {
   const [selectedLogo, setSelectedLogo] = useState<File | null>(null);
   const [imageSrc, setImageSrc] = useState("");
 
-  
-
-  const token = useAppSelector(selectCurrentToken);
-
   const dispatch = useAppDispatch();
 
-  // const {
-  //   data: userData,
-  //   refetch,
-  //   isLoading: fetchingUser,
-  // } = useGetUserProfileQuery({});
+  const [register, { isLoading }] = useRegisterMutation();
 
   const { data } = useGetRegionsQuery({});
   const { data: divisionsData, refetch: refetchDivision } =
     useGetDivisionsQuery({});
   const regions = data?.region || [];
   const divisions = divisionsData?.divisions || [];
-
-  console.log(divisionsData, "divisions");
-
-  const [createChurch, { isLoading }] = useCreateChurchMutation();
 
   const navigate = useNavigate();
   const {
@@ -70,15 +59,16 @@ const Onboarding = () => {
       pastor_name: "",
       pastor_phone: "",
       pastor_email: "",
-      personal_name: "",
-      personal_email: "",
-      personal_phone: "",
       login_email: "",
       login_phone: "",
+      login_name: "",
       password: "",
+      manager_name: "",
+      manager_phone: "",
+      manager_email: "",
     },
     validationSchema: Yup.object().shape({
-      name: Yup.string().required("Name is required"),
+      name: Yup.string(),
       location: Yup.string().required("Location is required"),
       region: Yup.string().required("Region is required"),
       division: Yup.string().required("Division is required"),
@@ -88,12 +78,11 @@ const Onboarding = () => {
       pastor_name: Yup.string().required("Pastor name is required"),
       pastor_phone: Yup.string().required("Pastor phone is required"),
       pastor_email: Yup.string(),
-      personal_name: Yup.string()
-        .min(2, "Too Short!")
-        .max(50, "Too Long!")
-        .required("Personal name is required"),
-      personal_email: Yup.string().email("Please enter a valid email"),
-      personal_phone: Yup.string()
+      manager_name: Yup.string(),
+      manager_phone: Yup.string(),
+      manager_email: Yup.string(),
+      login_email: Yup.string().email("Please enter a valid email"),
+      login_phone: Yup.string()
         .matches(
           /^0(24|54|55|59|20|50|26|56|27|57|28|58|23)\d{7}$/,
           "Please enter a valid phone number"
@@ -105,52 +94,64 @@ const Onboarding = () => {
     }),
     onSubmit: async (values) => {
       console.log(values, "values");
+      try {
+        const formData = new FormData();
 
-      // try {
-      //   const formData = new FormData();
+        formData.append("location_name", values.name as string);
+        formData.append("location_address", values.location as string);
+        formData.append("church_phone", values.phone as string);
+        formData.append("church_email", values.email as string);
+        formData.append("region", values.region as string);
+        formData.append("district", values.division as string);
+        formData.append("church_status", values.status as string);
+        formData.append("pastor_name", values.pastor_name as string);
+        formData.append("pastor_phone", values.pastor_phone as string);
+        formData.append("pastor_email", values.pastor_email as string);
+        formData.append("manager_email", values.manager_email as string);
+        formData.append("manager_phone", values.manager_phone as string);
+        formData.append("manager_name", values.manager_name as string);
+        formData.append("name", values.manager_name as string);
+        formData.append("email", values.login_email as string);
+        formData.append("phone", values.login_phone as string);
+        formData.append("password", values.password as string);
+        formData.append("user_type", "CHURCH_USER" as string);
 
-      //   formData.append("name", values.name);
-      //   formData.append("address", values.location);
-      //   formData.append("church_phone", values.phone);
-      //   formData.append("church_email", values.email);
-      //   formData.append("region", values.region);
-      //   formData.append("district", values.division);
-      //   formData.append("pastor_name", values.pastor_name);
-      //   formData.append("pastor_phone", values.pastor_phone);
-      //   formData.append("pastor_email", values.pastor_email);
-      //   formData.append("church_type", "LOCATION");
+        if (selectedLogo) {
+          formData.append("church_logo", selectedLogo);
+        }
 
-      //   if (selectedLogo) {
-      //     formData.append("church_logo", selectedLogo);
-      //   }
+        const res = await register(formData).unwrap();
 
-      //   const res = await createChurch(formData).unwrap();
+        console.log(res, "responseeeeee");
 
-      //   if (res) {
-      //     toast(
-      //       JSON.stringify({
-      //         type: "success",
-      //         title: res?.message ?? `Church profile created successfully`,
-      //       })
-      //     );
-      //     refetch();
-      //     dispatch(
-      //       setCredentials({
-      //         user: { ...userData, church_profile: res?.id },
-      //         token: token,
-      //       })
-      //     );
+        if (res?.data?.token) {
+          toast(
+            JSON.stringify({
+              type: "success",
+              title: res?.message ?? `Profile created successfully`,
+            })
+          );
 
-      //     navigate({ to: DASHBOARD, replace: true });
-      //   } else {
-      //     toast(
-      //       JSON.stringify({
-      //         type: "error",
-      //         title: "Onboarding failed",
-      //       })
-      //     );
-      //   }
-      // } catch (err: any) {}
+          dispatch(setCredentials({ ...res }));
+
+          navigate({ to: DASHBOARD, replace: true });
+        } else {
+          toast(
+            JSON.stringify({
+              type: "error",
+              title: res?.data?.error_message ?? "Failed to signup",
+            })
+          );
+        }
+      } catch (err: any) {
+        console.log(err);
+        toast(
+          JSON.stringify({
+            type: "error",
+            title: err?.data?.error_message ?? "Signup failed",
+          })
+        );
+      }
     },
   });
 
@@ -467,27 +468,27 @@ const Onboarding = () => {
         <div className="flex flex-col gap-y-2">
           <h1 className="font-semibold">Account Manager's Information</h1>
           <div className="">
-            <label htmlFor="personal_name" className="font-normal text-xs">
+            <label htmlFor="manager_name" className="font-normal text-xs">
               Full Name
             </label>
             <input
-              id="personal_name"
-              name="personal_name"
+              id="manager_name"
+              name="manager_name"
               type="text"
-              value={values.personal_name}
+              value={values.manager_name}
               onBlur={handleBlur}
               onChange={handleChange}
               className={`w-full p-3 h-12 rounded-md  border border-[#EAE0E0] focus:outline-0 focus:outline-primary-300 
            transition-all duration-300 ease-in-out placeholder:font-normal placeholder:text-xs placeholder:text-[#969696] 
            text-base font-normal ${
-             errors.personal_name && touched.personal_name
+             errors.manager_name && touched.manager_name
                ? "border border-[#fc8181]"
                : ""
            }`}
             />
-            {errors.personal_name && touched.personal_name ? (
+            {errors.manager_name && touched.manager_name ? (
               <p className="font-normal text-xs text-[#fc8181]">
-                {errors.personal_name}
+                {errors.manager_name}
               </p>
             ) : (
               ""
@@ -495,27 +496,27 @@ const Onboarding = () => {
           </div>
 
           <div className="">
-            <label htmlFor="personal_email" className="font-normal text-xs">
+            <label htmlFor="manager_email" className="font-normal text-xs">
               Email
             </label>
             <input
-              id="personal_email"
-              name="personal_email"
+              id="manager_email"
+              name="manager_email"
               type="email"
-              value={values.personal_email}
+              value={values.manager_email}
               onBlur={handleBlur}
               onChange={handleChange}
               className={`w-full p-3 h-12 rounded-md  border border-[#EAE0E0] focus:outline-0 focus:outline-primary-300 
             transition-all duration-300 ease-in-out placeholder:font-normal placeholder:text-xs placeholder:text-[#969696] 
             text-base font-normal ${
-              errors.personal_email && touched.personal_email
+              errors.manager_email && touched.manager_email
                 ? "border border-[#fc8181]"
                 : ""
             }`}
             />
-            {errors.personal_email && touched.personal_email ? (
+            {errors.manager_email && touched.manager_email ? (
               <p className="font-normal text-xs text-[#fc8181]">
-                {errors.personal_email}
+                {errors.manager_email}
               </p>
             ) : (
               ""
@@ -523,27 +524,27 @@ const Onboarding = () => {
           </div>
 
           <div className="">
-            <label htmlFor="personal_phone" className="font-normal text-xs">
+            <label htmlFor="manager_phone" className="font-normal text-xs">
               Phone Number
             </label>
             <input
-              id="personal_phone"
-              name="personal_phone"
+              id="manager_phone"
+              name="manager_phone"
               type="text"
-              value={values.personal_phone}
+              value={values.manager_phone}
               onBlur={handleBlur}
               onChange={handleChange}
               className={`w-full p-3 h-12 rounded-md  border border-[#EAE0E0] focus:outline-0 focus:outline-primary-300 
             transition-all duration-300 ease-in-out placeholder:font-normal placeholder:text-xs placeholder:text-[#969696] 
             text-base font-normal ${
-              errors.personal_phone && touched.personal_phone
+              errors.manager_phone && touched.manager_phone
                 ? "border border-[#fc8181]"
                 : ""
             }`}
             />
-            {errors.personal_phone && touched.personal_phone ? (
+            {errors.manager_phone && touched.manager_phone ? (
               <p className="font-normal text-xs text-[#fc8181]">
-                {errors.personal_phone}
+                {errors.manager_phone}
               </p>
             ) : (
               ""
@@ -649,12 +650,16 @@ const Onboarding = () => {
 
         <button
           type="submit"
-          disabled={isSubmitting}
+          // disabled={i}
           className={`bg-[#17567E] w-44 h-12 flex justify-center items-center mt-2 rounded-md text-center text-white mx-auto ${
             isSubmitting ? "opacity-80" : ""
           } mobile:px-10 mobile:py-2 text-sm`}
         >
-          {isLoading ? <ButtonLoader title="Confirming" /> : "Confirm"}
+          {isSubmitting || isLoading ? (
+            <ButtonLoader title="Confirming" />
+          ) : (
+            "Confirm"
+          )}
         </button>
       </form>
     </div>

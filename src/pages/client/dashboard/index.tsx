@@ -12,7 +12,6 @@ const Dashboard = () => {
   const navigate = useNavigate();
 
   const { data, isLoading } = useGetDashboardDataQuery({});
-  console.log(data, "dataaaaaaaaaa");
 
   useEffect(() => {
     document.title = "NIDF | Dashboard";

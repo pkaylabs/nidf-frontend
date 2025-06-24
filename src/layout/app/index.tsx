@@ -198,6 +198,36 @@ export default function AppLayout() {
                             </Link>
                           </li>
                         ))}
+                        <li className="">
+                          <Link
+                            to={PROFILE}
+                            className={classNames(
+                              currentPath === PROFILE ||
+                                currentPath.includes(
+                                  "Profile Settings".split(" ")[0].toLowerCase()
+                                )
+                                ? "bg-primary-50 text-white font-semibold"
+                                : "text-gray-800 hover:bg-gray-50 hover:text-primary-600 font-medium",
+                              "group flex gap-x-3 rounded-xl px-5 py-3 text-sm  leading-6 capitalize"
+                            )}
+                          >
+                            <TbUserCog
+                              aria-hidden="true"
+                              className={classNames(
+                                currentPath === PROFILE ||
+                                  currentPath.includes(
+                                    "Profile Settings"
+                                      .split(" ")[0]
+                                      .toLowerCase()
+                                  )
+                                  ? "text-white"
+                                  : "text-black group-hover:text-primary",
+                                "h-5 w-5 shrink-0"
+                              )}
+                            />
+                            Profile Settings
+                          </Link>
+                        </li>
                       </ul>
                     </li>
                   </ul>

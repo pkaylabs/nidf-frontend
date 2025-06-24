@@ -65,10 +65,6 @@ const Login = () => {
             return navigate({
               to: OTP_VERIFICATION,
             });
-          } else if (!res?.user?.church_profile) {
-            return navigate({
-              to: ONBOARDING,
-            });
           } else {
             dispatch(setCredentials({ ...res }));
             toast(

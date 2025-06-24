@@ -34,7 +34,6 @@ const Applications = () => {
   }, []);
 
   const { data, isLoading, refetch, isError } = useGetApplicationsQuery({});
-  console.log(data, "data application");
   const rows = data ?? [];
 
   const [deleteApplication, { isLoading: isDeleting }] =
