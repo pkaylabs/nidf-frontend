@@ -9,8 +9,16 @@ import {
   useGetDivisionsQuery,
 } from "@/redux/features/divisions/divisionApiSlice";
 import Swal from "sweetalert2";
+import { useGetRegionsQuery } from "@/redux/features/regions/regionApiSlice";
 
 const Districts = () => {
+  const [pagNumb, setPagNumb] = useState<number>(10);
+  const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setPagNumb(Number(e.target.value));
+  };
+
+  const [regionsList, setRegionsList] = useState([]);
+
   const navigate = useNavigate();
 
   const headers = [
@@ -23,6 +31,16 @@ const Districts = () => {
 
   const { data, isLoading, refetch, isError } = useGetDivisionsQuery({});
   const rows = data?.divisions ?? [];
+
+  const { data: regionsData } = useGetRegionsQuery({});
+
+  useEffect(() => {
+    if (regionsData?.region) {
+      const names = regionsData.region.map((region: any) => region.name);
+      setRegionsList(names);
+    }
+  }, [regionsData]);
+
 
   const [deleteDivision, { isLoading: isDeleting }] =
     useDeleteDivisionMutation();
@@ -147,6 +165,27 @@ const Districts = () => {
 
   return (
     <div className="p-3 md:p-5 h-full ">
+      <div className="w-full flex justify-end">
+        <div className="">
+          <label htmlFor="pagination" className="block text-gray-700 mb-1">
+            Items per page:
+          </label>
+          <div className="border border-gray-300 bg-white rounded-md pr-3">
+            <select
+              id="pagination"
+              value={pagNumb}
+              onChange={handleChange}
+              className="mt-1 block w-full pl-3 pr-10 py-2.5 text-base  focus:outline-none sm:text-sm rounded-md"
+            >
+              {[5, 10, 20, 50, 100].map((num) => (
+                <option key={num} value={num}>
+                  {num}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+      </div>
       <Table
         headers={headers}
         showAddButton={true}
@@ -155,29 +194,13 @@ const Districts = () => {
         rows={rows}
         renderRow={customRowRenderer}
         footer={<div>Pagination goes here</div>}
-        maxRows={5}
+        maxRows={pagNumb}
         loading={isLoading}
-        searchableFields={["division name"]}
+        searchableFields={["name", "region"]}
         filters={[
           {
             name: "region",
-            fields: [
-              "Greater Accra",
-              "Ashanti",
-              "Northern",
-              "Western",
-              "Eastern",
-              "Central",
-              "Volta",
-              "Oti",
-              "Upper East",
-              "Upper West",
-              "Bono",
-              "Bono East",
-              "Ahafo",
-              "Savannah",
-              "North East",
-            ],
+            fields: regionsList,
           },
         ]}
       />

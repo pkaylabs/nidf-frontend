@@ -10,6 +10,13 @@ export const churchApiSlice = api.injectEndpoints({
         body: formData,
       }),
     }),
+    udpateChurch: builder.mutation({
+      query: (formData: FormData) => ({
+        url: "churchprofile/",
+        method: "PUT",
+        body: formData,
+      }),
+    }),
     getChurches: builder.query({
       query: () => "churches/",
     }),
@@ -21,6 +28,7 @@ export const churchApiSlice = api.injectEndpoints({
 
 export const {
   useCreateChurchMutation,
+  useUdpateChurchMutation,
   useGetChurchesQuery,
   useGetChurchProfileQuery,
 } = churchApiSlice;

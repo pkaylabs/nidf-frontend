@@ -14,6 +14,7 @@ import {
 import {
   useCreateChurchMutation,
   useGetChurchProfileQuery,
+  useUdpateChurchMutation,
 } from "@/redux/features/churches/churchApiSlice";
 import { useGetRegionsQuery } from "@/redux/features/regions/regionApiSlice";
 import { useGetDivisionsQuery } from "@/redux/features/divisions/divisionApiSlice";
@@ -40,13 +41,9 @@ const ChurchForm = () => {
   const { data: divisionsData } = useGetDivisionsQuery({});
   const regions = data?.region || [];
   const divisions = divisionsData?.divisions || [];
-  const { data: churchData } = useGetChurchProfileQuery({});
+  const { data: churchData, refetch } = useGetChurchProfileQuery({});
 
-  console.log(churchData, "church data");
-
-  const [createChurch, { isLoading }] = useCreateChurchMutation();
-
-  const navigate = useNavigate();
+  const [updateChurch, { isLoading }] = useUdpateChurchMutation();
 
   const {
     values,
@@ -84,17 +81,70 @@ const ChurchForm = () => {
       pastor_email: Yup.string(),
     }),
     onSubmit: async (values) => {
-      console.log(values, "values");
+      try {
+        const formData = new FormData();
+
+        formData.append("location_name", values.name as string);
+        formData.append("location_address", values.location as string);
+        formData.append("church_phone", values.phone as string);
+        formData.append("church_email", values.email as string);
+        formData.append("region", values.region as string);
+        formData.append("district", values.division as string);
+        formData.append("church_status", values.status as string);
+        formData.append("pastor_name", values.pastor_name as string);
+        formData.append("pastor_phone", values.pastor_phone as string);
+        formData.append("pastor_email", values.pastor_email as string);
+
+        if (selectedLogo) {
+          formData.append("church_logo", selectedLogo);
+        }
+        const res = await updateChurch(formData).unwrap();
+
+        if (res) {
+          refetch();
+          toast(
+            JSON.stringify({
+              type: "success",
+              title: `Church profile updated successfully`,
+            })
+          );
+        } else {
+          toast(
+            JSON.stringify({
+              type: "error",
+              title:
+                res?.data?.error_message ?? "Failed to update church profile",
+            })
+          );
+        }
+      } catch (err: any) {
+        console.log(err);
+        toast(
+          JSON.stringify({
+            type: "error",
+            title:
+              err?.data?.error_message ?? "Failed to update church profile",
+          })
+        );
+      }
     },
   });
 
   useEffect(() => {
     if (churchData) {
+      const matchingRegion = regions.find(
+        (region: any) => region.id === churchData?.district?.region?.id
+      );
+      const matchingDivision = divisions.find(
+        (division: any) => division.id === churchData?.district?.id
+      );
+
+      setSelectedRegion(matchingRegion || null);
+      setSelectedDivision(matchingDivision || null);
       setValues({
-        ...values,
         name: churchData?.location_name ?? "",
         location: churchData?.location_address ?? "",
-        region: churchData?.region?.id ?? "",
+        region: churchData?.district?.region?.id ?? "",
         division: churchData?.district?.id ?? "",
         phone: churchData?.church_phone ?? "",
         email: churchData?.church_email ?? "",
@@ -103,8 +153,12 @@ const ChurchForm = () => {
         pastor_phone: churchData?.pastor_phone ?? "",
         pastor_email: churchData?.pastor_email ?? "",
       });
+
+      if (churchData?.church_logo) {
+        setImageSrc(churchData.church_logo);
+      }
     }
-  }, [churchData]);
+  }, [churchData, regions, divisions]);
 
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];

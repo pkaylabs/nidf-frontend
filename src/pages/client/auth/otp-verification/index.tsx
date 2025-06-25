@@ -1,6 +1,8 @@
 import ButtonLoader from "@/components/loaders/button";
-import { ONBOARDING } from "@/constants/page-path";
-import { useVerifyOtpMutation } from "@/redux/features/auth/authApiSlice";
+import { DASHBOARD, ONBOARDING } from "@/constants/page-path";
+import { useAppDispatch, useAppSelector } from "@/redux";
+import { useSendOTPMutation, useVerifyOtpMutation } from "@/redux/features/auth/authApiSlice";
+import { selectCurrentToken, setCredentials } from "@/redux/features/auth/authSlice";
 import React, { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { useNavigate, useSearch } from "react-location";
@@ -13,6 +15,10 @@ const OtpVerification = () => {
   useEffect(() => {
     document.title = "NIDF | Reset";
   }, []);
+
+    const token = useAppSelector(selectCurrentToken);
+      const dispatch = useAppDispatch();
+    
 
   const search = useSearch<any>();
 
@@ -50,6 +56,7 @@ const OtpVerification = () => {
   }, []);
 
   const [verify, { isLoading }] = useVerifyOtpMutation();
+  const [resendOTP, {isLoading: resending}] = useSendOTPMutation()
 
   const handleOtpSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -58,6 +65,7 @@ const OtpVerification = () => {
     try {
       const res = await verify({
         otp: otpCode,
+        phone: search.phone
       }).unwrap();
 
       console.log(res, "res");
@@ -70,7 +78,10 @@ const OtpVerification = () => {
           })
         );
 
-        navigate({ to: ONBOARDING, replace: true });
+        dispatch(setCredentials({ user: res?.user, token: token }));
+
+        navigate({ to: DASHBOARD, replace: true });
+
       } else {
         toast(
           JSON.stringify({
@@ -89,6 +100,31 @@ const OtpVerification = () => {
       );
     }
   };
+
+  const handleResendOTP = async () => {
+    try {
+      await resendOTP({
+        phone: search.phone
+      }).then((res) => {
+        console.log(res, "rresend opt mutation");
+        
+        toast(
+          JSON.stringify({
+            type: "success",
+            title:  `OTP successfully sent`,
+          })
+        );
+      })
+    } catch (error) {
+      console.log(error);
+      toast(
+        JSON.stringify({
+          type: "error",
+          title:  "Error resending OTP",
+        })
+      );
+    }
+  }
 
   useEffect(() => {
     if (inputRefs.current[0]) {
@@ -139,6 +175,14 @@ const OtpVerification = () => {
         className="bg-[#17567E] w-36 h-12 flex justify-center items-center rounded-md text-white  mx-auto mt-8 mobile:px-10 mobile:py-2 mobile:text-sm disabled:opacity-80"
       >
         {isLoading ? <ButtonLoader title="Verifying" /> : "Verify"}
+      </button>
+      <button
+        disabled={isLoading}
+        onClick={handleResendOTP}
+          type="button"
+        className="text-primary  mx-auto  mobile:text-sm"
+      >
+       Resend OTP
       </button>
     </form>
   );

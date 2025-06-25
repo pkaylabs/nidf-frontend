@@ -12,6 +12,7 @@ import {
   useVerifyOtpMutation,
 } from "@/redux/features/auth/authApiSlice";
 import toast from "react-hot-toast";
+import logo from "@/assets/images/logo1.png";
 
 const ResetPassword = () => {
   const navigate = useNavigate();
@@ -169,7 +170,7 @@ const ResetPassword = () => {
               toast(
                 JSON.stringify({
                   type: "error",
-                  title: e ?? "An error occured",
+                  title: "An error occured",
                 })
               );
             });
@@ -178,7 +179,7 @@ const ResetPassword = () => {
           toast(
             JSON.stringify({
               type: "error",
-              title: error ?? "An error occured",
+              title: "An error occured",
             })
           );
         }
@@ -197,6 +198,10 @@ const ResetPassword = () => {
         <p className="text-[#A3A3A3] font-normal mobile:text-sm">
           Provide the information below to get your password back!
         </p>
+      </div>
+
+       <div className="flex justify-center md:hidden">
+        <img src={logo} alt="logo" className="w-20 h-20  " />
       </div>
 
       <div className="">

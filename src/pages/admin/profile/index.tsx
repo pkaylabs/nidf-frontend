@@ -1,21 +1,21 @@
-import React, { useState } from "react";
-import { motion } from "framer-motion";
-import { Camera, User, Mail, Phone, Save, Edit3 } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "@/redux";
 import {
   selectCurrentToken,
   selectCurrentUser,
   setCredentials,
 } from "@/redux/features/auth/authSlice";
-import ChurchForm from "./components/church-form";
 import {
   useGetUserProfileQuery,
   useUpdateUserProfileMutation,
 } from "@/redux/features/user/userApiSlice";
+import { motion } from "framer-motion";
+import { Camera, User } from "iconsax-react";
+import { Edit3, Mail, Phone, Save } from "lucide-react";
 import moment from "moment";
+import React, { useState } from "react";
 import toast from "react-hot-toast";
 
-const Profile = () => {
+const AdminProfile = () => {
   const [selectedLogo, setSelectedLogo] = useState<File | null>(null);
   const [imageSrc, setImageSrc] = useState("");
 
@@ -23,11 +23,8 @@ const Profile = () => {
   const token = useAppSelector(selectCurrentToken);
   const dispatch = useAppDispatch();
 
-  const {
-    data: userData,
-    refetch,
-  } = useGetUserProfileQuery({});
-  
+  const { data: userData, refetch } = useGetUserProfileQuery({});
+
   const [updateUser, { isLoading: updatingUser }] =
     useUpdateUserProfileMutation();
 
@@ -297,16 +294,6 @@ const Profile = () => {
           </div>
         </motion.div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.6 }}
-          className="mt-5 bg-white rounded-lg p-4 lg:p-6"
-        >
-          {/* Form Section */}
-          <ChurchForm />
-        </motion.div>
-
         {/* Additional Info Card */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -325,9 +312,9 @@ const Profile = () => {
               </span>
             </div>
             <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
-              <span className="text-gray-600">Two-Factor Auth</span>
+              <span className="text-gray-600">Phone Verification</span>
               <span className="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm font-medium">
-                Enabled
+                Verified
               </span>
             </div>
           </div>
@@ -336,5 +323,4 @@ const Profile = () => {
     </div>
   );
 };
-
-export default Profile;
+export default AdminProfile;

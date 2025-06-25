@@ -10,6 +10,7 @@ import {
   ADMIN_DISTRICTS,
   ADMIN_LOGIN,
   ADMIN_NOTIFICATIONS,
+  ADMIN_PROFILE,
   ADMIN_PROGRESS,
   ADMIN_REGIONS,
   ADMIN_REPAYMENT,
@@ -67,6 +68,7 @@ import NotificationDetails from "@/pages/admin/notifications/details";
 import Users from "@/pages/admin/users";
 import AddUser from "@/pages/admin/users/add";
 import Profile from "@/pages/client/profile";
+import AdminProfile from "@/pages/admin/profile";
 
 export type RouteProps = Omit<Route, "children"> & {
   navigation?: boolean;
@@ -454,6 +456,22 @@ const routes: RouteProps[] = [
       {
         path: "/add",
         element: <AddUser />,
+        meta: {
+          layout: "Admin",
+        },
+      },
+    ],
+  },
+  {
+    path: ADMIN_PROFILE,
+    element: <Outlet />,
+    meta: {
+      layout: "Admin",
+    },
+    children: [
+      {
+        path: "/",
+        element: <AdminProfile />,
         meta: {
           layout: "Admin",
         },

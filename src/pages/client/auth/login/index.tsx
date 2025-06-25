@@ -16,6 +16,7 @@ import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { Link, useNavigate, useSearch } from "react-location";
 import * as Yup from "yup";
+import logo from "@/assets/images/logo1.png";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -44,8 +45,8 @@ const Login = () => {
     },
     validationSchema: Yup.object().shape({
       email: Yup.string(),
-        // .email("Please enter a valid email")
-        // .required("Email or phone is required"),
+      // .email("Please enter a valid email")
+      // .required("Email or phone is required"),
       password: Yup.string()
         .min(8, "Password must be 8 characters or more")
         .required("Password is required"),
@@ -62,8 +63,12 @@ const Login = () => {
           !res?.user?.is_superuser
         ) {
           if (!res?.user?.phone_verified) {
+            dispatch(setCredentials({ user: null, token: res?.token }));
             return navigate({
               to: OTP_VERIFICATION,
+              search: {
+                phone: res?.user?.phone,
+              },
             });
           } else {
             dispatch(setCredentials({ ...res }));
@@ -73,7 +78,6 @@ const Login = () => {
                 title: `Welcome back ${res?.user?.name?.split(" ")[0]}`,
               })
             );
-
             navigate({
               replace: true,
               to: DASHBOARD,
@@ -131,6 +135,9 @@ const Login = () => {
         <p className="text-[#A3A3A3] font-normal mobile:text-sm">
           Log in to access your NIDF Portal account
         </p>
+      </div>
+      <div className="flex justify-center md:hidden">
+        <img src={logo} alt="logo" className="w-20 h-20  " />
       </div>
       <form onSubmit={handleSubmit} className="w-full flex flex-col gap-y-2">
         <label htmlFor="Email" className="font-normal text-xs">
