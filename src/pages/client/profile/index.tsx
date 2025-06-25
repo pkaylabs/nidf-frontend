@@ -1,24 +1,36 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { Camera, User, Mail, Phone, Save, Edit3 } from "lucide-react";
-import { useAppSelector } from "@/redux";
-import { selectCurrentUser } from "@/redux/features/auth/authSlice";
+import { useAppDispatch, useAppSelector } from "@/redux";
+import {
+  selectCurrentToken,
+  selectCurrentUser,
+  setCredentials,
+} from "@/redux/features/auth/authSlice";
 import ChurchForm from "./components/church-form";
-import { useGetUserProfileQuery } from "@/redux/features/user/userApiSlice";
+import {
+  useGetUserProfileQuery,
+  useUpdateUserProfileMutation,
+} from "@/redux/features/user/userApiSlice";
 import moment from "moment";
+import toast from "react-hot-toast";
 
 const Profile = () => {
   const [selectedLogo, setSelectedLogo] = useState<File | null>(null);
   const [imageSrc, setImageSrc] = useState("");
 
   const user = useAppSelector(selectCurrentUser);
+  const token = useAppSelector(selectCurrentToken);
+  const dispatch = useAppDispatch();
 
   const {
-      data: userData,
-      refetch,
-      isLoading: fetchingUser,
-    } = useGetUserProfileQuery({});
-    
+    data: userData,
+    refetch,
+  } = useGetUserProfileQuery({});
+  
+  const [updateUser, { isLoading: updatingUser }] =
+    useUpdateUserProfileMutation();
+
   const [profileData, setProfileData] = useState({
     name: userData?.name ?? user?.name ?? "",
     email: userData?.email ?? user?.email ?? "",
@@ -56,10 +68,35 @@ const Profile = () => {
   };
 
   const handleSave = async () => {
-    setIsSaving(true);
+    try {
+      await updateUser({
+        email: profileData?.email,
+        name: profileData?.name,
+        phone: profileData?.phone,
+      })
+        .then((res) => {
+          if (res?.data) {
+            refetch();
+            dispatch(setCredentials({ user: res.data, token: token }));
 
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-    setIsSaving(false);
+            toast(
+              JSON.stringify({
+                type: "success",
+                title: `Profile updated successfully`,
+              })
+            );
+          }
+        })
+        .catch((e) => {
+          toast(
+            JSON.stringify({
+              type: "error",
+              title: "An error occurred while updating profile",
+            })
+          );
+        });
+    } catch (error) {}
+
     setIsEditing({ name: false, email: false });
 
     console.log("Saving profile data:", { profileData, selectedLogo });
@@ -142,9 +179,7 @@ const Profile = () => {
                 transition={{ delay: 0.2 }}
                 className="space-y-1"
               >
-                <label className="font-normal text-xs">
-                  Full Name
-                </label>
+                <label className="font-normal text-xs">Full Name</label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                     <User className="h-5 w-5 text-gray-400" />
@@ -177,9 +212,7 @@ const Profile = () => {
                 transition={{ delay: 0.3 }}
                 className="space-y-1"
               >
-                <label className="font-normal text-xs">
-                  Email Address
-                </label>
+                <label className="font-normal text-xs">Email Address</label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                     <Mail className="h-5 w-5 text-gray-400" />
@@ -245,10 +278,10 @@ const Profile = () => {
             >
               <button
                 onClick={handleSave}
-                disabled={isSaving}
+                disabled={updatingUser}
                 className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-primary-600 to-purple-300 text-white rounded-md hover:from-primary-700 hover:to-purple-400 focus:outline-none focus:ring-4 focus:ring-blue-300 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
               >
-                {isSaving ? (
+                {updatingUser ? (
                   <>
                     <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-3" />
                     Saving Changes...
