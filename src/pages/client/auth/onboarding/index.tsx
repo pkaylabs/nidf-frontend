@@ -3,7 +3,7 @@ import * as Yup from "yup";
 import React, { useEffect, useState } from "react";
 import { FaFileUpload } from "react-icons/fa";
 import { Link, useNavigate } from "react-location";
-import { DASHBOARD, LOGIN } from "@/constants/page-path";
+import { DASHBOARD, LOGIN, OTP_VERIFICATION } from "@/constants/page-path";
 import ButtonLoader from "@/components/loaders/button";
 import { useAppDispatch, useAppSelector } from "@/redux";
 import {
@@ -36,6 +36,9 @@ const Onboarding = () => {
     useGetDivisionsQuery({});
   const regions = data?.region || [];
   const divisions = divisionsData?.divisions || [];
+
+  console.log(regions, "regions");
+  console.log(divisions, "division");
 
   const navigate = useNavigate();
   const {
@@ -132,9 +135,12 @@ const Onboarding = () => {
             })
           );
 
-          dispatch(setCredentials({ ...res }));
+          dispatch(setCredentials({ user: null, token: res.token}));
 
-          navigate({ to: DASHBOARD, replace: true });
+          navigate({ to: OTP_VERIFICATION, search: {
+            phone: values.login_phone
+          }});
+
         } else {
           toast(
             JSON.stringify({
@@ -163,6 +169,26 @@ const Onboarding = () => {
       setImageSrc(localUrl);
     }
   };
+
+  useEffect(() => {
+    if (selectedDivision && selectedDivision.region) {
+      const matchingRegion = regions.find(
+        (region: any) => region.id === selectedDivision.region.id
+      );
+
+      if (matchingRegion) {
+        setSelectedRegion(matchingRegion);
+        setFieldValue("region", matchingRegion.id);
+      }
+    }
+  }, [selectedDivision, regions, setFieldValue]);
+
+  useEffect(() => {
+    if (!selectedDivision) {
+      setSelectedRegion(null);
+      setFieldValue("region", "");
+    }
+  }, [selectedDivision, setFieldValue]);
 
   return (
     <div className="w-full flex flex-col gap-y-10 mobile:mt-5 mobile:gap-y-5">
@@ -270,6 +296,16 @@ const Onboarding = () => {
                 onChange={(value) => {
                   setSelectedDivision(value);
                   setFieldValue("division", value?.id || "");
+
+                  if (value && value.region) {
+                    const matchingRegion = regions.find(
+                      (region: any) => region.id === value.region.id
+                    );
+                    if (matchingRegion) {
+                      setSelectedRegion(matchingRegion);
+                      setFieldValue("region", matchingRegion.id);
+                    }
+                  }
                 }}
                 placeholder="Select Division"
                 error={!!errors.division && touched.division}

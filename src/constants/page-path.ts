@@ -29,6 +29,7 @@ export const ADMIN_DISTRICTS = "/admin/divisions";
 export const ADMIN_REPAYMENT = "/admin/repayment";
 
 export const ADMIN_USERS = "/admin/users";
+export const ADMIN_PROFILE = "/admin/profile";
 export const ADMIN_USER_DETAIL = "/admin/users/:id";
 
 export const ADMIN_NOTIFICATIONS = "/admin/notifications";

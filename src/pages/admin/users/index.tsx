@@ -8,6 +8,11 @@ import ViewUserModal from "./components/view-modal";
 import { useGetUsersQuery } from "@/redux/features/user/userApiSlice";
 
 const Users = () => {
+  const [pagNumb, setPagNumb] = useState<number>(10);
+  const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setPagNumb(Number(e.target.value));
+  };
+
   const navigate = useNavigate();
 
   const headers = [
@@ -105,6 +110,27 @@ const Users = () => {
 
   return (
     <div className="p-3 md:p-5">
+      <div className="w-full flex justify-end">
+        <div className="">
+          <label htmlFor="pagination" className="block text-gray-700 mb-1">
+            Items per page:
+          </label>
+          <div className="border border-gray-300 bg-white rounded-md pr-3">
+            <select
+              id="pagination"
+              value={pagNumb}
+              onChange={handleChange}
+              className="mt-1 block w-full pl-3 pr-10 py-2.5 text-base  focus:outline-none sm:text-sm rounded-md"
+            >
+              {[5, 10, 20, 50, 100].map((num) => (
+                <option key={num} value={num}>
+                  {num}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+      </div>
       <Table
         headers={headers}
         showAddButton={true}
@@ -113,7 +139,7 @@ const Users = () => {
         rows={rows}
         renderRow={customRowRenderer}
         footer={<div>Pagination goes here</div>}
-        maxRows={10}
+        maxRows={pagNumb}
         loading={isLoading}
         searchableFields={["user id", "name", "email", "phone"]}
         filters={[

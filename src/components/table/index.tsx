@@ -7,6 +7,7 @@ import { ArrowLeft2, ArrowRight2 } from "iconsax-react";
 import EmptyState from "./components/empty-state";
 import { useAppSelector } from "@/redux";
 import { selectCurrentUser } from "@/redux/features/auth/authSlice";
+import ResponsivePagination from "./components/pagination";
 
 interface Header {
   name: string;
@@ -183,44 +184,12 @@ const Table: React.FC<TableProps> = ({
         </div>
       )}
 
-      {/* Pagination */}
-      {!loading && totalPages > 1 && (
-        <div className="p-4 flex justify-between items-center bg-white mt-4 rounded-md">
-          <div className=""></div>
-          <div className="flex space-x-2">
-            {Array.from({ length: totalPages }).map((_, index) => (
-              <button
-                key={index}
-                className={`px-4 py-2 rounded text-sm ${
-                  currentPage === index + 1
-                    ? "bg-primary-500 text-white"
-                    : "bg-gray-200 hover:bg-gray-300"
-                } transition-all duration-150 ease-in-out`}
-                onClick={() => handlePageChange(index + 1)}
-              >
-                {index + 1}
-              </button>
-            ))}
-          </div>
-
-          <div className="flex items-center space-x-3">
-            <button
-              className="w-10 h-10 flex justify-center items-center cursor-pointer rounded-full bg-gray-200 hover:bg-gray-300 shadow transition-all duration-150 ease-in-out "
-              onClick={() => handlePageChange(currentPage - 1)}
-              disabled={currentPage === 1}
-            >
-              <ArrowLeft2 size="20" color="#545454" />
-            </button>
-            <button
-              className="w-10 h-10 flex justify-center items-center cursor-pointer rounded-full bg-gray-200 hover:bg-gray-300 shadow transition-all duration-150 ease-in-out "
-              onClick={() => handlePageChange(currentPage + 1)}
-              disabled={currentPage === totalPages}
-            >
-              <ArrowRight2 size="20" color="#545454" />
-            </button>
-          </div>
-        </div>
-      )}
+      <ResponsivePagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={handlePageChange}
+        loading={loading}
+      />
     </motion.div>
   );
 };

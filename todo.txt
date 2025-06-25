@@ -1,6 +1,1 @@
-forgot password
-church status at onboarding (merge to signup ) - dropdown eg Location church, District church, Group of District Headquarters, Divisional Headquarters, Regional Headquarters
-get church by id
-profile settings tab ()
-is emergency field in applications should be a radio button (options: yes/no)
-Justification of aid at application support info (only show if support type is Aid)
+region and district filtering 

@@ -25,7 +25,6 @@ const AdminApplications = () => {
   ];
 
   const { data, isLoading, refetch, isError } = useGetApplicationsQuery({});
-  // console.log(data, "data");
   const rows = data ?? [];
 
   interface RowData {
@@ -95,6 +94,7 @@ const AdminApplications = () => {
                 amount: row.amount as string,
                 description: row.description as string,
                 purpose: row.justification_for_aid as string,
+                award_reference: row.award_reference as string,
                 expected_completion_date:
                   row.expected_completion_date as string,
                 current_stage: row.current_stage as string,
@@ -122,24 +122,23 @@ const AdminApplications = () => {
     <div className="p-3 md:p-5">
       <div className="w-full flex justify-end">
         <div className="">
-        <label
-          htmlFor="pagination"
-          className="block text-gray-700 mb-1"
-        >
-          Items per page:
-        </label>
-        <select
-          id="pagination"
-          value={pagNumb}
-          onChange={handleChange}
-          className="mt-1 block w-full pl-3 pr-10 py-3 text-base border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
-        >
-          {[5, 10, 20, 50, 100].map((num) => (
-            <option key={num} value={num}>
-              {num}
-            </option>
-          ))}
-        </select>
+          <label htmlFor="pagination" className="block text-gray-700 mb-1">
+            Items per page:
+          </label>
+          <div className="border border-gray-300 bg-white rounded-md pr-3">
+            <select
+              id="pagination"
+              value={pagNumb}
+              onChange={handleChange}
+              className="mt-1 block w-full pl-3 pr-10 py-2.5 text-base  focus:outline-none sm:text-sm rounded-md"
+            >
+              {[5, 10, 20, 50, 100].map((num) => (
+                <option key={num} value={num}>
+                  {num}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
       </div>
 

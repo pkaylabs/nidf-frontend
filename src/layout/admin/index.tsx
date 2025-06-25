@@ -36,6 +36,7 @@ import {
   ADMIN_DISTRICTS,
   ADMIN_LOGIN,
   ADMIN_NOTIFICATIONS,
+  ADMIN_PROFILE,
   ADMIN_PROGRESS,
   ADMIN_REGIONS,
   ADMIN_REPAYMENT,
@@ -50,7 +51,7 @@ import {
 } from "@/constants/page-path";
 import logo from "@/assets/images/logo.png";
 import { ArrowDown2 } from "iconsax-react";
-import { TbLogout2 } from "react-icons/tb";
+import { TbLogout2, TbUserCog } from "react-icons/tb";
 import { IoLogoAppleAr } from "react-icons/io5";
 import { GiProgression } from "react-icons/gi";
 import { IoCardOutline } from "react-icons/io5";
@@ -121,14 +122,20 @@ const navigation = [
     icon: BellIcon,
     target: "notifications",
   },
+  {
+    name: "Profile",
+    href: ADMIN_PROFILE,
+    icon: TbUserCog,
+    target: "profile",
+  },
 ];
 
 const userNavigation = [
-  { name: "Your profile", href: "#" },
+  { name: "Your profile", href: ADMIN_PROFILE },
   { name: "Logout", href: "#" },
 ];
 
-// 
+//
 
 export default function AdminLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -150,15 +157,8 @@ export default function AdminLayout() {
     user?.church_logo
   );
 
-
-  if (!token || !user ||  user?.user_type === "CHURCH_USER")
-    return (
-      <Navigate
-        to={LOGIN}
-        search={{ redirect: currentHref }}
-        replace
-      />
-    );
+  if (!token || !user || user?.user_type === "CHURCH_USER")
+    return <Navigate to={LOGIN} search={{ redirect: currentHref }} replace />;
 
   return (
     <>
@@ -196,11 +196,7 @@ export default function AdminLayout() {
               {/* Sidebar component, swap this element with another sidebar if you like */}
               <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-white px-6 pb-4">
                 <div className="flex h-16 shrink-0 items-center">
-                  <img
-                    alt="Your Company"
-                    src={logo}
-                    className="h-10 w-auto"
-                  />
+                  <img alt="Your Company" src={logo} className="h-10 w-auto" />
                 </div>
                 <nav className="flex flex-1 flex-col">
                   <ul role="list" className="flex flex-1 flex-col gap-y-7">
