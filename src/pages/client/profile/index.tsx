@@ -190,7 +190,7 @@ const Profile = () => {
                     onChange={(e) => handleInputChange("email", e.target.value)}
                     onFocus={() => toggleEdit("email")}
                     onBlur={() => toggleEdit("email")}
-                    className="w-full pl-12 pr-12 py-4 border border-gray-200 rounded-xl focus:outline-none transition-all duration-200 text-gray-900 font-medium"
+                    className="w-full pl-12 pr-12 py-4 border border-gray-200 rounded-xl focus:outline-none transition-all duration-200 text-gray-900"
                     placeholder="Enter your email address"
                   />
                   {isEditing.email && (

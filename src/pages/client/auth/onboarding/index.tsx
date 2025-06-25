@@ -78,7 +78,7 @@ const Onboarding = () => {
       pastor_name: Yup.string().required("Pastor name is required"),
       pastor_phone: Yup.string().required("Pastor phone is required"),
       pastor_email: Yup.string(),
-      manager_name: Yup.string(),
+      manager_name: Yup.string().required("Manager's name is required"),
       manager_phone: Yup.string(),
       manager_email: Yup.string(),
       login_email: Yup.string().email("Please enter a valid email"),
@@ -124,7 +124,7 @@ const Onboarding = () => {
 
         console.log(res, "responseeeeee");
 
-        if (res?.data?.token) {
+        if (res?.token) {
           toast(
             JSON.stringify({
               type: "success",
@@ -235,7 +235,7 @@ const Onboarding = () => {
               )}
           </div>
 
-          <div className="w-full flex gap-x-3 mt-1">
+          <div className="w-full flex mobile:flex-col gap-3 mt-1">
             <div className="flex-1 relative flex flex-col gap-y-2">
               <label htmlFor="region" className="font-normal text-xs">
                 Region
@@ -286,7 +286,7 @@ const Onboarding = () => {
           </div>
         </div>
         <div className="flex flex-col gap-y-2">
-          <div className="w-full flex gap-x-3">
+          <div className="w-full flex mobile:flex-col gap-3">
             <div className="">
               <label htmlFor="phone" className="font-normal text-xs">
                 Phone Number
@@ -341,7 +341,7 @@ const Onboarding = () => {
         </div>
         <div className="flex flex-col gap-y-2">
           <h1 className="font-semibold">Pastor's Details</h1>
-          <div className="w-full flex gap-x-3">
+          <div className="w-full flex mobile:flex-col gap-3">
             <div className="">
               <label htmlFor="pastor_name" className="font-normal text-xs">
                 Pastor's Name

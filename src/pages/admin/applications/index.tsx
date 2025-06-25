@@ -9,6 +9,10 @@ import moment from "moment";
 
 const AdminApplications = () => {
   const navigate = useNavigate();
+  const [pagNumb, setPagNumb] = useState<number>(10);
+  const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setPagNumb(Number(e.target.value));
+  };
 
   const headers = [
     { name: "Application ID", value: "application id" },
@@ -26,7 +30,7 @@ const AdminApplications = () => {
 
   interface RowData {
     church?: {
-      name?: string;
+      location_name?: string;
       pastor_name: string;
       district?: {
         name?: string;
@@ -45,9 +49,11 @@ const AdminApplications = () => {
       className="font-poppins border-b  text-black  border-gray-200 hover:bg-gray-100 transition-all duration-150 ease-in-out"
     >
       <td className="px-4 py-3 truncate">{row?.application_id}</td>
-      <td className="px-4 py-3 truncate">{row?.church?.name}</td>
+      <td className="px-4 py-3 truncate">{row?.church?.location_name}</td>
       <td className="px-4 py-3 truncate">{row?.support_type}</td>
-      <td className="px-4 py-3 truncate capitalize">{row?.is_emergency.toString()}</td>
+      <td className="px-4 py-3 truncate capitalize">
+        {row?.is_emergency.toString()}
+      </td>
       <td className="px-4 py-3 truncate">
         {row?.created_at && typeof row.created_at === "string"
           ? moment(row.created_at).format("LL")
@@ -77,7 +83,7 @@ const AdminApplications = () => {
               search: {
                 id: row.id as string,
                 status: row.status as string,
-                church_name: row?.church?.name,
+                church_name: row?.church?.location_name,
                 division: row?.church?.district?.name as string,
                 pastor: row?.church?.pastor_name as string,
                 project_location: row?.project_location as string,
@@ -88,7 +94,7 @@ const AdminApplications = () => {
                 category: row.category as string,
                 amount: row.amount as string,
                 description: row.description as string,
-                purpose: row.purpose as string,
+                purpose: row.justification_for_aid as string,
                 expected_completion_date:
                   row.expected_completion_date as string,
                 current_stage: row.current_stage as string,
@@ -101,9 +107,8 @@ const AdminApplications = () => {
           className={`w-full flex justify-center items-center text-[#71839B] text-base py-1 rounded-md text-center md:border border-[#71839B]
             hover:bg-primary-100 hover:text-white transition-all duration-150 ease-in-out `}
         >
-          <p className="hidden md:block">View</p> 
-          <Eye size={'20'} color="black" />
-
+          <p className="hidden md:block">View</p>
+          <Eye size={"20"} color="black" className="hidden mobile:block" />
         </button>
       </td>
     </motion.tr>
@@ -115,6 +120,29 @@ const AdminApplications = () => {
 
   return (
     <div className="p-3 md:p-5">
+      <div className="w-full flex justify-end">
+        <div className="">
+        <label
+          htmlFor="pagination"
+          className="block text-gray-700 mb-1"
+        >
+          Items per page:
+        </label>
+        <select
+          id="pagination"
+          value={pagNumb}
+          onChange={handleChange}
+          className="mt-1 block w-full pl-3 pr-10 py-3 text-base border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+        >
+          {[5, 10, 20, 50, 100].map((num) => (
+            <option key={num} value={num}>
+              {num}
+            </option>
+          ))}
+        </select>
+        </div>
+      </div>
+
       <Table
         headers={headers}
         showAddButton={true}
@@ -123,7 +151,7 @@ const AdminApplications = () => {
         rows={rows}
         renderRow={customRowRenderer}
         footer={<div>Pagination goes here</div>}
-        maxRows={5}
+        maxRows={pagNumb}
         loading={isLoading}
         searchableFields={["application_id"]}
         filters={[

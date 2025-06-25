@@ -56,12 +56,19 @@ const ViewApplicationDetail = () => {
       value: search?.application_id ?? "N/A",
     },
     {
+      title: "Award Reference",
+      value: search?.award_reference?.length > 0 ? search?.award_reference : "--------",
+    },
+    {
       title: "Amount Requested",
       value: `GHS ${search?.amount ?? "0.00"}`,
     },
     {
       title: "Amount Approved",
-      value: "GHS 40,000",
+      value:
+        status === "Approved"
+          ? `GHS ${search?.amount ?? "0.00"}`
+          : "GHS ------",
     },
     {
       title: "Date Submitted",
@@ -207,7 +214,6 @@ const ViewApplicationDetail = () => {
             )}
           </div>
         )} */}
-        
       </section>
 
       <div className="mt-8">

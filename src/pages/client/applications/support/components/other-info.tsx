@@ -87,7 +87,8 @@ const OtherInfo: React.FC<ChurchInfoProps> = ({
           "avgMonthlyExpenses",
           "text",
           false,
-          "Enter only numbers"
+          "Enter only numbers",
+          "Average monthly expenses on the building or other infrastructure projects over the past six (6) months"
         )}
         {input(
           "Available Funds for Project",
