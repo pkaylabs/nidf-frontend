@@ -12,7 +12,7 @@ export const churchApiSlice = api.injectEndpoints({
     }),
     udpateChurch: builder.mutation({
       query: (formData: FormData) => ({
-        url: "churches/",
+        url: "churchprofile/",
         method: "PUT",
         body: formData,
       }),

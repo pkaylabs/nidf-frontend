@@ -41,7 +41,7 @@ const ChurchForm = () => {
   const { data: divisionsData } = useGetDivisionsQuery({});
   const regions = data?.region || [];
   const divisions = divisionsData?.divisions || [];
-  const { data: churchData } = useGetChurchProfileQuery({});
+  const { data: churchData, refetch } = useGetChurchProfileQuery({});
 
   const [updateChurch, { isLoading }] = useUdpateChurchMutation();
 
@@ -81,7 +81,6 @@ const ChurchForm = () => {
       pastor_email: Yup.string(),
     }),
     onSubmit: async (values) => {
-
       try {
         const formData = new FormData();
 
@@ -99,16 +98,14 @@ const ChurchForm = () => {
         if (selectedLogo) {
           formData.append("church_logo", selectedLogo);
         }
-
         const res = await updateChurch(formData).unwrap();
 
-        console.log(res, "responseeeeee");
-
-        if (res?.date) {
+        if (res) {
+          refetch();
           toast(
             JSON.stringify({
               type: "success",
-              title: res?.message ?? `Church profile updated successfully`,
+              title: `Church profile updated successfully`,
             })
           );
         } else {
