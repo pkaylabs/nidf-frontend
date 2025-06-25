@@ -55,11 +55,18 @@ const AdminApplicationDetails = () => {
   const status = search.status;
 
   const [statusValue, setStatusValue] = useState("");
-
+  //
   const summery = [
     {
       title: "Application ID",
       value: search?.application_id ?? "N/A",
+    },
+    {
+      title: "Award Reference",
+      value:
+        search?.award_reference?.length > 0
+          ? search?.award_reference
+          : "--------",
     },
     {
       title: "Applicant Church",
@@ -184,7 +191,6 @@ const AdminApplicationDetails = () => {
     },
     { label: "Approval Log", component: <ApprovalLog /> },
   ];
- 
 
   const handleStatusChange = (val: string) => {
     setStatusValue(val);

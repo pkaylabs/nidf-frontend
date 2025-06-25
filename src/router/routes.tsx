@@ -21,6 +21,7 @@ import {
   NOTIFICATIONS,
   ONBOARDING,
   OTP_VERIFICATION,
+  PROFILE,
   PROGRESS,
   REPAYMENT,
   RESET,
@@ -65,6 +66,7 @@ import AddNotification from "@/pages/admin/notifications/add";
 import NotificationDetails from "@/pages/admin/notifications/details";
 import Users from "@/pages/admin/users";
 import AddUser from "@/pages/admin/users/add";
+import Profile from "@/pages/client/profile";
 
 export type RouteProps = Omit<Route, "children"> & {
   navigation?: boolean;
@@ -195,6 +197,22 @@ const routes: RouteProps[] = [
       {
         path: "/:id",
         element: <NotificationDetails />,
+        meta: {
+          layout: "App",
+        },
+      },
+    ],
+  },
+  {
+    path: PROFILE,
+    element: <Outlet />,
+    meta: {
+      layout: "App",
+    },
+    children: [
+      {
+        path: "/",
+        element: <Profile />,
         meta: {
           layout: "App",
         },
@@ -444,13 +462,13 @@ const routes: RouteProps[] = [
   },
 
   // Auth routes
-  {
-    path: ONBOARDING,
-    element: <Onboarding />,
-    meta: {
-      layout: "Auth",
-    },
-  },
+  // {
+  //   path: ONBOARDING,
+  //   element: <Onboarding />,
+  //   meta: {
+  //     layout: "Auth",
+  //   },
+  // },
   {
     path: OTP_VERIFICATION,
     element: <OtpVerification />,

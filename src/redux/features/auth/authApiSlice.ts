@@ -11,13 +11,12 @@ export const authApiSlice = api.injectEndpoints({
       }),
     }),
     register: builder.mutation({
-      query: (credentials) => ({
+      query: (formData: FormData) => ({
         url: "register/",
         method: "POST",
-        body: { ...credentials },
+        body: formData,
       }),
     }),
-
     verifyOtp: builder.mutation({
       query: (credentials) => ({
         url: "verifyotp/",
@@ -25,8 +24,27 @@ export const authApiSlice = api.injectEndpoints({
         body: { ...credentials },
       }),
     }),
+    resetPassword: builder.mutation({
+      query: (credentials) => ({
+        url: "resetpassword/",
+        method: "POST",
+        body: { ...credentials },
+      }),
+    }),
+    sendOTP: builder.mutation({
+      query: (credentials) => ({
+        url: "sendotp/",
+        method: "POST",
+        body: { ...credentials },
+      }),
+    }),
   }),
 });
 
-export const { useLoginMutation, useRegisterMutation, useVerifyOtpMutation } =
-  authApiSlice;
+export const {
+  useLoginMutation,
+  useRegisterMutation,
+  useVerifyOtpMutation,
+  useSendOTPMutation,
+  useResetPasswordMutation,
+} = authApiSlice;

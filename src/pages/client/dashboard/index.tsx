@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 
 import { useNavigate } from "react-location";
-import { APPLICATIONS } from "@/constants/page-path";
+import { APPLICATIONS, APPLY_SUPPORT } from "@/constants/page-path";
 import { applicationTypes } from "@/constants";
 import Show from "@/components/core/show";
 import { useGetDashboardDataQuery } from "@/redux/features/dashbaord/dashbaordApiSlice";
@@ -12,7 +12,10 @@ const Dashboard = () => {
   const navigate = useNavigate();
 
   const { data, isLoading } = useGetDashboardDataQuery({});
-  // console.log(data, "dataaaaaaaaaa");
+
+  useEffect(() => {
+    document.title = "NIDF | Dashboard";
+  }, []);
 
   useEffect(() => {
     if (data && data?.arrears > 0) {
@@ -67,8 +70,11 @@ const Dashboard = () => {
               <p className="text-[#6B7280] text-sm md:text-base mt-6 ">
                 {application.description}
               </p>
-              <button className="w-full mt-6 text-sm md:text-base border border-[#979797]  text-black px-4 py-2 rounded-md hover:bg-gray-50 transition-all duration-150 ease-in-out">
-                View Details
+              <button
+                onClick={() => navigate({ to: APPLY_SUPPORT })}
+                className="w-full mt-6 text-sm md:text-base border border-[#979797]  text-black px-4 py-2 rounded-md hover:bg-gray-50 transition-all duration-150 ease-in-out"
+              >
+                Start Application
               </button>
             </div>
           ))}

@@ -10,6 +10,10 @@ const OtpVerification = () => {
   const [otp, setOtp] = useState<string[]>(new Array(4).fill(""));
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
+  useEffect(() => {
+    document.title = "NIDF | Reset";
+  }, []);
+
   const search = useSearch<any>();
 
   const handleChange = (
@@ -21,11 +25,10 @@ const OtpVerification = () => {
 
     const newOtp = [...otp];
     if (value) {
-      // Add the value and move to next input
+ 
       newOtp[index] = value;
       setOtp(newOtp);
 
-      // move to next field if current field is filled
       if (element.target.nextSibling instanceof HTMLInputElement) {
         element.target.nextSibling.focus();
       }

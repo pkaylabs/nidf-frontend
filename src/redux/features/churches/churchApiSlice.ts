@@ -13,7 +13,14 @@ export const churchApiSlice = api.injectEndpoints({
     getChurches: builder.query({
       query: () => "churches/",
     }),
+    getChurchProfile: builder.query({
+      query: () => "churchprofile/",
+    }),
   }),
 });
 
-export const { useCreateChurchMutation, useGetChurchesQuery } = churchApiSlice;
+export const {
+  useCreateChurchMutation,
+  useGetChurchesQuery,
+  useGetChurchProfileQuery,
+} = churchApiSlice;

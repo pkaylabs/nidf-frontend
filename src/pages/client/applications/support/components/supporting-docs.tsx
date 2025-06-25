@@ -54,7 +54,7 @@ const SupportingDocs: React.FC<ChurchInfoProps> = ({
         ""
       ),
       check: search?.land_ownership,
-      label: "Land Ownership Documents",
+      label: "Land Documents/Written Explanation",
       description: "Upload land ownership or build permits",
       value: values.ownershipDoc,
       error: errors.ownershipDoc,

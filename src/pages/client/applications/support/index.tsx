@@ -2,12 +2,15 @@ import { useEffect, useState } from "react";
 import { IoIosArrowRoundBack, IoIosArrowRoundForward } from "react-icons/io";
 import { useNavigate, useSearch } from "react-location";
 import { motion } from "framer-motion";
-import _ from "lodash";
+import _, { values } from "lodash";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useAppSelector } from "@/redux";
 import { selectCurrentUser } from "@/redux/features/auth/authSlice";
-import { useGetChurchesQuery } from "@/redux/features/churches/churchApiSlice";
+import {
+  useGetChurchesQuery,
+  useGetChurchProfileQuery,
+} from "@/redux/features/churches/churchApiSlice";
 import { supportApplicationSteps } from "@/constants";
 import {
   useCreateApplicationMutation,
@@ -22,11 +25,15 @@ const ApplyForSupport = () => {
   const [applicationId, setApplicationId] = useState<any>(null);
   const navigate = useNavigate();
 
+  useEffect(() => {
+    document.title = "NIDF | Applications";
+  }, []);
+
   const search = useSearch<any>();
 
   const user = useAppSelector(selectCurrentUser);
 
-  const { data } = useGetChurchesQuery({});
+  const { data } = useGetChurchProfileQuery({});
 
   const formik = useFormik({
     initialValues: {
@@ -40,10 +47,11 @@ const ApplyForSupport = () => {
       typeOfChurchProject: "",
       purposeForAid: "",
       isEmergency: false,
-      progressDescription: "",
+
       amountRequested: "",
       amountInWords: "",
       estimatedProjectCost: "",
+      monthlyRepayment: "",
       projectLocation: "",
       phase: "",
       expectedCompletionDate: "",
@@ -71,11 +79,19 @@ const ApplyForSupport = () => {
       typeOfChurchProject: Yup.string().required(
         "Type of church project is required"
       ),
-      purposeForAid: Yup.string().required("Purpose for aid is required"),
+      purposeForAid: Yup.string().when("supportType", {
+        is: (val: string) => val === "AID",
+        then: (schema) => schema.required("Purpose for aid is required"),
+        otherwise: (schema) => schema.notRequired(),
+      }),
+
+      monthlyRepayment: Yup.string().when("supportType", {
+        is: (val: string) => val === "REVOLVING_FUND",
+        then: (schema) => schema.required("Monthly repayment is required"),
+        otherwise: (schema) => schema.notRequired(),
+      }),
       isEmergency: Yup.boolean(),
-      progressDescription: Yup.string().required(
-        "Progress description is required"
-      ),
+
       amountRequested: Yup.string()
         .matches(/^\d+$/, "Amount requested must be a valid number")
         .required("Amount requested is required"),
@@ -111,11 +127,9 @@ const ApplyForSupport = () => {
       ),
       costEstimateFIle: Yup.mixed().required("Cost estimate file is required"),
       ownershipDoc: Yup.mixed().required("Ownership document is required"),
-      invoices: Yup.mixed().required("Invoices are required"),
+      // invoices: Yup.mixed(),
     }),
-    onSubmit: (values) => {
-      // console.log("values ", values);
-    },
+    onSubmit: (values) => {},
   });
 
   const [createApplication, { isLoading }] = useCreateApplicationMutation();
@@ -216,9 +230,7 @@ const ApplyForSupport = () => {
         _.isEmpty(formik.errors.typeOfChurchProject) &&
         !_.isEmpty(formik.values.typeOfChurchProject) &&
         _.isEmpty(formik.errors.purposeForAid) &&
-        !_.isEmpty(formik.values.purposeForAid) &&
-        _.isEmpty(formik.errors.progressDescription) &&
-        !_.isEmpty(formik.values.progressDescription) &&
+        _.isEmpty(formik.errors.monthlyRepayment) &&
         _.isEmpty(formik.errors.amountRequested) &&
         !_.isEmpty(formik.values.amountRequested) &&
         _.isEmpty(formik.errors.amountInWords) &&
@@ -239,9 +251,13 @@ const ApplyForSupport = () => {
             "type_of_church_project",
             formik.values.typeOfChurchProject
           );
-          formData.append("purpose", formik.values.purposeForAid);
+          formData.append("justification_for_aid", formik.values.purposeForAid);
+          formData.append(
+            "monthly_repayment_amount",
+            formik.values.monthlyRepayment
+          );
           formData.append("is_emergency", formik.values.isEmergency.toString());
-          formData.append("description", formik.values.progressDescription);
+
           formData.append("amount", formik.values.amountRequested);
           formData.append("amount_in_words", formik.values.amountInWords);
           formData.append(
@@ -305,8 +321,9 @@ const ApplyForSupport = () => {
         formik.setTouched({
           supportType: true,
           typeOfChurchProject: true,
-          purposeForAid: true,
-          progressDescription: true,
+          purposeForAid: formik.values.supportType === "AID",
+          monthlyRepayment: formik.values.supportType === "REVOLVING_FUND",
+
           amountRequested: true,
           amountInWords: true,
           estimatedProjectCost: true,
@@ -555,28 +572,28 @@ const ApplyForSupport = () => {
     if (data) {
       formik.setValues({
         ...formik.values,
-        churchName: data?.[0]?.name,
-        churchAddress: data?.[0]?.address,
-        pastorName: data?.[0]?.pastor_name,
-        pastorEmail: data?.[0]?.pastor_email,
-        pastorPhone: data?.[0]?.pastor_phone,
+        churchName: data?.location_name,
+        churchAddress: data?.location_address,
+        pastorName: data?.pastor_name,
+        pastorEmail: data?.pastor_email,
+        pastorPhone: data?.pastor_phone,
       });
-
     }
     if (search?.id) {
       formik.setValues({
         ...formik.values,
-        churchName: search?.churchName ?? data?.[0]?.name,
-        churchAddress: search?.churchAddress ?? data?.[0]?.address,
-        pastorName: search?.pastorName ?? data?.[0]?.pastor_name,
-        pastorEmail: search?.pastorEmail ?? data?.[0]?.pastor_email,
-        pastorPhone: search?.pastorPhone ?? data?.[0]?.pastor_phone,
+        churchName: search?.churchName ?? data?.location_name,
+        churchAddress: search?.churchAddress ?? data?.location_address,
+        pastorName: search?.pastorName ?? data?.pastor_name,
+        pastorEmail: search?.pastorEmail ?? data?.pastor_email,
+        pastorPhone: search?.pastorPhone ?? data?.pastor_phone,
 
         supportType: search?.support_type,
         typeOfChurchProject: search?.type_of_church_project,
         purposeForAid: search?.purpose,
+        monthlyRepayment: search?.monthly_repayment_amount,
         isEmergency: search?.is_emergency,
-        progressDescription: search?.description,
+
         amountRequested: search?.amount,
         amountInWords: search?.amount_in_words,
         estimatedProjectCost: search?.estimated_project_cost,
@@ -686,7 +703,6 @@ const ApplyForSupport = () => {
               )}
             </button>
           </div>
-          
         </div>
       </section>
     </main>

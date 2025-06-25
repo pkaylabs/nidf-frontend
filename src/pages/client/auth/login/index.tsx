@@ -4,6 +4,7 @@ import {
   DASHBOARD,
   ONBOARDING,
   OTP_VERIFICATION,
+  RESET,
   SIGNUP,
 } from "@/constants/page-path";
 import { useAppDispatch } from "@/redux";
@@ -11,13 +12,17 @@ import { useLoginMutation } from "@/redux/features/auth/authApiSlice";
 import { setCredentials } from "@/redux/features/auth/authSlice";
 import { LocationGenerics } from "@/router/location";
 import { useFormik } from "formik";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { Link, useNavigate, useSearch } from "react-location";
 import * as Yup from "yup";
 
 const Login = () => {
   const navigate = useNavigate();
+
+  useEffect(() => {
+    document.title = "NIDF | Login";
+  }, []);
 
   const search = useSearch<LocationGenerics>();
   const dispatch = useAppDispatch();
@@ -37,11 +42,10 @@ const Login = () => {
       email: "",
       password: "",
     },
-
     validationSchema: Yup.object().shape({
-      email: Yup.string()
-        .email("Please enter a valid email")
-        .required("Email is required"),
+      email: Yup.string(),
+        // .email("Please enter a valid email")
+        // .required("Email or phone is required"),
       password: Yup.string()
         .min(8, "Password must be 8 characters or more")
         .required("Password is required"),
@@ -60,10 +64,6 @@ const Login = () => {
           if (!res?.user?.phone_verified) {
             return navigate({
               to: OTP_VERIFICATION,
-            });
-          } else if (!res?.user?.church_profile) {
-            return navigate({
-              to: ONBOARDING,
             });
           } else {
             dispatch(setCredentials({ ...res }));
@@ -134,12 +134,12 @@ const Login = () => {
       </div>
       <form onSubmit={handleSubmit} className="w-full flex flex-col gap-y-2">
         <label htmlFor="Email" className="font-normal text-xs">
-          Email
+          Email or Phone
         </label>
         <input
           id="Email"
           name="email"
-          type="email"
+          type="text"
           value={values.email}
           onChange={handleChange}
           onBlur={handleBlur}
@@ -179,9 +179,13 @@ const Login = () => {
         ) : (
           ""
         )}
-        <p className="text-base text-[#1024A3] font-normal cursor-pointer mobile:text-sm">
-          Forgotten Password?
-        </p>
+        <button
+          type="button"
+          onClick={() => navigate({ to: RESET })}
+          className="text-base text-left text-[#1024A3] font-normal cursor-pointer mobile:text-sm"
+        >
+          Forgot Password?
+        </button>
         <button
           disabled={isSubmitting}
           type="submit"
@@ -200,7 +204,7 @@ const Login = () => {
             to={SIGNUP}
             className="text-[#1024A3] cursor-pointer mobile:text-sm"
           >
-            Register
+            Register a church
           </Link>
         </p>
       </form>

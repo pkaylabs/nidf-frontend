@@ -11,20 +11,44 @@ export const applicationTypes = [
   {
     icon: VscTarget,
     title: "Aid Application",
-    description: "Financial support for general church activities or projects.",
+    description: "Financial support/aid for church building projects.",
     link: "/aid-application",
   },
   {
     icon: GrPowerCycle,
     title: "Revolving Fund",
-    description: "Short-term loans to support church initiatives.",
+    description: "Short-term loans to support church building projects.",
     link: "/revolving-fund",
   },
   {
     icon: BsExclamationDiamond,
     title: "Emergency Support",
-    description: "Urgent funding for disasters or critical issues.",
+    description:
+      "Urgent funding (aid or revolving fund) for disasters or critical issues.",
     link: "/emergency-support",
+  },
+];
+
+export const churchStatus = [
+  {
+    label: "Location Church",
+    value: "Location Church",
+  },
+  {
+    label: "District Church",
+    value: "District Church",
+  },
+  {
+    label: "Group of District Headquarters",
+    value: "Group of District Headquarters",
+  },
+  {
+    label: "Divisional Headquarters",
+    value: "Divisional Headquarters",
+  },
+  {
+    label: "Regional Headquarters",
+    value: "Regional Headquarters",
   },
 ];
 
@@ -48,6 +72,30 @@ export const bankNames = [
   { label: "Standard Chartered Bank", value: "stanchart" },
   { label: "Other", value: "other" },
 ];
+
+export const projectPhase = [
+  {
+    label: 'Land acquisition',
+    value: 'Land acquisition'
+  },
+  {
+    label: 'Foundation',
+    value: 'Foundation'
+  },
+  {
+    label: 'Superstructure (columns, beams, blockwork etc.)',
+    value: 'Superstructure'
+  },
+  {
+    label: 'Roofing',
+    value: 'Roofing'
+  },
+  {
+    label: 'General finishes',
+    value: 'General finishes'
+  },
+ 
+]
 
 export const churchProjectTypes = [
   {

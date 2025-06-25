@@ -35,8 +35,7 @@ const AddRegion = () => {
       name: Yup.string().required("Region name is required"),
 
       email: Yup.string()
-        .email("Invalid email format")
-        .required("Email is required"),
+        .email("Invalid email format"),
 
       phone: Yup.string()
         .matches(/^[0-9]{10}$/, "Phone number must be 10 digits")

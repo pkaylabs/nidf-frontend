@@ -29,8 +29,11 @@ const Applications = () => {
     { name: "Action", value: "action" },
   ];
 
+  useEffect(() => {
+    document.title = "NIDF | Applications";
+  }, []);
+
   const { data, isLoading, refetch, isError } = useGetApplicationsQuery({});
-  console.log(data, "data application");
   const rows = data ?? [];
 
   const [deleteApplication, { isLoading: isDeleting }] =
@@ -159,7 +162,7 @@ const Applications = () => {
                   amount: (row.amount as string) ?? "",
                   amount_in_words: (row.amount_in_words as string) ?? "",
                   description: (row.description as string) ?? "",
-                  purpose: (row.purpose as string) ?? "",
+                  purpose: (row.justification_for_aid as string) ?? "",
                   estimated_project_cost:
                     (row.estimated_project_cost as string) ?? "",
                   avg_service_attendance:
@@ -212,7 +215,8 @@ const Applications = () => {
                   category: row.category as string,
                   amount: row.amount as string,
                   description: row.description as string,
-                  purpose: row.purpose as string,
+                  purpose: row.justification_for_aid as string,
+                  award_reference: row.award_reference as string,
                   expected_completion_date:
                     row.expected_completion_date as string,
                   current_stage: row.current_stage as string,
@@ -265,7 +269,7 @@ const Applications = () => {
       <Table
         headers={headers}
         showAddButton={true}
-        addButtonText="Apply For Support"
+        addButtonText="Start Application"
         onAddButtonClick={() => navigate({ to: APPLY_SUPPORT })}
         rows={rows}
         renderRow={customRowRenderer}
