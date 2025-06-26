@@ -1,25 +1,14 @@
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { FaFileUpload } from "react-icons/fa";
-import { Link, useNavigate } from "react-location";
-import { DASHBOARD, LOGIN } from "@/constants/page-path";
-import ButtonLoader from "@/components/loaders/button";
-import { useAppDispatch, useAppSelector } from "@/redux";
 import {
-  selectCurrentToken,
-  selectCurrentUser,
-  setCredentials,
-} from "@/redux/features/auth/authSlice";
-import {
-  useCreateChurchMutation,
   useGetChurchProfileQuery,
   useUdpateChurchMutation,
 } from "@/redux/features/churches/churchApiSlice";
 import { useGetRegionsQuery } from "@/redux/features/regions/regionApiSlice";
 import { useGetDivisionsQuery } from "@/redux/features/divisions/divisionApiSlice";
 import toast from "react-hot-toast";
-import { useGetUserProfileQuery } from "@/redux/features/user/userApiSlice";
 import { churchStatus } from "@/constants";
 import SelectDropdown from "../../applications/support/components/select";
 import { Save } from "lucide-react";
@@ -27,7 +16,6 @@ import { motion } from "framer-motion";
 import SearchableCombobox from "@/components/core/searchable-dropdown";
 
 const ChurchForm = () => {
-  const [query, setQuery] = useState<any>("");
   const [selectedRegion, setSelectedRegion] = useState<any>(null);
   const [selectedDivision, setSelectedDivision] = useState<any>(null);
   const [selectedLogo, setSelectedLogo] = useState<File | null>(null);
@@ -44,6 +32,16 @@ const ChurchForm = () => {
   const { data: churchData, refetch } = useGetChurchProfileQuery({});
 
   const [updateChurch, { isLoading }] = useUdpateChurchMutation();
+
+  const filteredDivisions = useMemo(() => {
+    if (!selectedRegion) {
+      return divisions;
+    }
+    return divisions.filter(
+      (division: any) =>
+        division.region && division.region.id === selectedRegion.id
+    );
+  }, [divisions, selectedRegion]);
 
   const {
     values,
@@ -168,6 +166,43 @@ const ChurchForm = () => {
       setImageSrc(localUrl);
     }
   };
+
+  useEffect(() => {
+    if (selectedDivision && selectedDivision.region && !selectedRegion) {
+      const matchingRegion = regions.find(
+        (region: any) => region.id === selectedDivision.region.id
+      );
+
+      if (matchingRegion) {
+        setSelectedRegion(matchingRegion);
+        setFieldValue("region", matchingRegion.id);
+      }
+    }
+  }, [selectedDivision, regions, setFieldValue, selectedRegion]);
+
+  useEffect(() => {
+    if (selectedRegion && selectedDivision) {
+      const divisionBelongsToRegion =
+        selectedDivision.region &&
+        selectedDivision.region.id === selectedRegion.id;
+
+      if (!divisionBelongsToRegion) {
+        setSelectedDivision(null);
+        setFieldValue("division", "");
+      }
+    }
+  }, [selectedRegion, selectedDivision, setFieldValue]);
+
+  useEffect(() => {
+    if (!selectedRegion && selectedDivision) {
+      const divisionHasRegion = selectedDivision.region;
+      if (!divisionHasRegion) {
+        setSelectedDivision(null);
+        setFieldValue("division", "");
+      }
+    }
+  }, [selectedRegion, selectedDivision, setFieldValue]);
+
   return (
     <div className="w-full flex flex-col gap-y-10 mobile:gap-y-5">
       <form onSubmit={handleSubmit} className="w-full flex flex-col gap-y-3">
@@ -254,11 +289,7 @@ const ChurchForm = () => {
                   setFieldValue("region", value?.id || "");
                 }}
                 placeholder="Select Region"
-                error={
-                  typeof errors.region === "string" &&
-                  !!errors.region &&
-                  !!touched.region
-                }
+                error={!!errors.region && !!touched.region}
                 className="border-[#EAE0E0] text-sm xl:text-sm placeholder:text-xs mt-0 h-12"
               />
               {touched.region &&
@@ -273,16 +304,35 @@ const ChurchForm = () => {
             <div className="flex-1 relative flex flex-col gap-y-2">
               <label htmlFor="division" className="font-normal text-xs">
                 Division
+                {selectedRegion && (
+                  <span className="text-gray-500 ml-1">
+                    (Filtered by {selectedRegion.name})
+                  </span>
+                )}
               </label>
-
               <SearchableCombobox
-                options={divisions}
+                options={filteredDivisions}
                 value={selectedDivision}
                 onChange={(value) => {
                   setSelectedDivision(value);
                   setFieldValue("division", value?.id || "");
+
+                  // Auto-select region only if no region is currently selected
+                  if (value && value.region && !selectedRegion) {
+                    const matchingRegion = regions.find(
+                      (region: any) => region.id === value.region.id
+                    );
+                    if (matchingRegion) {
+                      setSelectedRegion(matchingRegion);
+                      setFieldValue("region", matchingRegion.id);
+                    }
+                  }
                 }}
-                placeholder="Select Division"
+                placeholder={
+                  selectedRegion
+                    ? `Select Division in ${selectedRegion.name}`
+                    : "Select Division"
+                }
                 error={!!errors.division && !!touched.division}
                 className="border-[#EAE0E0] text-sm xl:text-sm placeholder:text-xs mt-0 h-12"
               />
@@ -293,6 +343,11 @@ const ChurchForm = () => {
                     {errors.division}
                   </p>
                 )}
+              {selectedRegion && filteredDivisions.length === 0 && (
+                <p className="text-xs text-gray-500">
+                  No divisions found for {selectedRegion.name}
+                </p>
+              )}
             </div>
           </div>
         </div>

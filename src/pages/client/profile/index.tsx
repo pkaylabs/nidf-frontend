@@ -23,11 +23,8 @@ const Profile = () => {
   const token = useAppSelector(selectCurrentToken);
   const dispatch = useAppDispatch();
 
-  const {
-    data: userData,
-    refetch,
-  } = useGetUserProfileQuery({});
-  
+  const { data: userData, refetch } = useGetUserProfileQuery({});
+
   const [updateUser, { isLoading: updatingUser }] =
     useUpdateUserProfileMutation();
 
@@ -325,9 +322,9 @@ const Profile = () => {
               </span>
             </div>
             <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
-              <span className="text-gray-600">Two-Factor Auth</span>
+              <span className="text-gray-600">Phone Verification</span>
               <span className="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm font-medium">
-                Enabled
+                Verified
               </span>
             </div>
           </div>

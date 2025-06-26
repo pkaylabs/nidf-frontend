@@ -1,27 +1,21 @@
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { FaFileUpload } from "react-icons/fa";
 import { Link, useNavigate } from "react-location";
-import { DASHBOARD, LOGIN, OTP_VERIFICATION } from "@/constants/page-path";
+import { LOGIN, OTP_VERIFICATION } from "@/constants/page-path";
 import ButtonLoader from "@/components/loaders/button";
 import { useAppDispatch, useAppSelector } from "@/redux";
-import {
-  selectCurrentToken,
-  setCredentials,
-} from "@/redux/features/auth/authSlice";
-import { useCreateChurchMutation } from "@/redux/features/churches/churchApiSlice";
+import { setCredentials } from "@/redux/features/auth/authSlice";
 import { useGetRegionsQuery } from "@/redux/features/regions/regionApiSlice";
 import { useGetDivisionsQuery } from "@/redux/features/divisions/divisionApiSlice";
 import toast from "react-hot-toast";
-import { useGetUserProfileQuery } from "@/redux/features/user/userApiSlice";
 import { churchStatus } from "@/constants";
 import SelectDropdown from "../../applications/support/components/select";
 import SearchableCombobox from "@/components/core/searchable-dropdown";
 import { useRegisterMutation } from "@/redux/features/auth/authApiSlice";
 
 const Onboarding = () => {
-  const [query, setQuery] = useState<any>("");
   const [selectedRegion, setSelectedRegion] = useState<any>(null);
   const [selectedDivision, setSelectedDivision] = useState<any>(null);
   const [selectedLogo, setSelectedLogo] = useState<File | null>(null);
@@ -32,13 +26,25 @@ const Onboarding = () => {
   const [register, { isLoading }] = useRegisterMutation();
 
   const { data } = useGetRegionsQuery({});
-  const { data: divisionsData, refetch: refetchDivision } =
+  const { data: divisionsData } =
     useGetDivisionsQuery({});
   const regions = data?.region || [];
   const divisions = divisionsData?.divisions || [];
 
-  console.log(regions, "regions");
-  console.log(divisions, "division");
+  const filteredDivisions = useMemo(() => {
+    if (!selectedRegion) {
+
+      return divisions;
+    }
+    return divisions.filter(
+      (division: any) =>
+        division.region && division.region.id === selectedRegion.id
+    );
+  }, [divisions, selectedRegion]);
+
+  // console.log(regions, "regions");
+  // console.log(divisions, "division");
+  // console.log(filteredDivisions, "filtered divisions");
 
   const navigate = useNavigate();
   const {
@@ -135,12 +141,14 @@ const Onboarding = () => {
             })
           );
 
-          dispatch(setCredentials({ user: null, token: res.token}));
+          dispatch(setCredentials({ user: null, token: res.token }));
 
-          navigate({ to: OTP_VERIFICATION, search: {
-            phone: values.login_phone
-          }});
-
+          navigate({
+            to: OTP_VERIFICATION,
+            search: {
+              phone: values.login_phone,
+            },
+          });
         } else {
           toast(
             JSON.stringify({
@@ -171,7 +179,7 @@ const Onboarding = () => {
   };
 
   useEffect(() => {
-    if (selectedDivision && selectedDivision.region) {
+    if (selectedDivision && selectedDivision.region && !selectedRegion) {
       const matchingRegion = regions.find(
         (region: any) => region.id === selectedDivision.region.id
       );
@@ -181,14 +189,33 @@ const Onboarding = () => {
         setFieldValue("region", matchingRegion.id);
       }
     }
-  }, [selectedDivision, regions, setFieldValue]);
+  }, [selectedDivision, regions, setFieldValue, selectedRegion]);
+
+ 
+  useEffect(() => {
+    if (selectedRegion && selectedDivision) {
+   
+      const divisionBelongsToRegion =
+        selectedDivision.region &&
+        selectedDivision.region.id === selectedRegion.id;
+
+      if (!divisionBelongsToRegion) {
+        setSelectedDivision(null);
+        setFieldValue("division", "");
+      }
+    }
+  }, [selectedRegion, selectedDivision, setFieldValue]);
+
 
   useEffect(() => {
-    if (!selectedDivision) {
-      setSelectedRegion(null);
-      setFieldValue("region", "");
+    if (!selectedRegion && selectedDivision) {
+      const divisionHasRegion = selectedDivision.region;
+      if (!divisionHasRegion) {
+        setSelectedDivision(null);
+        setFieldValue("division", "");
+      }
     }
-  }, [selectedDivision, setFieldValue]);
+  }, [selectedRegion, selectedDivision, setFieldValue]);
 
   return (
     <div className="w-full flex flex-col gap-y-10 mobile:mt-5 mobile:gap-y-5">
@@ -289,15 +316,21 @@ const Onboarding = () => {
             <div className="flex-1 relative flex flex-col gap-y-2">
               <label htmlFor="division" className="font-normal text-xs">
                 Division
+                {selectedRegion && (
+                  <span className="text-gray-500 ml-1">
+                    (Filtered by {selectedRegion.name})
+                  </span>
+                )}
               </label>
               <SearchableCombobox
-                options={divisions}
+                options={filteredDivisions}
                 value={selectedDivision}
                 onChange={(value) => {
                   setSelectedDivision(value);
                   setFieldValue("division", value?.id || "");
 
-                  if (value && value.region) {
+                  // Auto-select region only if no region is currently selected
+                  if (value && value.region && !selectedRegion) {
                     const matchingRegion = regions.find(
                       (region: any) => region.id === value.region.id
                     );
@@ -307,7 +340,11 @@ const Onboarding = () => {
                     }
                   }
                 }}
-                placeholder="Select Division"
+                placeholder={
+                  selectedRegion
+                    ? `Select Division in ${selectedRegion.name}`
+                    : "Select Division"
+                }
                 error={!!errors.division && touched.division}
                 className="border-[#EAE0E0] text-sm xl:text-sm placeholder:text-xs mt-0 h-12"
               />
@@ -318,9 +355,16 @@ const Onboarding = () => {
                     {errors.division}
                   </p>
                 )}
+              {selectedRegion && filteredDivisions.length === 0 && (
+                <p className="text-xs text-gray-500">
+                  No divisions found for {selectedRegion.name}
+                </p>
+              )}
             </div>
           </div>
+          
         </div>
+
         <div className="flex flex-col gap-y-2">
           <div className="w-full flex mobile:flex-col gap-3">
             <div className="">
