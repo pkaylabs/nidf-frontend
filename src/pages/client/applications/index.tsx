@@ -113,7 +113,7 @@ const Applications = () => {
         {row?.support_type}
       </td>
       <td className="px-4 py-3 text-sm md:text-base  text-nowrap capitalize">
-        {row?.is_emergency.toString()}
+        {row?.is_emergency ? "Yes" : "No"}
       </td>
       <td className="px-4 py-3 text-sm md:text-base text-nowrap">
         {row?.created_at && typeof row.created_at === "string"

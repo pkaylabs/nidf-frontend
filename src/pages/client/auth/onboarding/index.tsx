@@ -26,14 +26,12 @@ const Onboarding = () => {
   const [register, { isLoading }] = useRegisterMutation();
 
   const { data } = useGetRegionsQuery({});
-  const { data: divisionsData } =
-    useGetDivisionsQuery({});
+  const { data: divisionsData } = useGetDivisionsQuery({});
   const regions = data?.region || [];
   const divisions = divisionsData?.divisions || [];
 
   const filteredDivisions = useMemo(() => {
     if (!selectedRegion) {
-
       return divisions;
     }
     return divisions.filter(
@@ -72,6 +70,7 @@ const Onboarding = () => {
       login_phone: "",
       login_name: "",
       password: "",
+      confirmedPassword: "",
       manager_name: "",
       manager_phone: "",
       manager_email: "",
@@ -100,6 +99,9 @@ const Onboarding = () => {
       password: Yup.string()
         .min(8, "Password must be 8 characters or more")
         .required("Password is required"),
+      confirmedPassword: Yup.string()
+        .oneOf([Yup.ref("password")], "Passwords must match")
+        .required("Please confirm your password"),
     }),
     onSubmit: async (values) => {
       console.log(values, "values");
@@ -191,10 +193,8 @@ const Onboarding = () => {
     }
   }, [selectedDivision, regions, setFieldValue, selectedRegion]);
 
- 
   useEffect(() => {
     if (selectedRegion && selectedDivision) {
-   
       const divisionBelongsToRegion =
         selectedDivision.region &&
         selectedDivision.region.id === selectedRegion.id;
@@ -205,7 +205,6 @@ const Onboarding = () => {
       }
     }
   }, [selectedRegion, selectedDivision, setFieldValue]);
-
 
   useEffect(() => {
     if (!selectedRegion && selectedDivision) {
@@ -362,7 +361,6 @@ const Onboarding = () => {
               )}
             </div>
           </div>
-          
         </div>
 
         <div className="flex flex-col gap-y-2">
@@ -716,6 +714,34 @@ const Onboarding = () => {
               ""
             )}
           </div>
+
+          <div className="">
+            <label htmlFor="confirmedPassword" className="font-normal text-xs">
+              Confirm Password
+            </label>
+            <input
+              id="confirmedPassword"
+              name="confirmedPassword"
+              type="password"
+              value={values.confirmedPassword}
+              onBlur={handleBlur}
+              onChange={handleChange}
+              className={`w-full p-3 h-12 rounded-md  border border-[#EAE0E0] focus:outline-0 focus:outline-primary-300 
+            transition-all duration-300 ease-in-out placeholder:font-normal placeholder:text-xs placeholder:text-[#969696] 
+            text-base font-normal ${
+              errors.confirmedPassword && touched.confirmedPassword
+                ? "border border-[#fc8181]"
+                : ""
+            }`}
+            />
+            {errors.confirmedPassword && touched.confirmedPassword ? (
+              <p className="font-normal text-xs text-[#fc8181]">
+                {errors.confirmedPassword}
+              </p>
+            ) : (
+              ""
+            )}
+          </div>
         </div>
 
         <p className="mx-auto font-normal text-base mobile:text-sm">
@@ -730,7 +756,7 @@ const Onboarding = () => {
 
         <button
           type="submit"
-          // disabled={i}
+          disabled={isSubmitting || isLoading}
           className={`bg-[#17567E] w-44 h-12 flex justify-center items-center mt-2 rounded-md text-center text-white mx-auto ${
             isSubmitting ? "opacity-80" : ""
           } mobile:px-10 mobile:py-2 text-sm`}
