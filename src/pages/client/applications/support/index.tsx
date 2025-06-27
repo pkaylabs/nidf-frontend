@@ -72,8 +72,7 @@ const ApplyForSupport = () => {
       churchAddress: Yup.string().required("Church address is required"),
       pastorName: Yup.string().required("Pastor name is required"),
       pastorEmail: Yup.string()
-        .email("Invalid email address")
-        .required("Pastor email is required"),
+        .email("Invalid email address"),
       pastorPhone: Yup.string().required("Pastor phone is required"),
       supportType: Yup.string().required("Support type is required"),
       typeOfChurchProject: Yup.string().required(
@@ -138,7 +137,6 @@ const ApplyForSupport = () => {
 
   const handleProceed = async () => {
     if (activeStep === 0) {
-      // Validate fields for step 0
       if (
         _.isEmpty(formik.errors.churchName) &&
         !_.isEmpty(formik.values.churchName) &&
@@ -147,7 +145,7 @@ const ApplyForSupport = () => {
         _.isEmpty(formik.errors.pastorName) &&
         !_.isEmpty(formik.values.pastorName) &&
         _.isEmpty(formik.errors.pastorEmail) &&
-        !_.isEmpty(formik.values.pastorEmail) &&
+
         _.isEmpty(formik.errors.pastorPhone) &&
         !_.isEmpty(formik.values.pastorPhone)
       ) {
@@ -429,9 +427,9 @@ const ApplyForSupport = () => {
         _.isEmpty(formik.errors.costEstimateFIle) &&
         formik.values.costEstimateFIle !== null &&
         _.isEmpty(formik.errors.ownershipDoc) &&
-        formik.values.ownershipDoc !== null &&
-        _.isEmpty(formik.errors.invoices) &&
-        formik.values.invoices !== null
+        formik.values.ownershipDoc !== null
+        // _.isEmpty(formik.errors.invoices) &&
+        // formik.values.invoices !== null
       ) {
         try {
           const formData = new FormData();
