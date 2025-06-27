@@ -21,7 +21,7 @@ const ChurchInfo: React.FC<ChurchInfoProps> = ({
   const { data } = useGetChurchesQuery({});
 
   const churchOptions = data?.map((app: any) => {
-    return { label: app?.name, value: app?.id };
+    return { label: app?.location_name, value: app?.id };
   });
 
   const { values, handleChange, handleBlur, errors, touched } = formik;
@@ -77,8 +77,8 @@ const ChurchInfo: React.FC<ChurchInfoProps> = ({
                 formik.setValues({
                   ...formik.values,
                   church: value,
-                  churchName: selectedApp?.name ?? "",
-                  churchAddress: selectedApp?.address ?? "",
+                  churchName: selectedApp?.location_name ?? "",
+                  churchAddress: selectedApp?.location_address ?? "",
                   pastorName: selectedApp?.pastor_name ?? "",
                   pastorEmail: selectedApp?.pastor_email ?? "",
                   pastorPhone: selectedApp?.pastor_phone ?? "",
