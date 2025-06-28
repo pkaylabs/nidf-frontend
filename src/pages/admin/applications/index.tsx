@@ -51,7 +51,7 @@ const AdminApplications = () => {
       <td className="px-4 py-3 truncate">{row?.church?.location_name}</td>
       <td className="px-4 py-3 truncate">{row?.support_type}</td>
       <td className="px-4 py-3 truncate capitalize">
-        {row?.is_emergency.toString()}
+       {row?.is_emergency ? "Yes" : "No"}
       </td>
       <td className="px-4 py-3 truncate">
         {row?.created_at && typeof row.created_at === "string"

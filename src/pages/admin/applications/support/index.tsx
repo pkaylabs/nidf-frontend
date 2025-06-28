@@ -37,10 +37,10 @@ const CreateApplication = () => {
       typeOfChurchProject: "",
       purposeForAid: "",
       isEmergency: false,
-      progressDescription: "",
       amountRequested: "",
       amountInWords: "",
       estimatedProjectCost: "",
+      monthlyRepayment: "",
       projectLocation: "",
       phase: "",
       expectedCompletionDate: "",
@@ -61,19 +61,24 @@ const CreateApplication = () => {
       churchName: Yup.string().required("Church name is required"),
       churchAddress: Yup.string().required("Church address is required"),
       pastorName: Yup.string().required("Pastor name is required"),
-      pastorEmail: Yup.string()
-        .email("Invalid email address")
-        .required("Pastor email is required"),
+      pastorEmail: Yup.string().email("Invalid email address"),
       pastorPhone: Yup.string().required("Pastor phone is required"),
       supportType: Yup.string().required("Support type is required"),
       typeOfChurchProject: Yup.string().required(
         "Type of church project is required"
       ),
-      purposeForAid: Yup.string().required("Purpose for aid is required"),
+      purposeForAid: Yup.string().when("supportType", {
+        is: (val: string) => val === "AID",
+        then: (schema) => schema.required("Purpose for aid is required"),
+        otherwise: (schema) => schema.notRequired(),
+      }),
+
+      monthlyRepayment: Yup.string().matches(/^\d+$/, "Amount requested must be a valid number").when("supportType", {
+        is: (val: string) => val === "REVOLVING_FUND",
+        then: (schema) => schema.required("Monthly repayment is required"),
+        otherwise: (schema) => schema.notRequired(),
+      }),
       isEmergency: Yup.boolean(),
-      progressDescription: Yup.string().required(
-        "Progress description is required"
-      ),
       amountRequested: Yup.string()
         .matches(/^\d+$/, "Amount requested must be a valid number")
         .required("Amount requested is required"),
@@ -109,7 +114,6 @@ const CreateApplication = () => {
       ),
       costEstimateFIle: Yup.mixed().required("Cost estimate file is required"),
       ownershipDoc: Yup.mixed().required("Ownership document is required"),
-      invoices: Yup.mixed().required("Invoices are required"),
     }),
     onSubmit: () => {},
   });
@@ -120,7 +124,6 @@ const CreateApplication = () => {
 
   const handleProceed = async () => {
     if (activeStep === 0) {
-      // Validate fields for step 0
       if (
         _.isEmpty(formik.errors.churchName) &&
         !_.isEmpty(formik.values.churchName) &&
@@ -129,7 +132,6 @@ const CreateApplication = () => {
         _.isEmpty(formik.errors.pastorName) &&
         !_.isEmpty(formik.values.pastorName) &&
         _.isEmpty(formik.errors.pastorEmail) &&
-        !_.isEmpty(formik.values.pastorEmail) &&
         _.isEmpty(formik.errors.pastorPhone) &&
         !_.isEmpty(formik.values.pastorPhone)
       ) {
@@ -204,9 +206,7 @@ const CreateApplication = () => {
         _.isEmpty(formik.errors.typeOfChurchProject) &&
         !_.isEmpty(formik.values.typeOfChurchProject) &&
         _.isEmpty(formik.errors.purposeForAid) &&
-        !_.isEmpty(formik.values.purposeForAid) &&
-        _.isEmpty(formik.errors.progressDescription) &&
-        !_.isEmpty(formik.values.progressDescription) &&
+        _.isEmpty(formik.errors.monthlyRepayment) &&
         _.isEmpty(formik.errors.amountRequested) &&
         !_.isEmpty(formik.values.amountRequested) &&
         _.isEmpty(formik.errors.amountInWords) &&
@@ -227,9 +227,13 @@ const CreateApplication = () => {
             "type_of_church_project",
             formik.values.typeOfChurchProject
           );
-          formData.append("purpose", formik.values.purposeForAid);
+          formData.append("justification_for_aid", formik.values.purposeForAid);
+          formData.append(
+            "monthly_repayment_amount",
+            formik.values.monthlyRepayment
+          );
           formData.append("is_emergency", formik.values.isEmergency.toString());
-          formData.append("description", formik.values.progressDescription);
+
           formData.append("amount", formik.values.amountRequested);
           formData.append("amount_in_words", formik.values.amountInWords);
           formData.append(
@@ -249,7 +253,6 @@ const CreateApplication = () => {
           );
 
           const res = await createApplication(formData).unwrap();
-          console.log("res 2", res);
 
           if (res?.application) {
             setApplicationId(res?.application?.application_id);
@@ -293,8 +296,8 @@ const CreateApplication = () => {
         formik.setTouched({
           supportType: true,
           typeOfChurchProject: true,
-          purposeForAid: true,
-          progressDescription: true,
+          purposeForAid: formik.values.supportType === "AID",
+          monthlyRepayment: formik.values.supportType === "REVOLVING_FUND",
           amountRequested: true,
           amountInWords: true,
           estimatedProjectCost: true,
@@ -307,6 +310,7 @@ const CreateApplication = () => {
 
     if (activeStep === 2) {
       if (
+        _.isEmpty(formik.errors.avgServiceAttendance) &&
         _.isEmpty(formik.errors.avgServiceAttendance) &&
         !_.isEmpty(formik.values.avgServiceAttendance) &&
         _.isEmpty(formik.errors.avgMonthlyIncome) &&
@@ -400,9 +404,8 @@ const CreateApplication = () => {
         _.isEmpty(formik.errors.costEstimateFIle) &&
         formik.values.costEstimateFIle !== null &&
         _.isEmpty(formik.errors.ownershipDoc) &&
-        formik.values.ownershipDoc !== null &&
-        _.isEmpty(formik.errors.invoices) &&
-        formik.values.invoices !== null
+        formik.values.ownershipDoc !== null
+   
       ) {
         try {
           const formData = new FormData();
@@ -434,7 +437,7 @@ const CreateApplication = () => {
             ) {
               filteredEntries.push([key, value]);
             } else if (!(typeof value === "string")) {
-              // If it's not a string (e.g., File), just push it (or handle based on your needs)
+              
               filteredEntries.push([key, value]);
             }
           });

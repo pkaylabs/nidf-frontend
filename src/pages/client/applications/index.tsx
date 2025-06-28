@@ -57,9 +57,7 @@ const Applications = () => {
       }).then(async (result) => {
         if (result.isConfirmed) {
           try {
-            const res = await deleteApplication({ application: id }).unwrap();
-            console.log(res, "res deleting");
-
+            await deleteApplication({ application: id }).unwrap();
             refetch();
             Swal.fire({
               title: "Deleted!",
