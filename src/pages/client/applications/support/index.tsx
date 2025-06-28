@@ -47,7 +47,6 @@ const ApplyForSupport = () => {
       typeOfChurchProject: "",
       purposeForAid: "",
       isEmergency: false,
-
       amountRequested: "",
       amountInWords: "",
       estimatedProjectCost: "",
@@ -71,8 +70,7 @@ const ApplyForSupport = () => {
       churchName: Yup.string().required("Church name is required"),
       churchAddress: Yup.string().required("Church address is required"),
       pastorName: Yup.string().required("Pastor name is required"),
-      pastorEmail: Yup.string()
-        .email("Invalid email address"),
+      pastorEmail: Yup.string().email("Invalid email address"),
       pastorPhone: Yup.string().required("Pastor phone is required"),
       supportType: Yup.string().required("Support type is required"),
       typeOfChurchProject: Yup.string().required(
@@ -83,14 +81,12 @@ const ApplyForSupport = () => {
         then: (schema) => schema.required("Purpose for aid is required"),
         otherwise: (schema) => schema.notRequired(),
       }),
-
-      monthlyRepayment: Yup.string().when("supportType", {
+      monthlyRepayment: Yup.string().matches(/^\d+$/, "Amount requested must be a valid number").when("supportType", {
         is: (val: string) => val === "REVOLVING_FUND",
         then: (schema) => schema.required("Monthly repayment is required"),
         otherwise: (schema) => schema.notRequired(),
       }),
       isEmergency: Yup.boolean(),
-
       amountRequested: Yup.string()
         .matches(/^\d+$/, "Amount requested must be a valid number")
         .required("Amount requested is required"),
@@ -126,9 +122,8 @@ const ApplyForSupport = () => {
       ),
       costEstimateFIle: Yup.mixed().required("Cost estimate file is required"),
       ownershipDoc: Yup.mixed().required("Ownership document is required"),
-      // invoices: Yup.mixed(),
     }),
-    onSubmit: (values) => {},
+    onSubmit: () => {},
   });
 
   const [createApplication, { isLoading }] = useCreateApplicationMutation();
@@ -145,7 +140,6 @@ const ApplyForSupport = () => {
         _.isEmpty(formik.errors.pastorName) &&
         !_.isEmpty(formik.values.pastorName) &&
         _.isEmpty(formik.errors.pastorEmail) &&
-
         _.isEmpty(formik.errors.pastorPhone) &&
         !_.isEmpty(formik.values.pastorPhone)
       ) {
@@ -168,12 +162,6 @@ const ApplyForSupport = () => {
 
           if (res?.application) {
             setApplicationId(res?.application?.application_id);
-            // toast(
-            //   JSON.stringify({
-            //     type: "success",
-            //     title: res?.message ?? ``,
-            //   })
-            // );
 
             if (search?.application_id) {
               navigate({
@@ -275,7 +263,6 @@ const ApplyForSupport = () => {
           );
 
           const res = await createApplication(formData).unwrap();
-          console.log("res 2", res);
 
           if (res?.application) {
             setApplicationId(res?.application?.application_id);
@@ -321,7 +308,6 @@ const ApplyForSupport = () => {
           typeOfChurchProject: true,
           purposeForAid: formik.values.supportType === "AID",
           monthlyRepayment: formik.values.supportType === "REVOLVING_FUND",
-
           amountRequested: true,
           amountInWords: true,
           estimatedProjectCost: true,
@@ -428,8 +414,7 @@ const ApplyForSupport = () => {
         formik.values.costEstimateFIle !== null &&
         _.isEmpty(formik.errors.ownershipDoc) &&
         formik.values.ownershipDoc !== null
-        // _.isEmpty(formik.errors.invoices) &&
-        // formik.values.invoices !== null
+       
       ) {
         try {
           const formData = new FormData();
@@ -461,7 +446,7 @@ const ApplyForSupport = () => {
             ) {
               filteredEntries.push([key, value]);
             } else if (!(typeof value === "string")) {
-              // If it's not a string (e.g., File), just push it (or handle based on your needs)
+             
               filteredEntries.push([key, value]);
             }
           });
