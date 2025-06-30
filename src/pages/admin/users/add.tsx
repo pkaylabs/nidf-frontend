@@ -108,7 +108,10 @@ const AddUser = () => {
   ) => {
     return (
       <div className="font-poppins ">
-        <label htmlFor={name} className=" block md:text-lg font-medium text-black">
+        <label
+          htmlFor={name}
+          className=" block md:text-lg font-medium text-black"
+        >
           {label}
         </label>
         <input
@@ -139,11 +142,15 @@ const AddUser = () => {
           <IoIosArrowRoundBack className="size-5" />
           <span className="hidden md:block">Back to List</span>
         </button>
-        <h4 className="font-medium text-lg md:text-2xl text-[#252525]">Add New User</h4>
+        <h4 className="font-medium text-lg md:text-2xl text-[#252525]">
+          Add New User
+        </h4>
       </div>
 
       <section className="bg-white rounded-md p-3 md:p-8">
-        <h4 className="font-semibold md:text-lg text-black mb-4">Add New User</h4>
+        <h4 className="font-semibold md:text-lg text-black mb-4">
+          Add New User
+        </h4>
         <p className=" font-light md:text-lg text-[#71839B] ">
           Create a new user and assign them the appropriate role.
         </p>
@@ -228,19 +235,19 @@ const AddUser = () => {
               options={[
                 {
                   label: "Church User",
-                  value: "church_user",
+                  value: "CHURCH_USER",
+                },
+                {
+                  label: "Division User",
+                  value: "DIVISION_USER",
                 },
                 {
                   label: "Admin User",
-                  value: "admin_user",
+                  value: "ADMIN",
                 },
                 {
                   label: "Finance User",
-                  value: "finance_user",
-                },
-                {
-                  label: "Super User",
-                  value: "super_user",
+                  value: "FINANCE_OFFICER",
                 },
               ]}
               onChange={(value) => formik.setFieldValue("role", value)}

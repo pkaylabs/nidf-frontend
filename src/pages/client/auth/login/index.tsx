@@ -17,15 +17,16 @@ import toast from "react-hot-toast";
 import { Link, useNavigate, useSearch } from "react-location";
 import * as Yup from "yup";
 import logo from "@/assets/images/logo1.png";
+import { Eye, EyeSlash } from "iconsax-react";
 
 const Login = () => {
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
     document.title = "NIDF | Login";
   }, []);
 
-  const search = useSearch<LocationGenerics>();
   const dispatch = useAppDispatch();
 
   const [login, { isLoading }] = useLoginMutation();
@@ -161,31 +162,46 @@ const Login = () => {
         ) : (
           ""
         )}
-        <label htmlFor="password" className="font-normal text-xs">
-          Password
-        </label>
-        <input
-          id="password"
-          name="password"
-          type="password"
-          value={values.password}
-          onChange={handleChange}
-          onBlur={handleBlur}
-          className={`w-full p-3 h-12 rounded-md  border border-[#EAE0E0] focus:outline-0 focus:outline-primary-300 
-            transition-all duration-300 ease-in-out placeholder:font-normal placeholder:text-xs placeholder:text-[#969696] 
-            text-base font-normal ${
-              errors.password && touched.password
-                ? "border border-[#fc8181]"
-                : ""
-            }`}
-        />
-        {errors.password && touched.password ? (
-          <p className="font-normal text-xs text-[#fc8181]">
-            {errors.password}
-          </p>
-        ) : (
-          ""
-        )}
+
+        <div className="">
+          <label htmlFor="password" className="font-normal text-xs">
+            Password
+          </label>
+          <div className="relative">
+            <input
+              id="password"
+              name="password"
+              type={showPassword ? "text" : "password"}
+              value={values.password}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              className={`w-full p-3 h-12 pr-12 rounded-md border border-[#EAE0E0] focus:outline-0 focus:outline-primary-300 
+        transition-all duration-300 ease-in-out placeholder:font-normal placeholder:text-xs placeholder:text-[#969696] 
+        text-base font-normal ${
+          errors.password && touched.password ? "border border-[#fc8181]" : ""
+        }`}
+              placeholder="Enter your password"
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer rounded-r-md transition-colors duration-200"
+              tabIndex={-1}
+            >
+              {showPassword ? (
+                <EyeSlash size="20" color="#71839B" />
+              ) : (
+                <Eye size="20" color="#71839B" />
+              )}
+            </button>
+          </div>
+          {errors.password && touched.password && (
+            <p className="font-normal text-xs text-[#fc8181]">
+              {errors.password}
+            </p>
+          )}
+        </div>
+
         <button
           type="button"
           onClick={() => navigate({ to: RESET })}
