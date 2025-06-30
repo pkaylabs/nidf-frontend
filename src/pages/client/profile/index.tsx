@@ -37,9 +37,8 @@ const Profile = () => {
   const [isEditing, setIsEditing] = useState({
     name: false,
     email: false,
+    phone: false
   });
-
-  const [isSaving, setIsSaving] = useState(false);
 
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -57,7 +56,7 @@ const Profile = () => {
     }));
   };
 
-  const toggleEdit = (field: "name" | "email") => {
+  const toggleEdit = (field: "name" | "email" | "phone") => {
     setIsEditing((prev) => ({
       ...prev,
       [field]: !prev[field],
@@ -94,9 +93,9 @@ const Profile = () => {
         });
     } catch (error) {}
 
-    setIsEditing({ name: false, email: false });
+    setIsEditing({ name: false, email: false, phone: false });
 
-    console.log("Saving profile data:", { profileData, selectedLogo });
+    // console.log("Saving profile data:", { profileData, selectedLogo });
   };
 
   return (
@@ -235,34 +234,37 @@ const Profile = () => {
                 </div>
               </motion.div>
 
-              {/* Phone (Disabled) */}
+              {/* Phone */}
               <motion.div
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.4 }}
-                className="space-y-2"
+                transition={{ delay: 0.3 }}
+                className="space-y-1"
               >
-                <label className="font-normal text-xs">
-                  Phone Number
-                  <span className="ml-2 px-2 py-1 text-xs bg-gray-100 text-gray-600 rounded-full">
-                    Contact Support to Change
-                  </span>
-                </label>
+                <label className="font-normal text-xs">Phone</label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                    <Phone className="h-5 w-5 text-gray-300" />
+                    <Phone className="h-5 w-5 text-gray-400" />
                   </div>
                   <input
                     type="tel"
                     value={profileData.phone}
-                    disabled
-                    className="w-full pl-12 pr-4 py-4 border border-gray-200 rounded-xl bg-gray-50 text-gray-500 cursor-not-allowed font-medium"
+                    onChange={(e) => handleInputChange("phone", e.target.value)}
+                    onFocus={() => toggleEdit("phone")}
+                    onBlur={() => toggleEdit("phone")}
+                    className="w-full pl-12 pr-12 py-4 border border-gray-200 rounded-xl focus:outline-none transition-all duration-200 text-gray-900"
+                    placeholder="Enter your phone"
                   />
+                  {isEditing.phone && (
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      className="absolute inset-y-0 right-0 pr-4 flex items-center"
+                    >
+                      <Edit3 className="h-5 w-5 text-blue-500" />
+                    </motion.div>
+                  )}
                 </div>
-                <p className="text-sm text-gray-500 ml-1">
-                  For security reasons, phone number changes require
-                  verification. Please contact support.
-                </p>
               </motion.div>
             </div>
 
