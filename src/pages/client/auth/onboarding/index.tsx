@@ -14,8 +14,11 @@ import { churchStatus } from "@/constants";
 import SelectDropdown from "../../applications/support/components/select";
 import SearchableCombobox from "@/components/core/searchable-dropdown";
 import { useRegisterMutation } from "@/redux/features/auth/authApiSlice";
+import { Eye, EyeSlash } from "iconsax-react";
 
 const Onboarding = () => {
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [selectedRegion, setSelectedRegion] = useState<any>(null);
   const [selectedDivision, setSelectedDivision] = useState<any>(null);
   const [selectedLogo, setSelectedLogo] = useState<File | null>(null);
@@ -691,49 +694,77 @@ const Onboarding = () => {
             <label htmlFor="password" className="font-normal text-xs">
               Password
             </label>
-            <input
-              id="password"
-              name="password"
-              type="password"
-              value={values.password}
-              onBlur={handleBlur}
-              onChange={handleChange}
-              className={`w-full p-3 h-12 rounded-md  border border-[#EAE0E0] focus:outline-0 focus:outline-primary-300 
-            transition-all duration-300 ease-in-out placeholder:font-normal placeholder:text-xs placeholder:text-[#969696] 
-            text-base font-normal ${
-              errors.password && touched.password
-                ? "border border-[#fc8181]"
-                : ""
-            }`}
-            />
-            {errors.password && touched.password ? (
+            <div className="relative">
+              <input
+                id="password"
+                name="password"
+                type={showPassword ? "text" : "password"}
+                value={values.password}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                className={`w-full p-3 h-12 pr-12 rounded-md border border-[#EAE0E0] focus:outline-0 focus:outline-primary-300 
+        transition-all duration-300 ease-in-out placeholder:font-normal placeholder:text-xs placeholder:text-[#969696] 
+        text-base font-normal ${
+          errors.password && touched.password ? "border border-[#fc8181]" : ""
+        }`}
+                placeholder="Enter your password"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer rounded-r-md transition-colors duration-200"
+                tabIndex={-1}
+              >
+                {showPassword ? (
+                  <EyeSlash size="20" color="#71839B" />
+                ) : (
+                  <Eye size="20" color="#71839B" />
+                )}
+              </button>
+            </div>
+            {errors.password && touched.password && (
               <p className="font-normal text-xs text-[#fc8181]">
                 {errors.password}
               </p>
-            ) : (
-              ""
             )}
           </div>
+
+         
 
           <div className="">
             <label htmlFor="confirmedPassword" className="font-normal text-xs">
               Confirm Password
             </label>
-            <input
-              id="confirmedPassword"
-              name="confirmedPassword"
-              type="password"
-              value={values.confirmedPassword}
-              onBlur={handleBlur}
-              onChange={handleChange}
-              className={`w-full p-3 h-12 rounded-md  border border-[#EAE0E0] focus:outline-0 focus:outline-primary-300 
-            transition-all duration-300 ease-in-out placeholder:font-normal placeholder:text-xs placeholder:text-[#969696] 
-            text-base font-normal ${
-              errors.confirmedPassword && touched.confirmedPassword
-                ? "border border-[#fc8181]"
-                : ""
-            }`}
-            />
+            <div className="relative">
+              <input
+                id="confirmedPassword"
+                name="confirmedPassword"
+                type={showConfirmPassword ? "text" : "password"}
+                value={values.confirmedPassword}
+                onBlur={handleBlur}
+                onChange={handleChange}
+                className={`w-full p-3 h-12 pr-12 rounded-md border border-[#EAE0E0] focus:outline-0 focus:outline-primary-300 
+                transition-all duration-300 ease-in-out placeholder:font-normal placeholder:text-xs placeholder:text-[#969696] 
+                text-base font-normal ${
+                  errors.confirmedPassword && touched.confirmedPassword
+                    ? "border border-[#fc8181]"
+                    : ""
+                }`}
+                placeholder="Enter your password"
+              />
+              <button
+                type="button"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                className="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer rounded-r-md transition-colors duration-200"
+                tabIndex={-1}
+              >
+                {showConfirmPassword ? (
+                  <EyeSlash size="20" color="#71839B" />
+                ) : (
+                  <Eye size="20" color="#71839B" />
+                )}
+              </button>
+            </div>
             {errors.confirmedPassword && touched.confirmedPassword ? (
               <p className="font-normal text-xs text-[#fc8181]">
                 {errors.confirmedPassword}

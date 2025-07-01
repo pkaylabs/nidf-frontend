@@ -11,8 +11,10 @@ import toast from "react-hot-toast";
 import ButtonLoader from "@/components/loaders/button";
 import { useGetRegionsQuery } from "@/redux/features/regions/regionApiSlice";
 import { useGetChurchesQuery } from "@/redux/features/churches/churchApiSlice";
+import { Eye, EyeSlash } from "iconsax-react";
 
 const AddUser = () => {
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const [enabled, setEnabled] = useState(false);
   const search = useSearch<any>();
@@ -108,7 +110,10 @@ const AddUser = () => {
   ) => {
     return (
       <div className="font-poppins ">
-        <label htmlFor={name} className=" block md:text-lg font-medium text-black">
+        <label
+          htmlFor={name}
+          className=" block md:text-lg font-medium text-black"
+        >
           {label}
         </label>
         <input
@@ -139,11 +144,15 @@ const AddUser = () => {
           <IoIosArrowRoundBack className="size-5" />
           <span className="hidden md:block">Back to List</span>
         </button>
-        <h4 className="font-medium text-lg md:text-2xl text-[#252525]">Add New User</h4>
+        <h4 className="font-medium text-lg md:text-2xl text-[#252525]">
+          Add New User
+        </h4>
       </div>
 
       <section className="bg-white rounded-md p-3 md:p-8">
-        <h4 className="font-semibold md:text-lg text-black mb-4">Add New User</h4>
+        <h4 className="font-semibold md:text-lg text-black mb-4">
+          Add New User
+        </h4>
         <p className=" font-light md:text-lg text-[#71839B] ">
           Create a new user and assign them the appropriate role.
         </p>
@@ -174,7 +183,8 @@ const AddUser = () => {
                 "Enter Email Address"
               )}
             </div>
-            <div className="w-full flex-1 ">
+
+            {/* <div className="w-full flex-1 ">
               {input(
                 "Password",
                 "password",
@@ -182,6 +192,49 @@ const AddUser = () => {
                 false,
                 "Enter Password"
               )}
+            </div> */}
+
+            <div className="w-full flex-1">
+              <label htmlFor="password" className="font-normal text-xs">
+                Password
+              </label>
+              <div className="relative">
+                <input
+                  id="password"
+                  name="password"
+                  type={showPassword ? "text" : "password"}
+                  value={values.password}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  className={`w-full p-3 h-12 pr-12 rounded-md border border-[#71839B] focus:outline-0 focus:outline-primary-300 
+                    transition-all duration-300 ease-in-out placeholder:font-normal placeholder:text-xs placeholder:text-[#969696] 
+                    text-base font-normal ${
+                      errors.password && touched.password
+                        ? "border border-[#fc8181]"
+                        : ""
+                    }`}
+                  placeholder="Enter your password"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer rounded-r-md transition-colors duration-200"
+                  tabIndex={-1}
+                >
+                  {showPassword ? (
+                    <EyeSlash size="20" color="#71839B" />
+                  ) : (
+                    <Eye size="20" color="#71839B" />
+                  )}
+                </button>
+              </div>
+              {errors.password &&
+                touched.password &&
+                typeof errors.password === "string" && (
+                  <p className="font-normal text-xs text-[#fc8181]">
+                    {errors.password}
+                  </p>
+                )}
             </div>
           </div>
 
@@ -228,19 +281,19 @@ const AddUser = () => {
               options={[
                 {
                   label: "Church User",
-                  value: "church_user",
+                  value: "CHURCH_USER",
+                },
+                {
+                  label: "Division User",
+                  value: "DIVISION_USER",
                 },
                 {
                   label: "Admin User",
-                  value: "admin_user",
+                  value: "ADMIN",
                 },
                 {
                   label: "Finance User",
-                  value: "finance_user",
-                },
-                {
-                  label: "Super User",
-                  value: "super_user",
+                  value: "FINANCE_OFFICER",
                 },
               ]}
               onChange={(value) => formik.setFieldValue("role", value)}

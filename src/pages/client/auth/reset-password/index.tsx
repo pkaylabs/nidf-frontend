@@ -13,8 +13,11 @@ import {
 } from "@/redux/features/auth/authApiSlice";
 import toast from "react-hot-toast";
 import logo from "@/assets/images/logo1.png";
+import { Eye, EyeSlash } from "iconsax-react";
 
 const ResetPassword = () => {
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const navigate = useNavigate();
   const search = useSearch<any>();
 
@@ -27,39 +30,39 @@ const ResetPassword = () => {
   const [resetPassword, { isLoading: resetting }] = useResetPasswordMutation();
   const loading = isLoading || verifying || resetting;
 
-  const {
-    values,
-    handleBlur,
-    handleChange,
-    errors,
-    touched,
-    setTouched,
-  } = useFormik({
-    initialValues: {
-      phone: "",
-      password: "",
-      confirmPassword: "",
-    },
-    validationSchema: Yup.object().shape({
-      phone: Yup.string()
-        .matches(
-          /^0(24|54|55|59|20|50|26|56|27|57|28|58|23)\d{7}$/,
-          "Please enter a valid phone number"
-        )
-        .required("Phone number is required"),
-      password: Yup.string()
-        .min(8, "Password must be at least 8 characters")
-        .matches(/[A-Z]/, "Password must contain at least one uppercase letter")
-        .matches(/[a-z]/, "Password must contain at least one lowercase letter")
-        .matches(/[0-9]/, "Password must contain at least one number")
-        .required("Password is required"),
-      confirmPassword: Yup.string()
-        .oneOf([Yup.ref("password")], "Passwords must match")
-        .required("Please confirm your password"),
-    }),
+  const { values, handleBlur, handleChange, errors, touched, setTouched } =
+    useFormik({
+      initialValues: {
+        phone: "",
+        password: "",
+        confirmPassword: "",
+      },
+      validationSchema: Yup.object().shape({
+        phone: Yup.string()
+          .matches(
+            /^0(24|54|55|59|20|50|26|56|27|57|28|58|23)\d{7}$/,
+            "Please enter a valid phone number"
+          )
+          .required("Phone number is required"),
+        password: Yup.string()
+          .min(8, "Password must be at least 8 characters")
+          .matches(
+            /[A-Z]/,
+            "Password must contain at least one uppercase letter"
+          )
+          .matches(
+            /[a-z]/,
+            "Password must contain at least one lowercase letter"
+          )
+          .matches(/[0-9]/, "Password must contain at least one number")
+          .required("Password is required"),
+        confirmPassword: Yup.string()
+          .oneOf([Yup.ref("password")], "Passwords must match")
+          .required("Please confirm your password"),
+      }),
 
-    onSubmit: async () => {},
-  });
+      onSubmit: async () => {},
+    });
 
   const otpForm: FormikProps<any> = useFormik({
     initialValues: {
@@ -200,7 +203,7 @@ const ResetPassword = () => {
         </p>
       </div>
 
-       <div className="flex justify-center md:hidden">
+      <div className="flex justify-center md:hidden">
         <img src={logo} alt="logo" className="w-20 h-20  " />
       </div>
 
@@ -211,57 +214,84 @@ const ResetPassword = () => {
               <label htmlFor="password" className="font-normal text-xs">
                 Password
               </label>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                value={values.password}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                className={`w-full p-3 h-12 rounded-md  border border-[#EAE0E0] focus:outline-0 focus:outline-primary-300 
-           transition-all duration-300 ease-in-out placeholder:font-normal placeholder:text-xs placeholder:text-[#969696] 
-           text-base font-normal ${
-             errors.password && touched.password
-               ? "border border-[#fc8181]"
-               : ""
-           }`}
-              />
-
-              {errors.password &&
-                touched.password &&
-                typeof errors.password === "string" && (
-                  <p className="font-normal text-sm text-[#fc8181]">
-                    {errors.password}
-                  </p>
-                )}
+              <div className="relative">
+                <input
+                  id="password"
+                  name="password"
+                  type={showPassword ? "text" : "password"}
+                  value={values.password}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  className={`w-full p-3 h-12 pr-12 rounded-md border border-[#EAE0E0] focus:outline-0 focus:outline-primary-300 
+                    transition-all duration-300 ease-in-out placeholder:font-normal placeholder:text-xs placeholder:text-[#969696] 
+                    text-base font-normal ${
+                      errors.password && touched.password
+                        ? "border border-[#fc8181]"
+                        : ""
+                    }`}
+                  placeholder="Enter your password"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer rounded-r-md transition-colors duration-200"
+                  tabIndex={-1}
+                >
+                  {showPassword ? (
+                    <EyeSlash size="20" color="#71839B" />
+                  ) : (
+                    <Eye size="20" color="#71839B" />
+                  )}
+                </button>
+              </div>
+              {errors.password && touched.password && (
+                <p className="font-normal text-xs text-[#fc8181]">
+                  {errors.password}
+                </p>
+              )}
             </div>
+
             <div className="mt-2">
               <label htmlFor="confirmPassword" className="font-normal text-xs">
                 Confirm Password
               </label>
-              <input
-                id="confirmPassword"
-                name="confirmPassword"
-                type="password"
-                value={values.confirmPassword}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                className={`w-full p-3 h-12 rounded-md  border border-[#EAE0E0] focus:outline-0 focus:outline-primary-300 
-           transition-all duration-300 ease-in-out placeholder:font-normal placeholder:text-xs placeholder:text-[#969696] 
-           text-base font-normal ${
-             errors.confirmPassword && touched.confirmPassword
-               ? "border border-[#fc8181]"
-               : ""
-           }`}
-              />
-
-              {errors.confirmPassword &&
-                touched.confirmPassword &&
-                typeof errors.confirmPassword === "string" && (
-                  <p className="font-normal text-sm text-[#fc8181]">
-                    {errors.confirmPassword}
-                  </p>
-                )}
+              <div className="relative">
+                <input
+                  id="confirmPassword"
+                  name="confirmPassword"
+                  type={showConfirmPassword ? "text" : "password"}
+                  value={values.confirmPassword}
+                  onBlur={handleBlur}
+                  onChange={handleChange}
+                  className={`w-full p-3 h-12 pr-12 rounded-md border border-[#EAE0E0] focus:outline-0 focus:outline-primary-300 
+                           transition-all duration-300 ease-in-out placeholder:font-normal placeholder:text-xs placeholder:text-[#969696] 
+                           text-base font-normal ${
+                             errors.confirmPassword && touched.confirmPassword
+                               ? "border border-[#fc8181]"
+                               : ""
+                           }`}
+                  placeholder="Enter your password"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  className="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer rounded-r-md transition-colors duration-200"
+                  tabIndex={-1}
+                >
+                  {showConfirmPassword ? (
+                    <EyeSlash size="20" color="#71839B" />
+                  ) : (
+                    <Eye size="20" color="#71839B" />
+                  )}
+                </button>
+              </div>
+              {errors.confirmPassword && touched.confirmPassword ? (
+                <p className="font-normal text-xs text-[#fc8181]">
+                  {errors.confirmPassword}
+                </p>
+              ) : (
+                ""
+              )}
             </div>
           </>
         ) : search?.action === "otp-verification" ? (
