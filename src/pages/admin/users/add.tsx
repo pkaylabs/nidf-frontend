@@ -11,8 +11,10 @@ import toast from "react-hot-toast";
 import ButtonLoader from "@/components/loaders/button";
 import { useGetRegionsQuery } from "@/redux/features/regions/regionApiSlice";
 import { useGetChurchesQuery } from "@/redux/features/churches/churchApiSlice";
+import { Eye, EyeSlash } from "iconsax-react";
 
 const AddUser = () => {
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const [enabled, setEnabled] = useState(false);
   const search = useSearch<any>();
@@ -181,7 +183,8 @@ const AddUser = () => {
                 "Enter Email Address"
               )}
             </div>
-            <div className="w-full flex-1 ">
+
+            {/* <div className="w-full flex-1 ">
               {input(
                 "Password",
                 "password",
@@ -189,6 +192,49 @@ const AddUser = () => {
                 false,
                 "Enter Password"
               )}
+            </div> */}
+
+            <div className="w-full flex-1">
+              <label htmlFor="password" className="font-normal text-xs">
+                Password
+              </label>
+              <div className="relative">
+                <input
+                  id="password"
+                  name="password"
+                  type={showPassword ? "text" : "password"}
+                  value={values.password}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  className={`w-full p-3 h-12 pr-12 rounded-md border border-[#71839B] focus:outline-0 focus:outline-primary-300 
+                    transition-all duration-300 ease-in-out placeholder:font-normal placeholder:text-xs placeholder:text-[#969696] 
+                    text-base font-normal ${
+                      errors.password && touched.password
+                        ? "border border-[#fc8181]"
+                        : ""
+                    }`}
+                  placeholder="Enter your password"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer rounded-r-md transition-colors duration-200"
+                  tabIndex={-1}
+                >
+                  {showPassword ? (
+                    <EyeSlash size="20" color="#71839B" />
+                  ) : (
+                    <Eye size="20" color="#71839B" />
+                  )}
+                </button>
+              </div>
+              {errors.password &&
+                touched.password &&
+                typeof errors.password === "string" && (
+                  <p className="font-normal text-xs text-[#fc8181]">
+                    {errors.password}
+                  </p>
+                )}
             </div>
           </div>
 
